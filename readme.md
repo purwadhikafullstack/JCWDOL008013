@@ -2,7 +2,7 @@
 
 This is monorepo contain frontend project using ReactJS and backend project using ExpressJS.
 
-Trial by Rajib
+Trial by Rajib a
 
 ## Available Scripts
 
