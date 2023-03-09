@@ -2,8 +2,6 @@
 
 This is monorepo contain frontend project using ReactJS and backend project using ExpressJS.
 
-Trial by Rajib
-
 ## Available Scripts
 
 In the project directory, you can run:
@@ -23,7 +21,7 @@ The page will reload if you make edits.
 Remove `node_modules` folder from all project.
 
 ### `npm run build`
-
+aaa
 Builds the app for production to the `build` folder.
 
 ### `npm run serve`
