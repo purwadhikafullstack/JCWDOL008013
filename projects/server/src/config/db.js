@@ -1,4 +1,5 @@
-const { Sequelize } = require("sequelize");
+// Sequelize configuration
+const { Sequelize } = require('sequelize');
 
 const dbSequelize = new Sequelize(
   process.env.DB_NAME,
@@ -11,14 +12,15 @@ const dbSequelize = new Sequelize(
   }
 );
 
+// Pengecekan koneksi
 const checkSequelize = async () => {
-  try {
-    await dbSequelize.authenticate();
-    console.log("Sequelize Connection Success ✅");
-  } catch (error) {
-    console.log(error);
-  }
-};
+    try {
+        await dbSequelize.authenticate();
+        console.log('Sequelize connection success ✅');
+    } catch (error) {
+        console.log(error);
+    }
+}
 
 module.exports = {
   dbSequelize,
