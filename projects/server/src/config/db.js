@@ -12,7 +12,7 @@ const dbSequelize = new Sequelize(
   }
 );
 
-// Pengecekan koneksi
+// Connection check
 const checkSequelize = async () => {
     try {
         await dbSequelize.authenticate();
