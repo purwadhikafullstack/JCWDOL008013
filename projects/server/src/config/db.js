@@ -18,5 +18,6 @@ const checkSequelize = async () => {
 }
 
 module.exports = {
-    dbSequelize, checkSequelize
-}
+  dbSequelize,
+  checkSequelize,
+};
