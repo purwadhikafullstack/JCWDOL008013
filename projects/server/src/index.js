@@ -24,8 +24,20 @@ checkSequelize();
 dbSequelize.sync();
 
 // Config routes
-const { usersRouter } = require("./routers");
+const {
+  usersRouter,
+  propertiesRouter,
+  roomsRouter,
+  citiesRouter,
+  ordersRouter,
+  specialPricesRouter,
+} = require("./routers");
 app.use("/users", usersRouter);
+app.use("/properties", propertiesRouter);
+app.use("/rooms", roomsRouter);
+app.use("/cities", citiesRouter);
+app.use("/orders", ordersRouter);
+app.use("/specialprices", specialPricesRouter);
 
 // ===========================
 // NOTE : Add your routes here
