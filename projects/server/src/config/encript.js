@@ -18,4 +18,18 @@ module.exports = {
 
     return token;
   },
+  readToken: (req, res, next) => {
+    jwt.verify(req.token, "prw", (error, decript) => {
+      if (error) {
+        return res.status(401).send({
+          success: false,
+          message: "Authenticate token failed",
+        });
+      }
+
+      console.log(decript);
+      req.decript = decript;
+      next();
+    });
+  },
 };

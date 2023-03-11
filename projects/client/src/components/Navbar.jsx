@@ -25,6 +25,8 @@ import { AiOutlineLogout } from 'react-icons/ai'
 
 import { logoutAction } from "../actions/userAction";
 
+import { useNavigate } from "react-router-dom"
+
 const Links = [
     { title: "Dashboard", url: "/" },
     { title: "Projects", url: "/projects" },
@@ -55,6 +57,8 @@ const Navbar = (props) => {
 
     const dispatch = useDispatch()
     const { isOpen, onOpen, onClose } = useDisclosure();
+
+    const navigate = useNavigate()
 
     return (
         <>
@@ -105,7 +109,7 @@ const Navbar = (props) => {
                                     </MenuButton>
                                     <MenuList>
                                         <MenuItem>My Booking</MenuItem>
-                                        <MenuItem>Profile</MenuItem>
+                                        <MenuItem onClick={() => navigate("/profile")}>Profile</MenuItem>
                                         <MenuDivider />
                                         <MenuItem onClick={() => dispatch(logoutAction())}>Sign Out <AiOutlineLogout /></MenuItem>
                                     </MenuList>

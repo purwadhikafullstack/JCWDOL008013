@@ -12,6 +12,7 @@ import { loginAction } from "./actions/userAction";
 import { useDispatch } from "react-redux";
 import Axios from "axios";
 import API_URL from "./helper";
+import Profile from "./pages/Profile";
 
 function App() {
   const [message, setMessage] = useState("");
@@ -62,6 +63,7 @@ function App() {
         <Route path="/" element={<Landing />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
+        <Route path="/profile" element={<Profile />} />
       </Routes>
       <Footer />
     </div>

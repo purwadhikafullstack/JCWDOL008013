@@ -115,4 +115,29 @@ module.exports = {
       }
     );
   },
+  editProfile: async (req, res) => {
+    try {
+      console.log("cek decript", req.decript);
+      console.log("cek body", req.body);
+      let update = await UsersModel.update(
+        {
+          username: req.body.username,
+          email: req.body.email,
+          birthdate: req.body.birthdate,
+          gender: req.body.gender
+        },
+        {
+          where: {
+            id_user: req.decript.id_user
+          }
+        }
+      )
+      return res.status(200).send({
+        success: true,
+        message: "Edit Success"
+      })
+    } catch (error) {
+      console.log(error);
+    }
+  },
 };
