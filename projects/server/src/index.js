@@ -18,6 +18,27 @@ app.use(express.json());
 
 //#region API ROUTES
 
+// Check sequelize connection
+const { checkSequelize, dbSequelize } = require("./config/db");
+checkSequelize();
+dbSequelize.sync();
+
+// Config routes
+const {
+  usersRouter,
+  propertiesRouter,
+  roomsRouter,
+  citiesRouter,
+  ordersRouter,
+  specialPricesRouter,
+} = require("./routers");
+app.use("/users", usersRouter);
+app.use("/properties", propertiesRouter);
+app.use("/rooms", roomsRouter);
+app.use("/cities", citiesRouter);
+app.use("/orders", ordersRouter);
+app.use("/specialprices", specialPricesRouter);
+
 // ===========================
 // NOTE : Add your routes here
 
