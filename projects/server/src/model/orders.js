@@ -43,9 +43,6 @@ const OrdersModel = dbSequelize.define(
     createdBy: {
       type: DataTypes.INTEGER,
     },
-  },
-  {
-    timestamps: false,
   }
 );
 
