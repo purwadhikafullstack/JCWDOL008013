@@ -31,9 +31,6 @@ const PropertiesModel = dbSequelize.define(
     createdBy: {
       type: DataTypes.INTEGER,
     },
-  },
-  {
-    timestamps: false,
   }
 );
 
