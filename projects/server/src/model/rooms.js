@@ -22,9 +22,6 @@ const RoomsModel = dbSequelize.define(
     basePrice: {
       type: DataTypes.DOUBLE,
     },
-  },
-  {
-    timestamps: false,
   }
 );
 

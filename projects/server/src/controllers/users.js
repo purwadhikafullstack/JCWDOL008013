@@ -101,18 +101,45 @@ module.exports = {
     );
   },
   keepLogin: (req, res) => {
+    console.log(req.decript);
     dbConf.query(
       `Select id_user, username, email, password 
-        from users where id=${dbConf.escape(
-          req.body.id
-        )} or username=${dbConf.escape(req.body.name)};`,
+        from users where id_user=${dbConf.escape(
+          req.decript.id_user
+        )} or username=${dbConf.escape(req.decript.username)};`,
       (err, results) => {
         if (err) {
           console.log(err);
           return res.status(500).send(err);
         }
-        return res.status(200).send(results[0]);
+        let token = createToken({ ...results[0] });
+        return res.status(200).send({ ...results[0], token });
       }
     );
+  },
+  editProfile: async (req, res) => {
+    try {
+      console.log("cek decript", req.decript);
+      console.log("cek body", req.body);
+      let update = await UsersModel.update(
+        {
+          username: req.body.username,
+          email: req.body.email,
+          birthdate: req.body.birthdate,
+          gender: req.body.gender,
+        },
+        {
+          where: {
+            id_user: req.decript.id_user,
+          },
+        }
+      );
+      return res.status(200).send({
+        success: true,
+        message: "Edit Success",
+      });
+    } catch (error) {
+      console.log(error);
+    }
   },
 };
