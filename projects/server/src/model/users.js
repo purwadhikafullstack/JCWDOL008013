@@ -10,7 +10,7 @@ const UsersModel = dbSequelize.define(
       primaryKey: true,
       autoIncrement: true,
     },
-    name: {
+    username: {
       type: DataTypes.STRING,
     },
     email: {

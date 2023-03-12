@@ -5,6 +5,7 @@ const { join } = require("path");
 
 const PORT = process.env.PORT || 8000;
 const app = express();
+app.use(cors());
 app.use(
   cors({
     origin: [
@@ -22,6 +23,16 @@ app.use(express.json());
 const { checkSequelize, dbSequelize } = require("./config/db");
 checkSequelize();
 dbSequelize.sync();
+
+const { dbConf } = require("./config/db");
+//testing mysql connection
+dbConf.getConnection((err, connection) => {
+  if (err) {
+    console.log(`Error mySQL Connection`, err.message);
+  }
+
+  console.log(`Connect MySQL ✅ : ${connection.threadId}`);
+});
 
 // Config routes
 const {
