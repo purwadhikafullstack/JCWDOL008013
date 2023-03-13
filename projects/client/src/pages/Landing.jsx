@@ -14,9 +14,11 @@ import { Box, Container, Flex,Spacer,
     FormHelperText,
     Button,
     Center,
-    AspectRatio 
+    AspectRatio,
+    Icon
 } from '@chakra-ui/react';
 import { Select } from "chakra-react-select";
+import { FcAssistant, FcLock, FcMoneyTransfer } from 'react-icons/fc';
 const initialForm = {
     startDate:"",
     endDate:"",
@@ -30,6 +32,43 @@ const Landing = () => {
     const [form,setForm] = useState(initialForm)
     const [selectedDates, setSelectedDates] = useState([]);
     const today = new Date()
+
+    const cards = [
+        {
+        title: 'Banner 1',
+        text:
+            "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Auctorneque sed imperdiet nibh lectus feugiat nunc sem.",
+        image:
+            'https://images.unsplash.com/photo-1516796181074-bf453fbfa3e6?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1yZWxhdGVkfDV8fHxlbnwwfHx8fA%3D%3D&auto=format&fit=crop&w=900&q=60',
+        },
+        {
+        title: 'Banner 2',
+        text:
+            "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Auctorneque sed imperdiet nibh lectus feugiat nunc sem.",
+        image:
+            'https://images.unsplash.com/photo-1438183972690-6d4658e3290e?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=2274&q=80',
+        },
+        {
+        title: 'Banner 3',
+        text:
+            "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Auctorneque sed imperdiet nibh lectus feugiat nunc sem.",
+        image:
+            'https://images.unsplash.com/photo-1507237998874-b4d52d1dd655?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1yZWxhdGVkfDR8fHxlbnwwfHx8fA%3D%3D&auto=format&fit=crop&w=900&q=60',
+        },
+    ];
+
+    const fitur = [
+        {icon:<Icon as={FcMoneyTransfer} w={10} h={10} />,title:'Hassle-Free',text:'Make a transaction from anywhere at any time, from desktop, mobile app, or mobile web.'},
+        {icon:<Icon as={FcAssistant} w={10} h={10} />,title:'Service You Can Trust',text:'You get what you paid for – guaranteed.'},
+        {icon:<Icon as={FcLock} w={10} h={10} />,title:'Secure Transaction Guaranteed',text:'Security and privacy of your online transaction are protected'},
+    ]
+
+    const review = [
+        {heading:"Efficient Collaborating",description:"Lorem ipsum dolor sit amet, consectetur adipiscing elit. Auctorneque sed imperdiet nibh lectus feugiat nunc sem.",pic:'https://images.unsplash.com/photo-1586297135537-94bc9ba060aa?ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=100&q=80',username:'Jane Cooper'},
+        {heading:"Intuitive Design",description:"Lorem ipsum dolor sit amet, consectetur adipiscing elit. Auctorneque sed imperdiet nibh lectus feugiat nunc sem.",pic:'https://images.unsplash.com/photo-1586297135537-94bc9ba060aa?ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=100&q=80',username:'Jane Cooper'},
+        {heading:"Mindblowing Service",description:"Lorem ipsum dolor sit amet, consectetur adipiscing elit. Auctorneque sed imperdiet nibh lectus feugiat nunc sem.",pic:'https://images.unsplash.com/photo-1586297135537-94bc9ba060aa?ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=100&q=80',username:'Jane Cooper'},
+    ]
+
     const loadCity = ()=>{
         Axios.get(API_URL + `/cities`)
         .then((res) => {
@@ -66,9 +105,8 @@ const Landing = () => {
     }
 
     return (
-        
             <Flex direction={"column"}>
-                <CaptionCarousel/>
+                <CaptionCarousel cards={cards}/>
                 <Spacer />
                 
                 <Box p={5} >
@@ -105,9 +143,9 @@ const Landing = () => {
                 </Box>
                 
                 <Spacer />
-                <FeatureList/>
+                <FeatureList fitur={fitur}/>
                 <Spacer />
-                <TestimonialList/>
+                <TestimonialList review={review}/>
             </Flex>
         
     )

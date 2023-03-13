@@ -22,11 +22,20 @@ const FeatureBox = ( {title, text, icon} ) => {
     );
 };
 
-export default function FeatureList() {
+export default function FeatureList(props) {
+    
     return (
         <Box p={10} >
             <SimpleGrid columns={{ base: 1, md: 3 }} spacing={10}>
-                <FeatureBox
+                {props.fitur.map((data,index)=>(
+                    <FeatureBox
+                        key={index}
+                        icon={data.icon}
+                        title={data.title}
+                        text={data.text}
+                        />
+                ))}
+                {/* <FeatureBox
                 icon={<Icon as={FcMoneyTransfer} w={10} h={10} />}
                 title={'Hassle-Free'}
                 text={
@@ -46,7 +55,7 @@ export default function FeatureList() {
                 text={
                     'Security and privacy of your online transaction are protected'
                 }
-                />
+                /> */}
             </SimpleGrid>
         </Box>
     );
