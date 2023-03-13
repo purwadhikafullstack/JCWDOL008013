@@ -28,6 +28,9 @@ const PropertiesModel = dbSequelize.define(
     rules: {
       type: DataTypes.STRING,
     },
+    status: {
+      type: DataTypes.INTEGER,
+    },
     createdBy: {
       type: DataTypes.INTEGER,
     },

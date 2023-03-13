@@ -10,4 +10,13 @@ module.exports = {
       return res.status(500).send(error);
     }
   },
+  createUpdateOrders: async(req, res)=>{
+    try {
+      let data = await OrdersModel.upsert()
+      return res.status(200).send(data)
+    } catch (error) {
+        return res.status(500).send(error)
+    }
+  },
+  
 };
