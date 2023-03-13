@@ -16,9 +16,6 @@ const CitiesModel = dbSequelize.define(
     province: {
       type: DataTypes.STRING,
     },
-  },
-  {
-    timestamps: false,
   }
 );
 
