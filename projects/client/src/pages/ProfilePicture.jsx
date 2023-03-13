@@ -10,7 +10,7 @@ const ProfilePicture = (props) => {
         let getLocalStorage = localStorage.getItem("prw_login")
         const formData = new FormData()
         formData.append("images", picture)
-        Axios.patch(API_URL + "users/profilepicture", formData, {
+        Axios.patch(API_URL + "/users/profilepicture", formData, {
             headers: {
                 Authorization: `Bearer ${getLocalStorage}`
             }
