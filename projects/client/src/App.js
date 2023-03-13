@@ -12,6 +12,7 @@ import { loginAction } from "./actions/userAction";
 import { useDispatch } from "react-redux";
 import Axios from "axios";
 import API_URL from "./helper";
+import Profile from "./pages/Profile";
 
 function App() {
   const [message, setMessage] = useState("");
@@ -29,23 +30,24 @@ function App() {
   const dispatch = useDispatch();
 
   const keepLogin = async () => {
-    try {
-      let getLocalStorage = JSON.parse(localStorage.getItem("prw_login"));
-      console.log("hasilnya adalah  :", getLocalStorage);
-      if (getLocalStorage.id_user) {
-        let res = await Axios.post(API_URL + `/users/keep`, {
-          id: getLocalStorage.id_user,
+    let getLocalStorage = localStorage.getItem("prw_login");
+    console.log(getLocalStorage);
+    if (getLocalStorage) {
+      Axios.get(API_URL + "/users/keep", {
+        headers: {
+          Authorization: `Bearer ${getLocalStorage}`,
+        },
+      })
+        .then((res) => {
+          dispatch(loginAction(res.data));
+          setLoading(false);
+          localStorage.setItem("prw_login", res.data.token);
+        })
+        .catch((error) => {
+          console.log(error);
+          setLoading(false);
         });
-        delete res.data.password;
-        dispatch(loginAction(res.data));
-        setLoading(false);
-        localStorage.setItem("prw_login", JSON.stringify(res.data));
-      } else {
-        setLoading(false);
-        console.log();
-      }
-    } catch (err) {
-      console.log(err);
+    } else {
       setLoading(false);
     }
   };
@@ -62,6 +64,7 @@ function App() {
         <Route path="/" element={<Landing />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
+        <Route path="/profile" element={<Profile />} />
       </Routes>
       <Footer />
     </div>
