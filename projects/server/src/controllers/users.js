@@ -142,4 +142,26 @@ module.exports = {
       console.log(error);
     }
   },
+  profilePicture: async (req, res) => {
+    try {
+      console.log("cek file", req.files);
+      console.log("cek decript", req.decript);
+      let update = await UsersModel.update(
+        {
+          picture: `/imgProfile/${req.files[0].filename}`,
+        },
+        {
+          where: {
+            id_user: req.decript.id_user,
+          },
+        }
+      );
+      return res.status(200).send({
+        success: true,
+        message: "Upload Success",
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  },
 };
