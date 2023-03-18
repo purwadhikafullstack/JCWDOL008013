@@ -13,6 +13,7 @@ import { useDispatch } from "react-redux";
 import Axios from "axios";
 import API_URL from "./helper";
 import Profile from "./pages/Profile";
+import ProfilePicture from "./pages/ProfilePicture";
 
 function App() {
   const [message, setMessage] = useState("");
@@ -65,6 +66,7 @@ function App() {
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
         <Route path="/profile" element={<Profile />} />
+        <Route path="/profilepicture" element={<ProfilePicture />} />
       </Routes>
       <Footer />
     </div>
