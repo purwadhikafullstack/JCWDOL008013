@@ -1,5 +1,8 @@
 const { Sequelize } = require("sequelize");
 const { dbSequelize } = require("../config/db");
+const PropertiesModel = require("./properties");
+const RoomsModel = require("./rooms");
+const UsersModel = require("./users");
 const { DataTypes } = Sequelize;
 
 const OrdersModel = dbSequelize.define(
@@ -15,9 +18,17 @@ const OrdersModel = dbSequelize.define(
     },
     id_property: {
       type: DataTypes.INTEGER,
+      references: {
+          model: PropertiesModel,
+          key: "id_property"
+      }
     },
     id_room: {
       type: DataTypes.INTEGER,
+      references: {
+          model: RoomsModel,
+          key: "id_room"
+      }
     },
     checkin_date: {
       type: DataTypes.DATE,
@@ -42,8 +53,21 @@ const OrdersModel = dbSequelize.define(
     },
     createdBy: {
       type: DataTypes.INTEGER,
+      references: {
+          model: UsersModel,
+          key: "id_user"
+      }
     },
   }
 );
 
+OrdersModel.belongsTo(PropertiesModel,{
+  foreignKey:'id_property'
+})
+OrdersModel.belongsTo(RoomsModel,{
+  foreignKey:'id_room'
+})
+OrdersModel.belongsTo(UsersModel,{
+  foreignKey:'createdBy',
+})
 module.exports = OrdersModel
