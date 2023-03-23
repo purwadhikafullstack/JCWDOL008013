@@ -10,6 +10,9 @@ const RoomsModel = dbSequelize.define(
       primaryKey: true,
       autoIncrement: true,
     },
+    id_property: {
+      type: DataTypes.INTEGER,
+    },
     name: {
       type: DataTypes.STRING,
     },
