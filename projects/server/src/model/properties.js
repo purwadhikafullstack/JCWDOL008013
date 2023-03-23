@@ -1,6 +1,7 @@
 const { Sequelize } = require("sequelize");
 const { dbSequelize } = require("../config/db");
 const { DataTypes } = Sequelize;
+const CitiesModel = require("./cities");
 
 const PropertiesModel = dbSequelize.define(
   "properties",
@@ -28,10 +29,20 @@ const PropertiesModel = dbSequelize.define(
     rules: {
       type: DataTypes.STRING,
     },
+    status: {
+      type: DataTypes.INTEGER,
+      defaultValue: 1,
+    },
+    room: {
+      type: DataTypes.STRING,
+    },
     createdBy: {
       type: DataTypes.INTEGER,
     },
   }
 );
+
+PropertiesModel.hasOne(CitiesModel, { foreignKey: "id_city", as: "city" });
+PropertiesModel.belongsTo(CitiesModel, { foreignKey: "id_city" });
 
 module.exports = PropertiesModel;

@@ -1,4 +1,5 @@
 import axios from "axios";
+import "bootstrap/dist/css/bootstrap.css"
 import logo from "./logo.svg";
 import "./App.css";
 import { useEffect, useState } from "react";
@@ -14,6 +15,7 @@ import Axios from "axios";
 import API_URL from "./helper";
 import Profile from "./pages/Profile";
 import ProfilePicture from "./pages/ProfilePicture";
+import Property from "./pages/Property";
 
 function App() {
   const [message, setMessage] = useState("");
@@ -67,6 +69,7 @@ function App() {
         <Route path="/register" element={<Register />} />
         <Route path="/profile" element={<Profile />} />
         <Route path="/profilepicture" element={<ProfilePicture />} />
+        <Route path="/property" element={<Property />} />
       </Routes>
       <Footer />
     </div>
