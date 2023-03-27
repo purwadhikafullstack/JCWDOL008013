@@ -16,6 +16,7 @@ import Profile from "./pages/Profile";
 import ProfilePicture from "./pages/ProfilePicture";
 import OrderList from "./pages/OrderList";
 import { Box } from "@chakra-ui/react";
+import ReportList from "./pages/ReportList";
 
 function App() {
   const [message, setMessage] = useState("");
@@ -70,7 +71,8 @@ function App() {
           <Route path="/register" element={<Register />} />
           <Route path="/profile" element={<Profile />} />
           <Route path="/profilepicture" element={<ProfilePicture />} />
-          <Route path="/admin/order" element={<OrderList />} />
+          <Route path= "/admin/order" element={<OrderList />} />
+          <Route path= "/admin/report" element={<ReportList />} />
         </Routes>
       </Box>
       <Footer />

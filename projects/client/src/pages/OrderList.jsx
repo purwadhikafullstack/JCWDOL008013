@@ -62,7 +62,6 @@ function OrderList() {
             setOrderColumn(val.ordercolumn)
             setOrderPos(val.orderpos)
             setFilterText(val.filter)
-            // loadOrders()
         },
         onReset:(val)=>{
             setStatus(val.status)
@@ -183,7 +182,7 @@ function OrderList() {
                         renderOnZeroPageCount={null}
                     />
                 </Center>
-            </Flex>;
+            </Flex>
         </Box>
 }
 
