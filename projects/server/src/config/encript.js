@@ -12,14 +12,14 @@ module.exports = {
   },
   createToken: (payload, expired = "24h") => {
     console.log(payload);
-    let token = jwt.sign(payload, "prw", {
+    let token = jwt.sign(payload, process.env.KEY, {
       expiresIn: expired,
     });
 
     return token;
   },
   readToken: (req, res, next) => {
-    jwt.verify(req.token, "prw", (error, decript) => {
+    jwt.verify(req.token, process.env.KEY, (error, decript) => {
       if (error) {
         return res.status(401).send({
           success: false,

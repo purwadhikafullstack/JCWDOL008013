@@ -2,6 +2,8 @@ const UsersModel = require("../model/users");
 const { dbConf } = require("../config/db");
 const { hashPassword, createToken } = require("../config/encript");
 const bcrypt = require("bcrypt");
+const { transport } = require("../config/nodemailer");
+const { createOTP } = require("../config/createOTP");
 
 module.exports = {
   getUsersData: async (req, res) => {
@@ -40,23 +42,67 @@ module.exports = {
         }
         // 3. jika tidak ada yang sama maka registrasi berlanjut
         else {
+          const otp = createOTP(6);
+          // console.log(`otp : ${otp}`)
+          const now = new Date();
+          const year = now.getFullYear();
+          const month = now.getMonth() + 1;
+          const day = now.getDate();
+          const hours = now.getHours();
+          const minutes = now.getMinutes();
+          const seconds = now.getSeconds();
+
+          const datetime = `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
           dbConf.query(
-            `insert into users (username, email, phone, password) values (${dbConf.escape(
+            `insert into users (username, email, phone, password, retryOTP, lastOtpTime, countOtp) values (${dbConf.escape(
               username
             )},${dbConf.escape(email)},${dbConf.escape(phone)},${dbConf.escape(
               newPass
-            )});`,
+            )},${dbConf.escape(otp)},${dbConf.escape(datetime)},1);`,
             (errInsert, resultInsert) => {
               //jika saat insert ke db ada error
               if (errInsert) {
+                console.log(errInsert);
                 return res.status(500).send(errInsert);
               }
-              //jika saat insert ke db lancar
 
-              res.status(201).send({
-                success: true,
-                message: `Register Your account is Success`,
+              console.log(resultInsert);
+
+              //jika saat insert ke db lancar, maka kirim email verifikasi yang didalamnya ada token
+
+              let token = createToken({
+                id: resultInsert.insertId,
+                username,
+                email,
+                otp,
               });
+              transport.sendMail(
+                {
+                  from: "StayComfy",
+                  to: email,
+                  subject: "Verification Email Account StayComfy",
+                  html: `<div>
+                <a href="http://localhost:3000/verification?t=${token}"><h3>Verify Your Account in this link</h3></a>
+                <br><br><br>
+                <h4> With Your OTP Code : </h4>
+                <h4>${otp}</h4>
+                
+                
+                </div>`,
+                },
+                (err, info) => {
+                  if (err) {
+                    console.log(`error : ${err}`);
+                    return res.status(400).send(err);
+                  }
+                  return res.status(201).send({
+                    success: true,
+                    message:
+                      "Register your account is success, Check your email",
+                    info,
+                  });
+                }
+              );
             }
           );
         }
@@ -101,7 +147,7 @@ module.exports = {
     );
   },
   keepLogin: (req, res) => {
-    console.log(req.decript);
+    // console.log(req.decript);
     dbConf.query(
       `Select id_user, username, email, password 
         from users where id_user=${dbConf.escape(
@@ -163,5 +209,47 @@ module.exports = {
     } catch (error) {
       console.log(error);
     }
+  },
+  verifyAccount: (req, res) => {
+    console.log(req.decript);
+    console.log(req.body);
+    // cek apakah otpnya benar
+    // ambil data dari db dulu
+    dbConf.query(
+      `Select id_user, username, email, retryOtp, countOtp, isVerified
+    from users where id_user=${dbConf.escape(req.decript.id)};`,
+      (errGet, resultGetData) => {
+        if (errGet) {
+          console.log(errGet);
+          return res.status(500).send(errGet);
+        }
+        console.log(`results :`,resultGetData[0]);
+        if (resultGetData[0].retryOtp == parseInt(req.body.otp)) {
+          dbConf.query(
+            `UPDATE users SET isVerified = true WHERE id_user = ${dbConf.escape(
+              resultGetData[0].id_user
+            )};`,
+            (errUpdate, results) => {
+              if (errUpdate) {
+                console.log(errUpdate);
+                return res.status(500).send({
+                  success: false,
+                  message: errUpdate,
+                });
+              }
+              return res.status(200).send({
+                success: true,
+                message: "Your Account is Verified",
+              });
+            }
+          );
+        } else {
+          return res.status(300).send({
+            success: false,
+            message: `Your OTP is False`,
+          });
+        }
+      }
+    );
   },
 };

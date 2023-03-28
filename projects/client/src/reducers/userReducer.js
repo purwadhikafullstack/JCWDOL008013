@@ -7,7 +7,7 @@ const INITIAL_STATE = {
 
 export const userReducer = (state = INITIAL_STATE, action) => {
   //acion menerima 2 property yakni type dan payload
-  console.log("data dari action  ", action);
+  // console.log("data dari action  ", action);
   switch (action.type) {
     case "LOGIN_SUCCESS":
       return { ...state, ...action.payload };

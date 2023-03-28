@@ -36,7 +36,7 @@ const UsersModel = dbSequelize.define(
       type: DataTypes.INTEGER,
     },
     lastOtpTime: {
-      type: DataTypes.INTEGER,
+      type: DataTypes.DATE,
     },
     isTenant: {
       type: DataTypes.BOOLEAN,
@@ -50,6 +50,9 @@ const UsersModel = dbSequelize.define(
     },
     cardNumber: {
       type: DataTypes.STRING,
+    },
+    countOtp: {
+      type: DataTypes.INTEGER,
     },
   },
   {

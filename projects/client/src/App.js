@@ -7,6 +7,7 @@ import { Routes, Route } from "react-router-dom";
 import Landing from "./pages/Landing";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
+import Verification from "./pages/Verification";
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
 import { loginAction } from "./actions/userAction";
@@ -32,26 +33,27 @@ function App() {
   const [loading, setLoading] = useState(true);
   const dispatch = useDispatch();
 
-  const keepLogin = async () => {
-    let getLocalStorage = localStorage.getItem("prw_login");
-    console.log(getLocalStorage);
-    if (getLocalStorage) {
-      Axios.get(API_URL + "/users/keep", {
-        headers: {
-          Authorization: `Bearer ${getLocalStorage}`,
-        },
-      })
-        .then((res) => {
-          dispatch(loginAction(res.data));
-          setLoading(false);
-          localStorage.setItem("prw_login", res.data.token);
+  const keepLogin = async() => {
+    try {
+      let getLocalStorage = localStorage.getItem('prw_login');
+      // console.log('hasilnya keep login adalah  :' ,getLocalStorage)
+      if (getLocalStorage) {
+        let res = await Axios.post(API_URL + `/users/keep`,{},{
+          headers:{
+            "Authorization" :`Bearer ${getLocalStorage}`
+          }
         })
-        .catch((error) => {
-          console.log(error);
-          setLoading(false);
-        });
-    } else {
-      setLoading(false);
+          delete res.data.password 
+            dispatch(loginAction(res.data));
+            setLoading(false);
+            localStorage.setItem("prw_login", res.data.token);
+      } else {
+        setLoading(false);
+        console.log()
+      }
+    } catch(err){
+      console.log(err)
+      setLoading(false);// loading dimatikan saat mendapatkan response
     }
   };
 
@@ -67,6 +69,7 @@ function App() {
         <Route path="/" element={<Landing />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
+        <Route path="/verification" element={<Verification />} />
         <Route path="/profile" element={<Profile />} />
         <Route path="/profilepicture" element={<ProfilePicture />} />
         <Route path="/property" element={<Property />} />
