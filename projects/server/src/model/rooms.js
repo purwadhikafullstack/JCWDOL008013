@@ -25,6 +25,10 @@ const RoomsModel = dbSequelize.define(
     basePrice: {
       type: DataTypes.DOUBLE,
     },
+    status: {
+      type: DataTypes.INTEGER,
+      defaultValue: 1,
+    },
   }
 );
 

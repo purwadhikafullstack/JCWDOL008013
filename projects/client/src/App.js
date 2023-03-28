@@ -16,6 +16,7 @@ import API_URL from "./helper";
 import Profile from "./pages/Profile";
 import ProfilePicture from "./pages/ProfilePicture";
 import Property from "./pages/Property";
+import Room from "./pages/Room";
 
 function App() {
   const [message, setMessage] = useState("");
@@ -70,6 +71,7 @@ function App() {
         <Route path="/profile" element={<Profile />} />
         <Route path="/profilepicture" element={<ProfilePicture />} />
         <Route path="/property" element={<Property />} />
+        <Route path="/room" element={<Room />} />
       </Routes>
       <Footer />
     </div>
