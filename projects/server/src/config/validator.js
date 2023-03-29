@@ -7,8 +7,10 @@ module.exports ={
             if(req.path=='/regis'){
 
                 await check("username").notEmpty().isAlphanumeric().run(req) //lgsg ngerun reqiest body dan cek parameter yg kita tuju
+            } else if (req.path=='/login'){
+
+              await check("email").notEmpty().isEmail().run(req)
             }
-            await check("email").notEmpty().isEmail().run(req)
             await check("password").notEmpty().isStrongPassword({
                 minLength:5,
                 minLowercase:1,

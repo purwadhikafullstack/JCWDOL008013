@@ -1,4 +1,4 @@
-import { useState } from "react";
+import {  useState } from "react";
 import {
   Box,
   Flex,
@@ -28,6 +28,7 @@ import {
 import { useSelector,useDispatch } from "react-redux";
 import { logoutAction } from "../actions/userAction";
 
+
 const menuItems = {
   false: [
     { label: "Home", icon: FaLock, url: "/" },
@@ -54,6 +55,7 @@ const menuItems = {
 
 
 const Sidebar = () => {
+
   const [isOpen, setIsOpen] = useState(false);
   const activeMenu = useBreakpointValue({ base: "My Dashboard", md: null });
 
@@ -71,7 +73,7 @@ const Sidebar = () => {
 
   const dispatch = useDispatch();
 
-   
+ 
   return (
     <>
       {/* Mobile view */}
@@ -125,6 +127,13 @@ const Sidebar = () => {
               </Flex>
             </Link>
           ))}
+          <IconButton
+          icon={<FaSignOutAlt/>}
+          onClick={() => {
+            dispatch(logoutAction());
+            window.location.href = "/";
+          }}
+        />
         </Stack>
       </Box>
 

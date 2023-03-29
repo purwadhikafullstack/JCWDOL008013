@@ -40,8 +40,11 @@ const OrdersModel = dbSequelize.define(
     payment_proof: {
       type: DataTypes.STRING,
     },
-    createdBy: {
+    id_user: {
       type: DataTypes.INTEGER,
+    },
+    updatedAt: {
+      type: DataTypes.DATE,
     },
   }
 );

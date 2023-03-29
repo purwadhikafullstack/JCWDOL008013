@@ -4,6 +4,7 @@ const { hashPassword, createToken } = require("../config/encript");
 const bcrypt = require("bcrypt");
 const { transport } = require("../config/nodemailer");
 const { createOTP } = require("../config/createOTP");
+const { generatePassword } = require("../middleware/generate");
 
 module.exports = {
   getUsersData: async (req, res) => {
@@ -307,8 +308,8 @@ module.exports = {
     );
   },
   tobeTenant: (req, res) => {
-    console.log('Card Number:', req.body.cardNumber);
-    console.log('Card Picture:', req.file);
+    // console.log('Card Number:', req.body.cardNumber);
+    // console.log('Card Picture:', req.file);
 
     // get user ID from token payload
     console.log('id_user',req.decript.id_user)
@@ -331,6 +332,75 @@ module.exports = {
           success: true,
           message: "You have been a Tenant",
         });
+      }
+    );
+  },
+  resetpassword: (req, res) => {
+    // console.log(`resetpassword : ${req.query.email}`)
+    //cek apakah ada data email tersebut di Db
+    dbConf.query(
+      `SELECT id_user FROM users where email =${dbConf.escape(
+        req.query.email
+      )}`,
+      (err, results) => {
+        if (err) {
+          return res.status(500).send(err);
+        }
+
+        console.log(results);
+        if (results.length < 1) {
+          return res.status(400).send({
+            success: false,
+            message: `You have not register`,
+          });
+        }
+        const newPass = generatePassword(10);
+        const hashedNewPassword = hashPassword(newPass);
+
+        // console.log(results[0].id_user)
+        //update password to DB
+        dbConf.query(
+          `update users set password = ${dbConf.escape(
+            hashedNewPassword
+          )} where id_user=${dbConf.escape(results[0].id_user)};`,
+          (errUpdate, results) => {
+            if (errUpdate) {
+              console.log(errUpdate);
+              return res.status(500).send({
+                success: false,
+                message: errUpdate,
+              });
+            }
+            console.log(results);
+
+            //jika update password di DB ok, maka kirim email
+            transport.sendMail(
+              {
+                from: "StayComfy",
+                to: req.query.email,
+                subject: "Reset Password",
+                html: `<div>
+              <h3>Your New Password is</h3>
+              <br><br>
+              <h4>${newPass}</h4>
+              
+              
+              </div>`,
+              },
+              (err, info) => {
+                if (err) {
+                  console.log(`error : ${err}`);
+                  return res.status(400).send(err);
+                }
+                return res.status(201).send({
+                  success: true,
+                  message: "Check Your Email for New Password",
+                  info,
+                });
+              }
+            );
+          }
+        );
       }
     );
   },

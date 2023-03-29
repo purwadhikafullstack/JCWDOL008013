@@ -11,10 +11,16 @@ import Verification from "./pages/Verification";
 import ChangePassword from "./pages/ChangePassword";
 import MyBooking from "./pages/MyBooking";
 import ToBeTenant from "./pages/ToBeTenant";
-import Navbar from "./components/Navbar";
+import ResetPassword from "./pages/ResetPassword";
 import Profile from "./pages/Profile";
 import ProfilePicture from "./pages/ProfilePicture";
 import Property from "./pages/Property";
+import Detail from "./pages/Detail";
+import Confirmation from "./pages/Confirmation";
+import Payment from "./pages/Payment";
+import Success from "./pages/Success";
+import Page404 from "./pages/Page404";
+import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
 import Sidebar from "./components/Sidebar";
 import { loginAction } from "./actions/userAction";
@@ -70,7 +76,7 @@ function App() {
   return (
     <div>
 {/* {yang pakai sidebar/>} */}
-{['/dashboard','/changepass','/profile','/tobetenant','/changepict', '/mybooking','/profile','/profilepicture'].includes(location.pathname) ? <Sidebar/> : <Navbar loading={loading} />}
+{['/dashboard','/changepass','/profile','/tobetenant','/changepict', '/mybooking','/profile','/profilepicture'].includes(location.pathname) ? <Sidebar loading={loading}/> : <Navbar loading={loading} />}
       <Routes>
         <Route path="/" element={<Landing />} />
         <Route path="/login" element={<Login />} />
@@ -79,13 +85,13 @@ function App() {
         <Route path="/changepass" element={<ChangePassword />} />
         {/* <Route path="/dashboard" element={<Dashboard />} /> */}
         <Route path="/tobetenant" element={<ToBeTenant />} />
-        {/* <Route path="/resetpass" element={<ResetPassword />} /> */}
-        {/* <Route path="/detail" element={<Detail />} /> */}
-        {/* <Route path="/confirmation" element={<Confirmation />} /> */}
-        {/* <Route path="/payment" element={<Payment />} /> */}
-        {/* <Route path="/success" element={<Success />} /> */}
+        <Route path="/resetpass" element={<ResetPassword />} />
+        <Route path="/detail" element={<Detail />} />
+        <Route path="/confirmation" element={<Confirmation />} />
+        <Route path="/payment" element={<Payment />} />
+        <Route path="/success" element={<Success />} />
         <Route path="/mybooking" element={<MyBooking />} />
-        {/* <Route path="/404" element={<Page404 />} /> */}
+        <Route path="/404" element={<Page404 />} />
         <Route path="/profile" element={<Profile />} />
         <Route path="/profilepicture" element={<ProfilePicture />} />
         <Route path="/property" element={<Property />} />
