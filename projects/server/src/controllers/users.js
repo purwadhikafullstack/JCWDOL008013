@@ -147,18 +147,19 @@ module.exports = {
     );
   },
   keepLogin: (req, res) => {
-    // console.log(req.decript);
+    // console.log(`req : ${JSON.stringify(req.decript)}`);
     dbConf.query(
-      `Select id_user, username, email, password 
+      `Select id_user, username, email, password, isVerified, isTenant 
         from users where id_user=${dbConf.escape(
           req.decript.id_user
-        )} or username=${dbConf.escape(req.decript.username)};`,
+        )} or username=${dbConf.escape(req.body.name)};`,
       (err, results) => {
         if (err) {
-          console.log(err);
+          // console.log(`error keeplogin : ${err}`);
           return res.status(500).send(err);
         }
-        let token = createToken({ ...results[0] });
+        // console.log(results)
+        let token = createToken({ ...results[0] }); //karna mutable/imutabel
         return res.status(200).send({ ...results[0], token });
       }
     );
@@ -302,6 +303,34 @@ module.exports = {
             });
           }
         );
+      }
+    );
+  },
+  tobeTenant: (req, res) => {
+    console.log('Card Number:', req.body.cardNumber);
+    console.log('Card Picture:', req.file);
+
+    // get user ID from token payload
+    console.log('id_user',req.decript.id_user)
+    // yang disimpan ke database : /idCard/filename
+ 
+    dbConf.query(
+      `UPDATE users set cardNumber=${dbConf.escape(
+        req.body.cardNumber
+      )},cardPicture=${dbConf.escape(
+        `/idCard/${req.file.filename}`
+      )}, isTenant = true where id_user=${dbConf.escape(req.decript.id_user)};`,
+      (err, results) => {
+        if (err) {
+          return res.status(500).send({
+            success: false,
+            message: err,
+          });
+        }
+        return res.status(200).send({
+          success: true,
+          message: "You have been a Tenant",
+        });
       }
     );
   },

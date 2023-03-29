@@ -18,4 +18,5 @@ route.patch(
 );
 route.patch('/verify', readToken,usersController.verifyAccount)
 route.patch('/changepass',readToken,usersController.changePassword)
+route.patch('/tobetenant', readToken, uploader('/idCard','IDCARD').single('cardPicture'), usersController.tobeTenant)
 module.exports = route;

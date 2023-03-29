@@ -63,7 +63,7 @@ const Sidebar = () => {
       isTenant: state.userReducer.isTenant === 1,
     };
   });
-  
+//   console.log(isTenant)
   const items = menuItems[isTenant];
 
   const handleOpen = () => setIsOpen(true);

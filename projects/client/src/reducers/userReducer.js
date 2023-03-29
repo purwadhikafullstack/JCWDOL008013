@@ -2,7 +2,8 @@ const INITIAL_STATE = {
   id: 0,
   username: "",
   email: "",
-  role: "",
+  isVerified: "false",
+  isTenant: "false",
 };
 
 export const userReducer = (state = INITIAL_STATE, action) => {

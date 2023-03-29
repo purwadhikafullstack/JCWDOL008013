@@ -10,16 +10,18 @@ import Register from "./pages/Register";
 import Verification from "./pages/Verification";
 import ChangePassword from "./pages/ChangePassword";
 import MyBooking from "./pages/MyBooking";
+import ToBeTenant from "./pages/ToBeTenant";
 import Navbar from "./components/Navbar";
+import Profile from "./pages/Profile";
+import ProfilePicture from "./pages/ProfilePicture";
+import Property from "./pages/Property";
 import Footer from "./components/Footer";
 import Sidebar from "./components/Sidebar";
 import { loginAction } from "./actions/userAction";
 import { useDispatch } from "react-redux";
 import Axios from "axios";
 import API_URL from "./helper";
-import Profile from "./pages/Profile";
-import ProfilePicture from "./pages/ProfilePicture";
-import Property from "./pages/Property";
+
 
 function App() {
   const [message, setMessage] = useState("");
@@ -76,7 +78,7 @@ function App() {
         <Route path="/verification" element={<Verification />} />
         <Route path="/changepass" element={<ChangePassword />} />
         {/* <Route path="/dashboard" element={<Dashboard />} /> */}
-        {/* <Route path="/tobetenant" element={<ToBeTenant />} /> */}
+        <Route path="/tobetenant" element={<ToBeTenant />} />
         {/* <Route path="/resetpass" element={<ResetPassword />} /> */}
         {/* <Route path="/detail" element={<Detail />} /> */}
         {/* <Route path="/confirmation" element={<Confirmation />} /> */}

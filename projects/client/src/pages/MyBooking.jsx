@@ -14,7 +14,6 @@ import {
 } from "@chakra-ui/react";
 
 const MyBooking = () => {
- 
   const data = [
     {
       id: 1,
@@ -206,7 +205,7 @@ const MyBooking = () => {
   const [sort, setSort] = useState("Invoice Asc");
 
   const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 5
+  const itemsPerPage = 5;
 
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
@@ -294,15 +293,16 @@ const MyBooking = () => {
               </MenuItem>
               <MenuItem onClick={() => setDateFil("30 days")}>30 days</MenuItem>
               <MenuItem onClick={() => setDateFil("90 days")}>90 days</MenuItem>
-              <MenuItem onClick={() => setDateFil("range")}>
-                <form>
-                  <input type="date" />
-                  <input type="date" />
-                  <Button type="submit">Filter</Button>
-                </form>
-              </MenuItem>
+              <MenuItem onClick={() => setDateFil("range")}>Range</MenuItem>
             </MenuList>
           </Menu>
+          {dateFil === "range" && (
+            <form>
+              <input type="date" />
+              <input type="date" />
+              <Button type="submit">Filter</Button>
+            </form>
+          )}
         </Box>
 
         {/* Order Dropdown */}
@@ -417,7 +417,7 @@ const MyBooking = () => {
 
       {/* Pagination */}
       <Flex justifyContent="center" alignItems="center" mt={5}>
-      <Button
+        <Button
           disabled={currentPage === 1}
           onClick={() => handlePageChange(currentPage - 1)}
         >
