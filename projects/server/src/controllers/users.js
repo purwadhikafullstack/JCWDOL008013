@@ -252,4 +252,57 @@ module.exports = {
       }
     );
   },
+  changePassword: (req, res) => {
+    console.log(req.decript);
+    console.log(req.body);
+
+    // Check if id_user is valid
+    dbConf.query(
+      `select id_user, username, password from users where id_user=${dbConf.escape(
+        req.decript.id_user
+      )};`,
+      (errGet, resultGetData) => {
+        if (errGet) {
+          console.log(errGet);
+          return res.status(500).send(errGet);
+        }
+        console.log(resultGetData[0]);
+
+        //check if new pass is different from old pass
+        const check = bcrypt.compareSync(
+          req.body.oldPass,
+          resultGetData[0].password
+        );
+        if (!check) {
+          return res.status(400).send({
+            success: false,
+            message: "Your New Password is same as Old Password",
+          });
+        }
+
+        // Hash new password
+        const hashedNewPassword = hashPassword(req.body.newPass);
+
+        //update password to DB
+        dbConf.query(
+          `update users set password = ${dbConf.escape(
+            hashedNewPassword
+          )} where id_user=${dbConf.escape(req.decript.id_user)};`,
+          (errUpdate, results) => {
+            if (errUpdate) {
+              console.log(errUpdate);
+              return res.status(500).send({
+                success: false,
+                message: errUpdate,
+              });
+            }
+            return res.status(200).send({
+              success: true,
+              message: "Your password has been changed",
+            });
+          }
+        );
+      }
+    );
+  },
 };
