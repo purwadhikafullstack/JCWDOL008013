@@ -15,6 +15,9 @@ import Axios from "axios";
 import API_URL from "./helper";
 import Profile from "./pages/Profile";
 import ProfilePicture from "./pages/ProfilePicture";
+import OrderList from "./pages/OrderList";
+import { Box } from "@chakra-ui/react";
+import ReportList from "./pages/ReportList";
 import Property from "./pages/Property";
 import Room from "./pages/Room";
 
@@ -62,17 +65,21 @@ function App() {
   }, []);
 
   return (
-    <div>
+    <div style={{display:"flex",flexDirection:'column', minHeight:"100vh",height:"100%" ,margin:0}}>
       <Navbar loading={loading} />
-      <Routes>
-        <Route path="/" element={<Landing />} />
-        <Route path="/login" element={<Login />} />
-        <Route path="/register" element={<Register />} />
-        <Route path="/profile" element={<Profile />} />
-        <Route path="/profilepicture" element={<ProfilePicture />} />
-        <Route path="/property" element={<Property />} />
-        <Route path="/room" element={<Room />} />
-      </Routes>
+      <Box flex={1}>
+        <Routes>
+          <Route path="/" element={<Landing />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/register" element={<Register />} />
+          <Route path="/profile" element={<Profile />} />
+          <Route path="/profilepicture" element={<ProfilePicture />} />
+          <Route path= "/admin/order" element={<OrderList />} />
+          <Route path= "/admin/report" element={<ReportList />} />
+          <Route path="/property" element={<Property />} />
+          <Route path="/room" element={<Room />} />
+        </Routes>
+      </Box>
       <Footer />
     </div>
   );

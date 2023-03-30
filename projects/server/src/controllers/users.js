@@ -65,7 +65,7 @@ module.exports = {
   },
   login: (req, res) => {
     dbConf.query(
-      `Select id_user, username, email, password 
+      `Select id_user, username, email, password, isTenant
         from users where email=${dbConf.escape(
           req.body.email
         )} or username=${dbConf.escape(req.body.name)};`,
@@ -103,7 +103,7 @@ module.exports = {
   keepLogin: (req, res) => {
     console.log(req.decript);
     dbConf.query(
-      `Select id_user, username, email, password 
+      `Select id_user, username, email, password, isTenant
         from users where id_user=${dbConf.escape(
           req.decript.id_user
         )} or username=${dbConf.escape(req.decript.username)};`,
