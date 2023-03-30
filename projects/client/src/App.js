@@ -1,4 +1,5 @@
 import axios from "axios";
+import "bootstrap/dist/css/bootstrap.css"
 import logo from "./logo.svg";
 import "./App.css";
 import { useEffect, useState } from "react";
@@ -17,6 +18,8 @@ import ProfilePicture from "./pages/ProfilePicture";
 import OrderList from "./pages/OrderList";
 import { Box } from "@chakra-ui/react";
 import ReportList from "./pages/ReportList";
+import Property from "./pages/Property";
+import Room from "./pages/Room";
 
 function App() {
   const [message, setMessage] = useState("");
@@ -73,6 +76,8 @@ function App() {
           <Route path="/profilepicture" element={<ProfilePicture />} />
           <Route path= "/admin/order" element={<OrderList />} />
           <Route path= "/admin/report" element={<ReportList />} />
+          <Route path="/property" element={<Property />} />
+          <Route path="/room" element={<Room />} />
         </Routes>
       </Box>
       <Footer />

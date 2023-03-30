@@ -27,6 +27,7 @@ const RoomsModel = dbSequelize.define(
     },
     status: {
       type: DataTypes.INTEGER,
+      defaultValue: 1,
     },
   }
 );
