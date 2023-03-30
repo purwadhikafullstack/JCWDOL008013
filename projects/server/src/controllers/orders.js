@@ -80,7 +80,6 @@ module.exports = {
       
       if(req.query.ordercolumn && req.query.orderpos){
         orderQuery = [[req.query.ordercolumn,req.query.orderpos]]
-        console.log(orderQuery)
       }
 
       if(req.query.startdate && req.query.enddate ){
