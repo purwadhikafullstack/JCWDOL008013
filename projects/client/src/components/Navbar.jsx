@@ -110,7 +110,7 @@ const Navbar = (props) => {
                                     <MenuList>
                                         <MenuItem>My Booking</MenuItem>
                                         <MenuItem onClick={() => navigate("/profile")}>Profile</MenuItem>
-                                        <MenuItem onClick={() => navigate("/property")}>Property</MenuItem>
+                                        <MenuItem onClick={() => navigate("/tenant/property")}>Property</MenuItem>
                                         <MenuDivider />
                                         <MenuItem onClick={() => dispatch(logoutAction())}>Sign Out <AiOutlineLogout /></MenuItem>
                                     </MenuList>

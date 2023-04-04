@@ -42,7 +42,7 @@ module.exports = {
       const limit = 5;
       const offset = limit * page;
       const keyword = req.query.keyword || "";
-      const sort = req.query.sort || "id";
+      const sort = req.query.sort || "id_property";
       const order = req.query.order || "ASC";
       let data = await PropertiesModel.findAndCountAll({
         include: {
@@ -81,6 +81,27 @@ module.exports = {
     } catch (error) {
       console.log(error);
       return res.status(500).send(error);
+    }
+  },
+  getPropertyDetail: async (req, res) => {
+    try {
+      const id_property = req.query.property;
+      let data = await PropertiesModel.findAll({
+        include: {
+          model: CitiesModel,
+          as: "city",
+        },
+        required: true,
+        where: {
+          createdBy: req.decript.id_user,
+          status: 1,
+          id_property,
+        },
+      });
+      return res.status(200).send(data[0]);
+    } catch (error) {
+      console.log(error);
+      return res.statu(500).send(error);
     }
   },
   editProperty: async (req, res) => {

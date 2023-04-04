@@ -15,8 +15,9 @@ import Axios from "axios";
 import API_URL from "./helper";
 import Profile from "./pages/Profile";
 import ProfilePicture from "./pages/ProfilePicture";
-import Property from "./pages/Property";
-import Room from "./pages/Room";
+import TenantProperty from "./pages/TenantProperty";
+import TenantRoom from "./pages/TenantRoom";
+import TenantRoomDetail from "./pages/TenantRoomDetail";
 
 function App() {
   const [message, setMessage] = useState("");
@@ -70,8 +71,9 @@ function App() {
         <Route path="/register" element={<Register />} />
         <Route path="/profile" element={<Profile />} />
         <Route path="/profilepicture" element={<ProfilePicture />} />
-        <Route path="/property" element={<Property />} />
-        <Route path="/room" element={<Room />} />
+        <Route path="/tenant/property" element={<TenantProperty />} />
+        <Route path="/tenant/room" element={<TenantRoom />} />
+        <Route path="/tenant/room/detail" element={<TenantRoomDetail />} />
       </Routes>
       <Footer />
     </div>
