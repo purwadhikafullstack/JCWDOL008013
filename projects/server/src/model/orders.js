@@ -64,6 +64,7 @@ const OrdersModel = dbSequelize.define(
 OrdersModel.belongsTo(PropertiesModel,{
   foreignKey:'id_property'
 })
+
 OrdersModel.belongsTo(RoomsModel,{
   foreignKey:'id_room'
 })
