@@ -20,6 +20,8 @@ import { Box } from "@chakra-ui/react";
 import ReportList from "./pages/ReportList";
 import Property from "./pages/Property";
 import Room from "./pages/Room";
+import OrderDetail from "./pages/OrderDetail";
+import RatingUser from "./pages/RatingUser";
 
 function App() {
   const [message, setMessage] = useState("");
@@ -78,6 +80,8 @@ function App() {
           <Route path= "/admin/report" element={<ReportList />} />
           <Route path="/property" element={<Property />} />
           <Route path="/room" element={<Room />} />
+          <Route path="/admin/order/detail/:id/:action" element={<OrderDetail />} />
+          <Route path="/rating/:id" element={<RatingUser />} />
         </Routes>
       </Box>
       <Footer />

@@ -3,6 +3,7 @@ const { Op, Sequelize } = require("sequelize");
 const PropertiesModel = require("../model/properties");
 const RoomsModel = require("../model/rooms");
 const UsersModel = require("../model/users");
+const CitiesModel = require("../model/cities");
 const { dbSequelize } = require("../config/db");
 
 module.exports = {
@@ -164,15 +165,68 @@ module.exports = {
   createUpdateOrders: async(req, res)=>{
     try {
       let message = ""
+      let data = null
       if(req.path === "/post"){
-          let data = await OrdersModel.upsert()
+          // let data = await OrdersModel.upsert()
           message = "Order Created";
-      }else if(req.path === "/pay"){
-          message = "Order Paid";
       }else if(req.path === "/confirm"){
-          message = "Order Confirmed";
+          const {id_order,order_status} = req.body
+          if(order_status == "CONFIRMED"){
+              data = await OrdersModel.upsert({
+                  id_order: id_order,
+                  order_status:order_status
+              })    
+              message = "Order Confirmed";
+              // send email
+
+          }else if(order_status == "UNPAID"){
+              data = await OrdersModel.upsert({
+                  id_order: id_order,
+                  order_status:order_status
+              })  
+              message = "Order Canceled";
+          }else{
+              message = "Order Tidak Bisa Diconfirm"
+          }
+          
+
+
       }else if(req.path === "/review"){
-          message = "Order Review Success";
+        const {id_order, rating, comment} = req.body
+        let check = await OrdersModel.findOne({where:{[Op.and]:[
+            {id_order:id_order},
+            {order_status:"CONFIRMED"},
+            {createdBy:req.decript.id_user}
+        ]}})
+
+        if(check && (check.rating == null && check.comment == null)){
+          if( new Date (check.checkout_date).getTime() < new Date().getTime()){
+              data = await OrdersModel.upsert({
+                  id_order: id_order,
+                  rating: rating,
+                  comment: comment
+              })    
+              message = "Order Review Success";
+          }else{
+              message = "Belum Bisa Review"
+          }
+        }else{
+            message = "Sudah Pernah Review"
+        }
+          
+      }else if(req.path === "/reject"){
+          const {id_order} = req.body
+          
+          let check = await OrdersModel.findOne({where:{id_order:id_order,order_status:"UNPAID"}})
+          if(check){
+            data = await OrdersModel.upsert({
+                id_order : id_order,
+                order_status : "CANCELED"
+            })
+            message = "Order Reject Success";
+          }else{
+            message = "Tidak Bisa Reject Order"
+          }
       }
       
       return res.status(201).send({
@@ -181,12 +235,43 @@ module.exports = {
         message: message,
       })
     } catch (error) {
+      console.log(error)
       return res.status(500).send({
           success: false,
-          message: "Your Password is Wrong",
+          message: "Something Gone Wrong",
           logs:error
       });
     }
+  },
+  getDetail: async(req,res)=>{
+    try{
+        const {id_order} = req.query
+        let check = await OrdersModel.findOne({where:{[Op.and]:[
+            {id_order:id_order},
+        ]},include:[
+          {model: PropertiesModel,include:[{model:CitiesModel}]},
+          {model: RoomsModel},
+          {model: UsersModel},
+        ]})
+        data = check
+        message = "Order Received";
+
+        return res.status(200).send({
+          success: true,
+          data:data,
+          message: message,
+        })
+      } catch (error) {
+        console.log(error)
+        return res.status(500).send({
+            success: false,
+            message: "Something Gone Wrong",
+            logs:error
+        });
+      }
+  },
+  getAvailable: async(req,res)=>{
+    
   },
   
 };

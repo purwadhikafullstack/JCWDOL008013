@@ -4,7 +4,7 @@ import API_URL from '../helper';
 import { DataTable } from '../components/Datatable';
 import { createColumnHelper } from "@tanstack/react-table";
 import { useNavigate } from 'react-router-dom';
-import { Box, Button, Center, Container, Flex, Heading, Input, Select, Spacer, Text } from '@chakra-ui/react';
+import { Box, Button, Center, Container, Flex, Heading, Input, Select, Spacer, Text, useDisclosure } from '@chakra-ui/react';
 import { useFormik } from "formik";
 import ReactPaginate from 'react-paginate';
 import { useSelector } from 'react-redux';
@@ -29,6 +29,7 @@ function OrderList() {
     const [data,setData] = useState([])
 
     const loadOrders = ()=>{
+        let getLocalStorage = localStorage.getItem("prw_login")
         Axios.get(API_URL + `/orders`,{params:{
             offset:page,
             limit:perpage,
@@ -36,7 +37,11 @@ function OrderList() {
             ordercolumn,
             orderpos,
             filter:filterText
-        }})
+        },
+            headers: {
+                Authorization: `Bearer ${getLocalStorage}`
+            }
+        })
         .then((res) => {
             setData(res.data.data)
             setTotalItem(res.data.total)
@@ -100,15 +105,15 @@ function OrderList() {
         }),
         columnHelper.display({
             cell: (props) => {
-                return props.row.original.order_status == "PAID" ? <Button onClick={()=>detailOrder(props.row.original.id_order)}>Process Order</Button>: "-"
-                
+                return props.row.original.order_status == "PAID" ? <Button onClick={()=>detailOrder(props.row.original.id_order,"process")}>Process Order</Button>:
+                props.row.original.order_status == "UNPAID"? <Button onClick={()=>detailOrder(props.row.original.id_order,"reject")}>Reject Order</Button> : "-"
             },
             header: "Action"
         })
     ];
 
-    const detailOrder = (id) =>{
-        alert("cek detail "+ id)
+    const detailOrder = (id,action) =>{
+        navigate("/admin/order/detail/"+id+"/"+action)
     }
 
     // Invoke when user click to request another page.
