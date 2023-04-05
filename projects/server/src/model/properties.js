@@ -2,6 +2,7 @@ const { Sequelize } = require("sequelize");
 const { dbSequelize } = require("../config/db");
 const { DataTypes } = Sequelize;
 const CitiesModel = require("./cities");
+console.log(`cit model :`,CitiesModel)
 
 const PropertiesModel = dbSequelize.define(
   "properties",

@@ -23,8 +23,10 @@ const Detail = () => {
   const navigate = useNavigate();
 
   const handleCheckInChange = (event) => {
+    console.log(event.target.value)
     setCheckInDate(event.target.value);
     setMinCheckOutDate(addDays(event.target.value, 1));
+    console.log(minCheckOutDate)
   };
 
   const handleCheckOutChange = (event) => {
@@ -49,7 +51,7 @@ const Detail = () => {
       alert("Please fill in all input fields");
     } else {
       const orderData = {
-        id_property: 2,
+        id_property: 9,
         id_room: getRoomIdFromType(roomType),
         checkin_date: checkInDate,
         checkout_date: checkOutDate,

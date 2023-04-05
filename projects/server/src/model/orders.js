@@ -1,6 +1,8 @@
 const { Sequelize } = require("sequelize");
 const { dbSequelize } = require("../config/db");
 const { DataTypes } = Sequelize;
+const PropertiesModel = require("./properties");
+console.log(`PropertiesModel :`, PropertiesModel);
 
 const OrdersModel = dbSequelize.define(
   "orders",
@@ -48,5 +50,6 @@ const OrdersModel = dbSequelize.define(
     },
   }
 );
+OrdersModel.belongsTo(PropertiesModel, { foreignKey: "id_property" });
 
-module.exports = OrdersModel
+module.exports = OrdersModel;

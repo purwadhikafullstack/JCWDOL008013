@@ -45,7 +45,7 @@ const menuItems = {
     { label: "Profile", icon: FaUser, url: "/profile" },
     { label: "Change Profile Picture", icon: FaCamera, url: "/profilepicture" },
     { label: "Change Password", icon: FaLock, url: "/changepass" },
-    { label: "Add Property", icon: FaHome, url: "/" },
+    { label: "Add Property", icon: FaHome, url: "/property" },
     { label: "Manage Property", icon: FaHome, url: "/" },
     { label: "Manage Booking", icon: FaFileAlt, url: "/" },
     { label: "Report", icon: FaFileAlt, url: "/" },

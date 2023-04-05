@@ -86,7 +86,7 @@ import {
   // when button confirm is clicked
     const onConfirmBtn = () => {
       const token = localStorage.getItem('prw_login');
-      console.log(token)
+      // console.log(token)
       // const bookingData = JSON.parse(localStorage.getItem('prw_order'));
       const requestData = {
         id_property: bookingData.id_property,
