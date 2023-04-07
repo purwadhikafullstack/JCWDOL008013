@@ -17,7 +17,7 @@ route.patch(
   usersController.profilePicture
 );
 route.patch('/verify', readToken,usersController.verifyAccount)
-route.patch('/changepass',checkUser,readToken,usersController.changePassword)
+route.patch('/changepass',readToken,usersController.changePassword)
 route.patch('/tobetenant', readToken, uploader('/idCard','IDCARD').single('cardPicture'), usersController.tobeTenant)
 route.get('/resetpass', usersController.resetpassword)
 module.exports = route;

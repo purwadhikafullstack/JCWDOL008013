@@ -1,7 +1,9 @@
 const { Sequelize } = require("sequelize");
 const { dbSequelize } = require("../config/db");
-const { DataTypes } = Sequelize;
 const PropertiesModel = require("./properties");
+const RoomsModel = require("./rooms");
+const UsersModel = require("./users");
+const { DataTypes } = Sequelize;
 console.log(`PropertiesModel :`, PropertiesModel);
 
 const OrdersModel = dbSequelize.define(
@@ -17,9 +19,17 @@ const OrdersModel = dbSequelize.define(
     },
     id_property: {
       type: DataTypes.INTEGER,
+      references: {
+          model: PropertiesModel,
+          key: "id_property"
+      }
     },
     id_room: {
       type: DataTypes.INTEGER,
+      references: {
+          model: RoomsModel,
+          key: "id_room"
+      }
     },
     checkin_date: {
       type: DataTypes.DATE,
@@ -42,14 +52,25 @@ const OrdersModel = dbSequelize.define(
     payment_proof: {
       type: DataTypes.STRING,
     },
-    id_user: {
+    createdBy: {
       type: DataTypes.INTEGER,
-    },
-    updatedAt: {
-      type: DataTypes.DATE,
+      references: {
+          model: UsersModel,
+          key: "id_user"
+      }
     },
   }
 );
 OrdersModel.belongsTo(PropertiesModel, { foreignKey: "id_property" });
 
-module.exports = OrdersModel;
+OrdersModel.belongsTo(PropertiesModel,{
+  foreignKey:'id_property'
+})
+
+OrdersModel.belongsTo(RoomsModel,{
+  foreignKey:'id_room'
+})
+OrdersModel.belongsTo(UsersModel,{
+  foreignKey:'createdBy',
+})
+module.exports = OrdersModel

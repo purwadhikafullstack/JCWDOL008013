@@ -4,6 +4,7 @@ const roomsRouter = require("./rooms");
 const citiesRouter = require("./cities");
 const ordersRouter = require("./orders");
 const specialPricesRouter = require("./specialprices");
+const categoryRouter = require("./category");
 
 module.exports = {
   usersRouter,
@@ -12,4 +13,5 @@ module.exports = {
   citiesRouter,
   ordersRouter,
   specialPricesRouter,
+  categoryRouter
 };

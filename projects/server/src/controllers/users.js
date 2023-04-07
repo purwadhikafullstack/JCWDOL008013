@@ -20,7 +20,7 @@ module.exports = {
     let { username, email, phone, password } = req.body;
     //0. hashing password
     const newPass = hashPassword(password);
-    console.log(newPass);
+    // console.log(newPass);
     // 1. GET data untuk memeriksa, apakah email dan/atau username, sudah pernah digunakan
     dbConf.query(
       `select * from users where email=${dbConf.escape(
@@ -67,7 +67,7 @@ module.exports = {
                 return res.status(500).send(errInsert);
               }
 
-              console.log(resultInsert);
+              // console.log(resultInsert);
 
               //jika saat insert ke db lancar, maka kirim email verifikasi yang didalamnya ada token
 
@@ -112,7 +112,7 @@ module.exports = {
   },
   login: (req, res) => {
     dbConf.query(
-      `Select id_user, username, email, password 
+      `Select id_user, username, email, password, isTenant
         from users where email=${dbConf.escape(
           req.body.email
         )} or username=${dbConf.escape(req.body.name)};`,
@@ -133,7 +133,7 @@ module.exports = {
           req.body.password,
           results[0].password
         );
-        console.log(results[0]);
+        // console.log(results[0]);
         delete results[0].password;
         if (check) {
           let token = createToken({ ...results[0] }); //karna mutable/imutabel
@@ -213,8 +213,8 @@ module.exports = {
     }
   },
   verifyAccount: (req, res) => {
-    console.log(req.decript);
-    console.log(req.body);
+    // console.log(req.decript);
+    // console.log(req.body);
     // cek apakah otpnya benar
     // ambil data dari db dulu
     dbConf.query(
@@ -225,7 +225,7 @@ module.exports = {
           console.log(errGet);
           return res.status(500).send(errGet);
         }
-        console.log(`results :`,resultGetData[0]);
+        // console.log(`results :`,resultGetData[0]);
         if (resultGetData[0].retryOtp == parseInt(req.body.otp)) {
           dbConf.query(
             `UPDATE users SET isVerified = true WHERE id_user = ${dbConf.escape(
@@ -312,7 +312,7 @@ module.exports = {
     // console.log('Card Picture:', req.file);
 
     // get user ID from token payload
-    console.log('id_user',req.decript.id_user)
+    // console.log('id_user',req.decript.id_user)
     // yang disimpan ke database : /idCard/filename
  
     dbConf.query(
@@ -371,7 +371,7 @@ module.exports = {
                 message: errUpdate,
               });
             }
-            console.log(results);
+            // console.log(results);
 
             //jika update password di DB ok, maka kirim email
             transport.sendMail(

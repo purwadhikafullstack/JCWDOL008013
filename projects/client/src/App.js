@@ -27,7 +27,12 @@ import { loginAction } from "./actions/userAction";
 import { useDispatch } from "react-redux";
 import Axios from "axios";
 import API_URL from "./helper";
-
+import OrderList from "./pages/OrderList";
+import { Box } from "@chakra-ui/react";
+import ReportList from "./pages/ReportList";
+import Room from "./pages/Room";
+import OrderDetail from "./pages/OrderDetail";
+import RatingUser from "./pages/RatingUser";
 
 function App() {
   const [message, setMessage] = useState("");
@@ -74,13 +79,14 @@ function App() {
   }, []);
 
   return (
-    <div>
+    <div style={{display:"flex",flexDirection:'column', minHeight:"100vh",height:"100%" ,margin:0}}>
 {/* {yang pakai sidebar/>} */}
 {['/dashboard','/changepass','/profile','/tobetenant','/changepict', '/mybooking','/profile','/profilepicture'].includes(location.pathname) ? <Sidebar loading={loading}/> : <Navbar loading={loading} />}
-      <Routes>
-        <Route path="/" element={<Landing />} />
-        <Route path="/login" element={<Login />} />
-        <Route path="/register" element={<Register />} />
+      <Box flex={1}>
+        <Routes>
+          <Route path="/" element={<Landing />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/register" element={<Register />} />
         <Route path="/verification" element={<Verification />} />
         <Route path="/changepass" element={<ChangePassword />} />
         {/* <Route path="/dashboard" element={<Dashboard />} /> */}
@@ -92,11 +98,17 @@ function App() {
         <Route path="/success" element={<Success />} />
         <Route path="/mybooking" element={<MyBooking />} />
         <Route path="/404" element={<Page404 />} />
-        <Route path="/profile" element={<Profile />} />
-        <Route path="/profilepicture" element={<ProfilePicture />} />
-        <Route path="/property" element={<Property />} />
-      </Routes>
+          <Route path="/profile" element={<Profile />} />
+          <Route path="/profilepicture" element={<ProfilePicture />} />
+          <Route path= "/admin/order" element={<OrderList />} />
+          <Route path= "/admin/report" element={<ReportList />} />
+          <Route path="/property" element={<Property />} />
+          <Route path="/room" element={<Room />} />
+          <Route path="/admin/order/detail/:id/:action" element={<OrderDetail />} />
+          <Route path="/rating/:id" element={<RatingUser />} />
+        </Routes>
       {/* {yang pakai Footer dan navbar */}
+      </Box>
       {['/','/login','/register','/verification','/resetpass','/detail','/confirmation','/payment','/success','/404','/property'].includes(location.pathname) && <Footer/>}
     </div>
   );

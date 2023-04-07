@@ -3,8 +3,12 @@ import { AlertDialog, AlertDialogBody, AlertDialogContent, AlertDialogFooter, Al
 import Axios from "axios"
 import API_URL from "../helper"
 import ReactPaginate from "react-paginate"
+import { useNavigate } from 'react-router-dom';
 
 const Property = (props) => {
+    // Redirect page
+    const navigate = useNavigate()
+
     // Pop up notification
     const toast = useToast()
 
@@ -262,6 +266,7 @@ const Property = (props) => {
                     </CardBody>
                     <Divider />
                     <CardFooter justifyContent="flex-end">
+                        <Button mr={4} onClick={() => navigate(`/room?id=${value.id_property}`)}>Room</Button>
                         <Button colorScheme="teal" mr={4} onClick={() => {
                             onEditOpen()
                             setIdProperty(value.id_property)
