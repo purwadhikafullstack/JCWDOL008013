@@ -115,7 +115,7 @@ const Navbar = (props) => {
                                         />
                                     </MenuButton>
                                     <MenuList>
-                                        <MenuItem onClick={() => navigate("/mybooking")}>My Dashboard</MenuItem>
+                                        <MenuItem>My Booking</MenuItem>
                                         <MenuItem onClick={() => navigate("/profile")}>Profile</MenuItem>
                                         <MenuItem onClick={() => navigate("/property")}>Property</MenuItem>
                                         <MenuDivider />

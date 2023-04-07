@@ -2,13 +2,12 @@ const INITIAL_STATE = {
   id: 0,
   username: "",
   email: "",
-  isVerified: "false",
-  isTenant: "false",
+  role: "",
 };
 
 export const userReducer = (state = INITIAL_STATE, action) => {
   //acion menerima 2 property yakni type dan payload
-  // console.log("data dari action  ", action);
+  console.log("data dari action  ", action);
   switch (action.type) {
     case "LOGIN_SUCCESS":
       return { ...state, ...action.payload };
