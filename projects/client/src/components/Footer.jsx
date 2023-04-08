@@ -11,7 +11,7 @@ import { Logo } from "./Logo";
 
 const Footer = () => {
     return (
-        <Container as="footer" role="contentinfo" maxWidth="100%">
+        <Container as="footer" role="contentinfo" maxWidth="100%" p={10}>
             <Stack
                 spacing="8"
                 direction={{
@@ -67,33 +67,7 @@ const Footer = () => {
                             </Stack>
                         </Stack>
                     </Stack>
-                    <Stack spacing="4">
-                        <Text fontSize="sm" fontWeight="semibold" color="subtle">
-                            Stay up to date
-                        </Text>
-                        <Stack
-                            spacing="4"
-                            direction={{
-                                base: "column",
-                                sm: "row",
-                            }}
-                            maxW={{
-                                lg: "360px",
-                            }}
-                        >
-                            <Input placeholder="Enter your email" type="email" required />
-                            <Stack direction="row" align="center">
-                                <Button
-                                    variant="solid"
-                                    type="submit"
-                                    flexShrink={0}
-                                    colorScheme="teal"
-                                >
-                                    Subscribe
-                                </Button>
-                            </Stack>
-                        </Stack>
-                    </Stack>
+                    
                 </Stack>
             </Stack>
             <Divider />

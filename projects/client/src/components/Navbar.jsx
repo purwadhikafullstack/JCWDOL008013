@@ -30,7 +30,8 @@ import { useNavigate } from "react-router-dom"
 const Links = [
     { title: "Dashboard", url: "/" },
     { title: "Projects", url: "/projects" },
-    { title: "Team", url: "/team" },
+    { title: "Order List", url: "/admin/order",tenant:1},
+    { title: "Order Report", url: "/admin/report",tenant:1},
 ];
 
 const NavLink = ({ children, url }) => (
@@ -49,9 +50,10 @@ const NavLink = ({ children, url }) => (
 );
 
 const Navbar = (props) => {
-    const { username } = useSelector((state) => {
+    const { username,isTenant } = useSelector((state) => {
         return {
             username: state.userReducer.username,
+            isTenant: state.userReducer.isTenant,
         };
     });
 
@@ -82,7 +84,12 @@ const Navbar = (props) => {
                             display={{ base: "none", md: "flex" }}
                         >
                             {Links.map((link) => (
+                                link.tenant? isTenant ?
                                 <NavLink key={link.title} url={link.url}>
+                                    {link.title}
+                                </NavLink>
+                                :""
+                                :<NavLink key={link.title} url={link.url}>
                                     {link.title}
                                 </NavLink>
                             ))}
@@ -108,7 +115,7 @@ const Navbar = (props) => {
                                         />
                                     </MenuButton>
                                     <MenuList>
-                                        <MenuItem>My Booking</MenuItem>
+                                        <MenuItem onClick={() => navigate("/mybooking")}>My Dashboard</MenuItem>
                                         <MenuItem onClick={() => navigate("/profile")}>Profile</MenuItem>
                                         <MenuItem onClick={() => navigate("/tenant/property")}>Property</MenuItem>
                                         <MenuDivider />

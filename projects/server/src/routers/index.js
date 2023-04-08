@@ -5,6 +5,7 @@ const citiesRouter = require("./cities");
 const ordersRouter = require("./orders");
 const specialPricesRouter = require("./specialprices");
 const unavailabilitiesRouter = require("./unavailabilities");
+const categoryRouter = require("./category");
 
 module.exports = {
   usersRouter,
@@ -14,4 +15,5 @@ module.exports = {
   ordersRouter,
   specialPricesRouter,
   unavailabilitiesRouter,
+  categoryRouter
 };
