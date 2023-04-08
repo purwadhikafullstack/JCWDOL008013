@@ -1,41 +1,39 @@
-const SpecialPricesModel = require("../model/specialprices");
+const UnavailabilitiesModel = require("../model/unavailabilities");
 const { dbSequelize } = require("../config/db");
 
 module.exports = {
-  getSpecialPricesData: async (req, res) => {
+  getUnavailabilitiesData: async (req, res) => {
     try {
-      let data = await SpecialPricesModel.findAll();
+      let data = await UnavailabilitiesModel.findAll();
       return res.status(200).send(data);
     } catch (error) {
       console.log(error);
       return res.status(500).send(error);
     }
   },
-  setPrice: async (req, res) => {
+  unavailability: async (req, res) => {
     try {
-      let { id_room, start_date, end_date, nominal, percent } = req.body;
-      let create = await SpecialPricesModel.create({
+      let { id_room, start_date, end_date } = req.body;
+      let create = await UnavailabilitiesModel.create({
         id_room,
         start_date,
         end_date,
-        nominal,
-        percent,
       });
-      return res.status(200).send({
+      res.status(200).send({
         success: true,
-        message: "Special Price Has Been Set",
+        message: "Unavailable Dates Has Been Set",
       });
     } catch (error) {
       console.log(error);
-      return res.status(500).send(error);
+      res.status(500).send(error);
     }
   },
-  getSpecialPrice: async (req, res) => {
+  getUnavailability: async (req, res) => {
     try {
       let id_room = req.query.room;
-      let data = await SpecialPricesModel.findAll({
+      let data = await UnavailabilitiesModel.findAll({
         attributes: [
-          ["id_special_price", "id"],
+          ["id_availability", "id"],
           [
             dbSequelize.fn(
               "DATE_FORMAT",
@@ -52,21 +50,16 @@ module.exports = {
             ),
             "end",
           ],
-          "nominal",
-          "percent",
         ],
         where: {
           id_room,
         },
       });
-      let dataMap = data.map((value) => ({
-        ...value.dataValues,
-        title: "Special Price",
-      }));
+      let dataMap = data.map((value) => ({ ...value.dataValues, title: "Unavailable", color: "red" }));
       return res.status(200).send(dataMap);
     } catch (error) {
       console.log(error);
-      return res.status(500).send(error);
+      res.status(500).send(error);
     }
   },
 };

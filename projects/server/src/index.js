@@ -45,6 +45,7 @@ const {
   citiesRouter,
   ordersRouter,
   specialPricesRouter,
+  unavailabilitiesRouter,
 } = require("./routers");
 app.use("/users", usersRouter);
 app.use("/properties", propertiesRouter);
@@ -52,6 +53,7 @@ app.use("/rooms", roomsRouter);
 app.use("/cities", citiesRouter);
 app.use("/orders", ordersRouter);
 app.use("/specialprices", specialPricesRouter);
+app.use("/unavailabilities", unavailabilitiesRouter);
 
 // ===========================
 // NOTE : Add your routes here

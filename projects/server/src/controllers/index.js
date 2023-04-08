@@ -4,6 +4,7 @@ const roomsController = require("./rooms");
 const citiesController = require("./cities");
 const ordersController = require("./orders");
 const specialPricesController = require("./specialprices");
+const unavailabilitiesController = require("./unavailabilities");
 
 module.exports = {
   usersController,
@@ -12,4 +13,5 @@ module.exports = {
   citiesController,
   ordersController,
   specialPricesController,
+  unavailabilitiesController,
 };
