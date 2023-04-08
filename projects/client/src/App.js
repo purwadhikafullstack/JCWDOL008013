@@ -14,7 +14,6 @@ import ToBeTenant from "./pages/ToBeTenant";
 import ResetPassword from "./pages/ResetPassword";
 import Profile from "./pages/Profile";
 import ProfilePicture from "./pages/ProfilePicture";
-import Property from "./pages/Property";
 import Detail from "./pages/Detail";
 import Confirmation from "./pages/Confirmation";
 import Payment from "./pages/Payment";
@@ -29,11 +28,12 @@ import Axios from "axios";
 import API_URL from "./helper";
 import OrderList from "./pages/OrderList";
 import { Box } from "@chakra-ui/react";
-import TenantReportList from "./pages/TenantReportList";
 import TenantRoom from "./pages/TenantRoom";
 import TenantRoomDetail from "./pages/TenantRoomDetail";
 import OrderDetail from "./pages/OrderDetail";
 import RatingUser from "./pages/RatingUser";
+import TenantProperty from "./pages/TenantProperty";
+import ReportList from "./pages/ReportList";
 
 function App() {
   const [message, setMessage] = useState("");
