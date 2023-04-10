@@ -55,11 +55,55 @@ module.exports = {
           id_room,
         },
       });
-      let dataMap = data.map((value) => ({ ...value.dataValues, title: "Unavailable", color: "red" }));
+      let dataMap = data.map((value) => ({
+        ...value.dataValues,
+        title: "Unavailable",
+        color: "red",
+      }));
       return res.status(200).send(dataMap);
     } catch (error) {
       console.log(error);
       res.status(500).send(error);
+    }
+  },
+  editUnavailability: async (req, res) => {
+    try {
+      let { id_availability, start_date, end_date } = req.body;
+      let update = await UnavailabilitiesModel.update(
+        {
+          start_date,
+          end_date,
+        },
+        {
+          where: {
+            id_availability,
+          },
+        }
+      );
+      return res.status(200).send({
+        success: true,
+        message: "Unavailable Dates Has Been Updated",
+      });
+    } catch (error) {
+      console.log(error);
+      return res.status(500).send(error);
+    }
+  },
+  deleteUnavailability: async (req, res) => {
+    try {
+      let { id_availability } = req.body;
+      let destroy = await UnavailabilitiesModel.destroy({
+        where: {
+          id_availability,
+        },
+      });
+      return res.status(200).send({
+        success: true,
+        message: "Unavailable Dates Has Been Deleted",
+      });
+    } catch (error) {
+      console.log(error);
+      return res.status(500).send(error);
     }
   },
 };

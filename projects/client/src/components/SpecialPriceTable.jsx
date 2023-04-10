@@ -26,8 +26,8 @@ const SpecialPriceTable = (props) => {
                                         <Td>{value.percent}</Td>
                                         <Td isNumeric>
                                             <ButtonGroup>
-                                                <Button>Edit</Button>
-                                                <Button>Delete</Button>
+                                                <Button onClick={() => props.data.edit(value.id)}>Edit</Button>
+                                                <Button onClick={() => props.data.delete(value.id)}>Delete</Button>
                                             </ButtonGroup>
                                         </Td>
                                     </Tr>

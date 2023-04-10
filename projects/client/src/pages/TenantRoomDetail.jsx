@@ -1,4 +1,4 @@
-import { Box, Card, CardHeader, CardBody, CardFooter, Text, Flex, Image, Button, useDisclosure, Divider, ButtonGroup, useToast, Link, Grid, GridItem } from '@chakra-ui/react';
+import { Box, Card, CardHeader, CardBody, CardFooter, Text, Flex, Image, Button, useDisclosure, Divider, ButtonGroup, useToast, Link, Grid, GridItem, useStatStyles } from '@chakra-ui/react';
 import React, { useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import Axios from 'axios'
@@ -12,6 +12,10 @@ import Pagination from '../components/Pagination';
 import SpecialPriceModal from '../components/SpecialPriceModal';
 import UnavailabilityModal from '../components/UnavailabilityModal';
 import CalendarCard from '../components/CalendarCard';
+import UnavailabilityEditModal from '../components/UnavailabilityEditModal';
+import UnavailabilityDeleteAlert from '../components/UnavailabilityDeleteAlert';
+import SpecialPriceEditModal from '../components/SpecialPriceEditModal';
+import SpecialPriceDeleteAlert from '../components/SpecialPriceDeleteAlert';
 
 const TenantRoomDetail = (props) => {
     // Redirect page
@@ -31,24 +35,32 @@ const TenantRoomDetail = (props) => {
 
     // State for room special price
     const [priceDates, setPriceDates] = useState([]);
+    const [editPriceDates, setEditPriceDates] = useState([]);
     const [nominal, setNominal] = useState(0);
     const [percent, setPercent] = useState(0);
     const [priceData, setPriceData] = useState([]);
+    const [priceId, setPriceId] = useState(0);
 
     // State for room unavailability
-    const [unavailableDates, setUnavailableDates] = useState([new Date(), new Date()]);
+    const [unavailableDates, setUnavailableDates] = useState([]);
+    const [editUnavailableDates, setEditUnavailableDates] = useState([]);
     const [unavailableData, setUnavailableData] = useState([]);
+    const [unavailableId, setUnavailableId] = useState(0);
 
     // Pop up notification
     const toast = useToast();
 
     // Modal
     const { isOpen: isPriceOpen, onOpen: onPriceOpen, onClose: onPriceClose } = useDisclosure();
+    const { isOpen: isEditPriceOpen, onOpen: onEditPriceOpen, onClose: onEditPriceClose } = useDisclosure();
     const { isOpen: isUnavailableOpen, onOpen: onUnavailableOpen, onClose: onUnavailableClose } = useDisclosure();
+    const { isOpen: isEditUnavailableOpen, onOpen: onEditUnavailableOpen, onClose: onEditUnavailableClose } = useDisclosure();
     const { isOpen: isEditOpen, onOpen: onEditOpen, onClose: onEditClose } = useDisclosure();
 
     // Alert dialog
     const { isOpen: isDeleteOpen, onOpen: onDeleteOpen, onClose: onDeleteClose } = useDisclosure();
+    const { isOpen: isDeletePriceOpen, onOpen: onDeletePriceOpen, onClose: onDeletePriceClose } = useDisclosure();
+    const { isOpen: isDeleteUnavailableOpen, onOpen: onDeleteUnavailableOpen, onClose: onDeleteUnavailableClose } = useDisclosure();
     const cancelRef = React.useRef();
 
     // Get property name
@@ -185,6 +197,86 @@ const TenantRoomDetail = (props) => {
         }
     }
 
+    // Edit unavailable date
+    const editUnavailability = async () => {
+        try {
+            let start_date = new Date(editUnavailableDates[0].getTime() - (editUnavailableDates[0].getTimezoneOffset() * 60000)).toISOString();
+            let end_date = new Date(editUnavailableDates[1].getTime() - (editUnavailableDates[1].getTimezoneOffset() * 60000));
+            end_date.setDate(end_date.getDate() + 1);
+            end_date.toISOString();
+            let res = await Axios.patch(API_URL + '/unavailabilities/editunavailability', { id_availability: unavailableId, start_date, end_date });
+            toast({
+                title: `${res.data.message}`,
+                description: "You've successfully edited unavailable dates",
+                status: 'success',
+                position: 'top',
+                duration: 9000,
+                isClosable: true,
+                onCloseComplete: () => window.location.reload(false)
+            });
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
+    // Delete unavailable date
+    const deleteUnavailability = async () => {
+        try {
+            let res = await Axios.post(API_URL + "/unavailabilities/deleteunavailability", { id_availability: unavailableId })
+            toast({
+                title: `${res.data.message}`,
+                description: "You've successfully deleted unavailable dates",
+                status: 'success',
+                position: 'top',
+                duration: 9000,
+                isClosable: true,
+                onCloseComplete: () => window.location.reload(false)
+            });
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
+    // Edit special price
+    const editSpecialPrice = async () => {
+        try {
+            let start_date = new Date(editPriceDates[0].getTime() - (editPriceDates[0].getTimezoneOffset() * 60000)).toISOString();
+            let end_date = new Date(editPriceDates[1].getTime() - (editPriceDates[1].getTimezoneOffset() * 60000));
+            end_date.setDate(end_date.getDate() + 1);
+            end_date.toISOString();
+            let res = await Axios.patch(API_URL + '/specialprices/editspecialprice', { id_special_price: priceId, start_date, end_date, nominal, percent });
+            toast({
+                title: `${res.data.message}`,
+                description: "You've successfully edited special price",
+                status: 'success',
+                position: 'top',
+                duration: 9000,
+                isClosable: true,
+                onCloseComplete: () => window.location.reload(false)
+            });
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
+    // Delete special price
+    const deleteSpecialPrice = async () => {
+        try {
+            let res = await Axios.post(API_URL + '/specialprices/deletespecialprice', { id_special_price: priceId });
+            toast({
+                title: `${res.data.message}`,
+                description: "You've successfully deleted special price",
+                status: 'success',
+                position: 'top',
+                duration: 9000,
+                isClosable: true,
+                onCloseComplete: () => window.location.reload(false)
+            });
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
     useEffect(() => {
         getPropertyName();
         getDetail();
@@ -256,8 +348,48 @@ const TenantRoomDetail = (props) => {
                     <CalendarCard data={{ events: unavailableData.concat(priceData) }} />
                 </GridItem>
                 <GridItem>
-                    <UnavailabilityTable data={{ unavailableData, pagination: <Pagination /> }} />
-                    <SpecialPriceTable data={{ priceData, pagination: <Pagination /> }} />
+                    <UnavailabilityTable data={{
+                        unavailableData, pagination: <Pagination />, edit: (value) => {
+                            setUnavailableId(value);
+                            onEditUnavailableOpen();
+                        }, delete: (value) => {
+                            setUnavailableId(value);
+                            onDeleteUnavailableOpen();
+                        }
+                    }} />
+                    <UnavailabilityEditModal data={{
+                        isOpen: isEditUnavailableOpen, onClose: onEditUnavailableClose, selectedDates: editUnavailableDates, onDateChange: setEditUnavailableDates, onClick: () => {
+                            onEditUnavailableClose();
+                            editUnavailability();
+                        }
+                    }} />
+                    <UnavailabilityDeleteAlert data={{
+                        isOpen: isDeleteUnavailableOpen, leastDestructiveRef: cancelRef, onClose: onDeleteUnavailableClose, onClick: () => {
+                            onDeleteUnavailableClose();
+                            deleteUnavailability();
+                        }
+                    }} />
+                    <SpecialPriceTable data={{
+                        priceData, pagination: <Pagination />, edit: (value) => {
+                            setPriceId(value);
+                            onEditPriceOpen();
+                        }, delete: (value) => {
+                            setPriceId(value);
+                            onDeletePriceOpen();
+                        }
+                    }} />
+                    <SpecialPriceEditModal data={{
+                        isOpen: isEditPriceOpen, onClose: onEditPriceClose, selectedDates: editPriceDates, onChangeNominal: (e) => setNominal(e.target.value), onChangePercent: (e) => setPercent(e.target.value), onDateChange: setEditPriceDates, onClick: () => {
+                            onEditPriceClose();
+                            editSpecialPrice();
+                        }
+                    }} />
+                    <SpecialPriceDeleteAlert data={{
+                        isOpen: isDeletePriceOpen, leastDestructiveRef: cancelRef, onClose: onDeletePriceClose, onClick: () => {
+                            onDeletePriceClose();
+                            deleteSpecialPrice();
+                        }
+                    }} />
                 </GridItem>
             </Grid>
         </Box>
