@@ -24,7 +24,7 @@ const checkSequelize = async () => {
 };
 
 const dbConf = mysql.createPool({
-  host: "localhost",
+  host: process.env.DB_HOST,
   user: process.env.DB_USER,
   port:process.env.DB_PORT,
   password: process.env.DB_PASSWORD,

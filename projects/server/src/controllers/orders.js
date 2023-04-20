@@ -1,5 +1,5 @@
 const OrdersModel = require("../model/orders");
-const { Op, Sequelize } = require("sequelize");
+const { Op, Sequelize, where } = require("sequelize");
 const PropertiesModel = require("../model/properties");
 const RoomsModel = require("../model/rooms");
 const UsersModel = require("../model/users");
@@ -7,6 +7,9 @@ const CitiesModel = require("../model/cities");
 const { dbSequelize } = require("../config/db");
 const { dbConf } = require("../config/db");
 const { generateInvoiceNumber } = require("../middleware/generate");
+const schedule = require('node-schedule');
+const { transport } = require("../config/nodemailer");
+const SpecialPricesModel = require("../model/specialprices");
 
 module.exports = {
   getOrdersDataAll: async (req, res) => {
@@ -298,7 +301,50 @@ module.exports = {
               })    
               message = "Order Confirmed";
               // send email
+              propertyData = await OrdersModel.findOne({
+                where:{id_order:id_order},
+                include:[
+                  {model: PropertiesModel},
+                  {model: RoomsModel},
+                  {model: UsersModel},
 
+                ]
+              })
+              if(propertyData){
+                  let tanggal =  new Date(propertyData.checkout_date)
+                  tanggal.setDate(tanggal.getDate()-2)
+                  tanggal.setHours(9,0,0)
+                  // let tanggal = new Date("2023-04-08 19:06:00")
+                  // console.log(tanggal.toDateString(),tanggal.toTimeString())
+                  const job = schedule.scheduleJob(tanggal, function(){
+                      transport.sendMail(
+                          {
+                            from: "StayComfy",
+                            to: propertyData.user.email,
+                            subject: "Reminder Rules of Property Ordered on StayComfy",
+                            html: `<div>
+                              <p>Dear ${propertyData.user.username},</p>
+                              <p>We are thrilled to have you as our guest at our property. To ensure a pleasant and comfortable stay for everyone, we kindly ask you to abide by the following rules:</p>
+                              ${propertyData.property.rules}
+                              </br>
+                              <p>We hope that these guidelines will help you have a pleasant stay at our property. Should you have any questions or concerns, please feel free to reach out to us.</p>
+                              <p>Thank you for choosing our property as your accommodation.</p>
+                              <p>Best regards,</p>
+                              <p>Stay Comfy</p>
+                          </div>`,
+                          },
+                          (err, info) => {
+                            if (err) {
+                              console.log(`error : ${err}`);
+                            }
+                            if(info) {
+                              // console.log(info);
+                            }
+                          }
+                      );
+                  });
+              }
+              
           }else if(order_status == "UNPAID"){
               data = await OrdersModel.upsert({
                   id_order: id_order,
@@ -352,6 +398,7 @@ module.exports = {
       return res.status(201).send({
         success: true,
         data:data,
+        propertyData,
         message: message,
       })
     } catch (error) {
@@ -390,8 +437,182 @@ module.exports = {
         });
       }
   },
-  getAvailable: async(req,res)=>{
-    
+  getPrice: async(req,res)=>{
+      try{
+          let startDate = new Date(req.query.startDate)
+          startDate.setDate(startDate.getDate()+1)
+          let endDate = new Date(req.query.endDate)
+          let idRoom = req.query.idRoom 
+          let data = []
+          let getBasePrice = await RoomsModel.findOne({attributes:['basePrice']},{where:{id:idRoom}})
+          let basePrice = +getBasePrice.basePrice || 0
+          let total = 0
+          for(var d = startDate; d<= endDate; d.setDate(d.getDate()+1)){
+              let querydate= d.toISOString().slice(0, 19).replace("T", " ")
+              console.log(querydate)
+              let special = await SpecialPricesModel.findOne(
+                {where:{[Op.and]:[
+                  {id_room:idRoom},
+                  {[Op.or]:[
+                    {start_date:{[Op.between]:[querydate,querydate]}},
+                    {end_date:{[Op.between]:[querydate,querydate]}},
+                    {[Op.and]:[{start_date:{[Op.lte]:querydate},end_date:{[Op.gte]:querydate}}]}
+                  ]}
+                ]},order:[["id_special_price","desc"]]}
+              )
+                // console.log(special!= null,d)
+              if(special){
+                  if(special.nominal != null){
+                      let price = +special.nominal
+                      total+=price
+                      data.push(total)
+                  }else if(special.percent != null){
+                      let price = +special.percent
+                      total+=basePrice+((basePrice/100)*price)
+                      data.push(total)
+                  }else{
+                      total+=basePrice
+                      data.push(total)
+                  }
+              }else{
+                  total +=basePrice 
+                  data.push(total)
+              }
+              
+          }
+
+          return res.status(200).send({
+              total:total,
+              data,
+              success: true,
+          })
+      }catch(error){
+          console.log(error)
+          return res.status(500).send({
+              success: false,
+              message: "Something Gone Wrong",
+              logs:error
+          });
+      }
+  },
+  getAvailableProperty: async(req,res)=>{
+    try{
+      let startDate = new Date(req.query.startDate).toISOString().slice(0, 19).replace("T", " ") 
+      let endDate = new Date(req.query.endDate).toISOString().slice(0, 19).replace("T", " ") 
+      let id_city = req.query.cityId
+
+      const page = parseInt(req.query.page-1) || 0;
+      const limit = 10;
+      const offset = limit * page;
+      const keyword = req.query.keyword || "";
+      const sort = req.query.sort || "id_property";
+      const order = req.query.order || "ASC";
+
+      // for proprety base price
+      const availableRooms = await PropertiesModel.findAll({
+        include:[
+          { model: CitiesModel,as: "city",required: true, },
+          { model: RoomsModel, as: "listrooms",required: false, },
+        ],
+        limit,
+        offset,        
+        required: true,
+        where: {
+          status: 1,
+          [Op.or]:[ 
+            {
+              name: {
+                [Op.like]: "%" + keyword + "%",
+              },
+            },
+            {
+              address: {
+                [Op.like]: "%" + keyword + "%",
+              },
+            },
+          ], 
+          id_property: {
+              [Op.notIn]: Sequelize.literal(
+                `(
+                  SELECT orders.id_property
+                  FROM orders
+                  JOIN properties ON orders.id_property=properties.id_property
+                  WHERE orders.order_status = "CONFIRMED" AND properties.id_city='${id_city}'
+                  AND (
+                        (orders.checkin_date BETWEEN '${startDate}' AND '${endDate}')
+                        OR (orders.checkout_date BETWEEN '${startDate}' AND '${endDate}')
+                        OR (orders.checkin_date <= '${startDate}'  AND orders.checkout_date >= '${endDate}') 
+                  )  
+                )`
+              )
+          }
+        },
+        order: [[sort, order]],
+        
+      });
+
+      return res.status(200).send({
+        data:availableRooms,
+        success: true,
+      })
+    }catch(error){
+        console.log(error)
+        return res.status(500).send({
+            success: false,
+            message: "Something Gone Wrong",
+            logs:error
+      });
+    }
+
+  },
+  getAvailableRoom: async(req,res)=>{
+      // Query for available rooms
+      try{
+        let startDate = new Date(req.query.startDate).toISOString().slice(0, 19).replace("T", " ") ||new Date('2023-03-22').toISOString().slice(0, 19).replace("T", " ");
+        let endDate = new Date(req.query.endDate).toISOString().slice(0, 19).replace("T", " ") ||new Date('2023-03-28').toISOString().slice(0, 19).replace("T", " ");
+        let id_city = req.query.cityId || "1";
+        let id_property  = req.query.propertyId ||"2";
+
+        // for rooms fix by base price
+        const availableRooms = await RoomsModel.findAll({
+          where: {[Op.and]:[
+            {id_property:id_property},
+            {id_room: {
+                [Op.notIn]: Sequelize.literal(
+                  `(
+                    SELECT orders.id_room
+                    FROM orders
+                    JOIN properties ON orders.id_property=properties.id_property
+                    WHERE orders.order_status = "CONFIRMED" AND properties.id_city='${id_city}'
+                    AND (
+                          (orders.checkin_date BETWEEN '${startDate}' AND '${endDate}')
+                          OR (orders.checkout_date BETWEEN '${startDate}' AND '${endDate}')
+                          OR (orders.checkin_date <= '${startDate}'  AND orders.checkout_date >= '${endDate}') 
+                    )  
+                  )`
+                )
+            }}
+            ]
+          },
+          include:[
+              {model:PropertiesModel}
+          ]
+        });
+
+        
+        return res.status(200).send({
+          data:availableRooms,
+          success: true,
+        })
+      }catch(error){
+          console.log(error)
+          return res.status(500).send({
+              success: false,
+              message: "Something Gone Wrong",
+              logs:error
+          });
+      }
+      
   },
   getPropertyData: (req, res) => {
     const propertyId = req.query.propertyId;
@@ -574,5 +795,19 @@ module.exports = {
       res.status(500).send({ success: false, message: "Server error" });
     }
   },
+  testing:async(req,res)=>{
+    const rooms = await PropertiesModel.findAll({
+      include: [
+        {
+          model: RoomsModel,
+          as: "listrooms" // use the alias of the association between the two models
+        }
+      ]
+    });
+    return res.status(200).send({
+      data:rooms,
+      success: true,
+    })
+  }
   
 };

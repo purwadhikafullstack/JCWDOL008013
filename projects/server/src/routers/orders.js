@@ -22,7 +22,11 @@ route.post("/", ordersController.createUpdateOrders);
 route.post("/review",readToken, ordersController.createUpdateOrders);
 route.post("/reject",readToken, ordersController.createUpdateOrders);
 route.post("/confirm",readToken, ordersController.createUpdateOrders);
-route.get("/available", ordersController.getAvailable);
+route.get("/availableroom", ordersController.getAvailableRoom);
+route.get("/availableproperty", ordersController.getAvailableProperty);
+
+route.get("/totalprice", ordersController.getPrice);
+route.get("/testing", ordersController.testing);
 
 
 module.exports = route

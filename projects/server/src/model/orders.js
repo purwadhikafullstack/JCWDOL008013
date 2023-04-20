@@ -4,7 +4,6 @@ const PropertiesModel = require("./properties");
 const RoomsModel = require("./rooms");
 const UsersModel = require("./users");
 const { DataTypes } = Sequelize;
-console.log(`PropertiesModel :`, PropertiesModel);
 
 const OrdersModel = dbSequelize.define(
   "orders",

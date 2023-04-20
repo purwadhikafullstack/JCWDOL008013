@@ -7,32 +7,24 @@ import CaptionCarousel from '../components/CaptionCarousel';
 import FeatureList from '../components/FeatureList';
 import {RangeDatepicker} from 'chakra-dayzed-datepicker'
 import TestimonialList from '../components/TestimonialList';
-import { Box, Container, Flex,Spacer,
+import { Box, Flex,Spacer,
     FormControl,
-    FormLabel,
-    FormErrorMessage,
-    FormHelperText,
     Button,
     Center,
-    AspectRatio,
     Icon
 } from '@chakra-ui/react';
 import { Select } from "chakra-react-select";
 import { FcAssistant, FcLock, FcMoneyTransfer } from 'react-icons/fc';
-const initialForm = {
-    startDate:"",
-    endDate:"",
-    cityId:""
-}
+import { activeOrder, resetOrder } from '../actions/orderUserAction';
 
 const Landing = () => {
     const navigate = useNavigate();
+    const dispatch = useDispatch();
     const [groupedOptions,setGroupedOptions] = useState([])
     const [cities, setCities] = useState([])
-    const [form,setForm] = useState(initialForm)
     const [selectedDates, setSelectedDates] = useState([]);
     const today = new Date()
-
+    const [selectedCity,setSelectedCity]= useState("");
     const cards = [
         {
         title: 'Banner 1',
@@ -96,11 +88,33 @@ const Landing = () => {
     },[])
 
     const onSubmitBtn = ()=>{
-        if(selectedDates.length == 2 && form.cityId != ""){
-            setForm({...form,startDate:selectedDates[0],endDate:selectedDates[1]})
-            console.log( selectedDates, JSON.stringify(form))
+        if(selectedDates.length == 2 && selectedCity != ""){
+            let orderdata = {startDate:selectedDates[0],endDate:selectedDates[1],cityId:selectedCity}
+            let formed = JSON.stringify(orderdata)
+            localStorage.setItem('order_form',formed)
+            dispatch(activeOrder(formed))
+
+            let getLocalStorage = localStorage.getItem('prw_login');
+            Axios.get(API_URL + `/orders/availableproperty`,{
+                params:orderdata,
+                headers:{
+                    "Authorization" :`Bearer ${getLocalStorage}`
+                }
+            })
+            .then((res) => {
+                console.log(res.data)
+                navigate("/search");
+            })
+            .catch((err) => {
+                console.log(err)
+                if (!err.response.data.success) {
+                    alert(err.response.data.message);
+                }
+                console.log("check error", err)
+            });
         }else{
             alert("Mohon Isi Tanggal dan Lokasi")
+            dispatch(resetOrder)
         }
     }
 
@@ -117,8 +131,8 @@ const Landing = () => {
                                 name="colors"
                                 options={groupedOptions}
                                 placeholder="Select City"
-                                onChange={(el)=>setForm({...form,cityId:el.value})}
-                                // value={form.cityId}
+                                onChange={setSelectedCity}
+                                value={selectedCity}
                             />
                         </FormControl>
                         <FormControl isRequired p={5}>

@@ -33,6 +33,8 @@ import ReportList from "./pages/ReportList";
 import Room from "./pages/Room";
 import OrderDetail from "./pages/OrderDetail";
 import RatingUser from "./pages/RatingUser";
+import AvaliableProperty from "./pages/AvaliableProperty";
+import DetailProperty from "./pages/DetailProperty";
 
 function App() {
   const [message, setMessage] = useState("");
@@ -106,6 +108,9 @@ function App() {
           <Route path="/room" element={<Room />} />
           <Route path="/admin/order/detail/:id/:action" element={<OrderDetail />} />
           <Route path="/rating/:id" element={<RatingUser />} />
+          <Route path="/search" element={<AvaliableProperty />} />
+          <Route path="/detailproperty/:id" element={<DetailProperty />} />
+          
         </Routes>
       {/* {yang pakai Footer dan navbar */}
       </Box>
