@@ -1,4 +1,4 @@
-import { Button, FormControl, FormLabel, Input, Modal, ModalBody, ModalCloseButton, ModalContent, ModalFooter, ModalHeader, ModalOverlay, VStack } from "@chakra-ui/react"
+import { Button, Modal, ModalBody, ModalCloseButton, ModalContent, ModalFooter, ModalHeader, ModalOverlay } from "@chakra-ui/react"
 import { RangeDatepicker } from "chakra-dayzed-datepicker"
 
 const UnavailabilityModal = (props) => {
@@ -6,7 +6,7 @@ const UnavailabilityModal = (props) => {
         <Modal isOpen={props.data.isOpen} onClose={props.data.onClose}>
             <ModalOverlay />
             <ModalContent>
-                <ModalHeader>Set room unavailability</ModalHeader>
+                <ModalHeader>{props.data.title}</ModalHeader>
                 <ModalCloseButton />
                 <ModalBody>
                     <RangeDatepicker

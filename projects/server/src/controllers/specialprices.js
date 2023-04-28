@@ -53,7 +53,12 @@ module.exports = {
   getSpecialPrice: async (req, res) => {
     try {
       let id_room = req.query.room;
-      let data = await SpecialPricesModel.findAll({
+      const page = parseInt(req.query.page) || 0;
+      const limit = 5;
+      const offset = limit * page;
+      const sort = req.query.sort;
+      const order = req.query.order;
+      let allData = await SpecialPricesModel.findAll({
         attributes: [
           ["id_special_price", "id"],
           [
@@ -79,11 +84,44 @@ module.exports = {
           id_room,
         },
       });
-      let dataMap = data.map((value) => ({
+      let allDataMap = allData.map((value) => ({
         ...value.dataValues,
         title: "Special Price",
       }));
-      return res.status(200).send(dataMap);
+      let limitData = await SpecialPricesModel.findAndCountAll({
+        attributes: [
+          ["id_special_price", "id"],
+          [
+            dbSequelize.fn(
+              "DATE_FORMAT",
+              dbSequelize.col("start_date"),
+              "%Y-%m-%d"
+            ),
+            "start",
+          ],
+          [
+            dbSequelize.fn(
+              "DATE_FORMAT",
+              dbSequelize.col("end_date"),
+              "%Y-%m-%d"
+            ),
+            "end",
+          ],
+          "nominal",
+          "percent",
+        ],
+        where: {
+          id_room,
+        },
+        limit,
+        offset,
+        order: [[sort, order]],
+      });
+      return res.status(200).send({
+        allData: allDataMap,
+        limitData: limitData.rows,
+        totalPage: Math.ceil(limitData.count / limit),
+      });
     } catch (error) {
       console.log(error);
       return res.status(500).send(error);

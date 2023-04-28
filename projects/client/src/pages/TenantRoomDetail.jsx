@@ -1,4 +1,4 @@
-import { Box, Card, CardHeader, CardBody, CardFooter, Text, Flex, Image, Button, useDisclosure, Divider, ButtonGroup, useToast, Link, Grid, GridItem, useStatStyles } from '@chakra-ui/react';
+import { Box, Card, CardHeader, CardBody, CardFooter, Text, Flex, Image, Button, useDisclosure, Divider, ButtonGroup, useToast, Link, Grid, GridItem } from '@chakra-ui/react';
 import React, { useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import Axios from 'axios'
@@ -12,9 +12,7 @@ import Pagination from '../components/Pagination';
 import SpecialPriceModal from '../components/SpecialPriceModal';
 import UnavailabilityModal from '../components/UnavailabilityModal';
 import CalendarCard from '../components/CalendarCard';
-import UnavailabilityEditModal from '../components/UnavailabilityEditModal';
 import UnavailabilityDeleteAlert from '../components/UnavailabilityDeleteAlert';
-import SpecialPriceEditModal from '../components/SpecialPriceEditModal';
 import SpecialPriceDeleteAlert from '../components/SpecialPriceDeleteAlert';
 
 const TenantRoomDetail = (props) => {
@@ -36,16 +34,28 @@ const TenantRoomDetail = (props) => {
     // State for room special price
     const [priceDates, setPriceDates] = useState([]);
     const [editPriceDates, setEditPriceDates] = useState([]);
-    const [nominal, setNominal] = useState(0);
-    const [percent, setPercent] = useState(0);
+    const [radioValue, setRadioValue] = useState('1');
+    const [nominal, setNominal] = useState('');
+    const [percent, setPercent] = useState('');
     const [priceData, setPriceData] = useState([]);
     const [priceId, setPriceId] = useState(0);
+    const [pagePrice, setPagePrice] = useState(0);
+    const [totalPagePrice, setTotalPagePrice] = useState(0);
+    const [priceLimitData, setPriceLimitData] = useState([]);
+    const [sortPrice, setSortPrice] = useState('id_special_price');
+    const [orderPrice, setOrderPrice] = useState('ASC');
+
 
     // State for room unavailability
     const [unavailableDates, setUnavailableDates] = useState([]);
     const [editUnavailableDates, setEditUnavailableDates] = useState([]);
     const [unavailableData, setUnavailableData] = useState([]);
     const [unavailableId, setUnavailableId] = useState(0);
+    const [pageUnavailability, setPageUnavailability] = useState(0);
+    const [totalPageUnavailability, setTotalPageUnavailability] = useState(0);
+    const [unavailableLimitData, setUnavailableLimitData] = useState([]);
+    const [sortUnavailablility, setSortUnavailability] = useState('id_availability');
+    const [orderUnavailability, setOrderUnavailability] = useState('ASC');
 
     // Pop up notification
     const toast = useToast();
@@ -180,8 +190,11 @@ const TenantRoomDetail = (props) => {
     // Get unavailable date
     const getUnavailability = async () => {
         try {
-            let res = await Axios.get(API_URL + `/unavailabilities/getunavailability?${search.split('&')[1]}`);
-            setUnavailableData(res.data);
+            let res = await Axios.get(API_URL + `/unavailabilities/getunavailability?${search.split('&')[1]}&page=${pageUnavailability}&sort=${sortUnavailablility}&order=${orderUnavailability}`);
+            setUnavailableData(res.data.allData);
+            setTotalPageUnavailability(res.data.totalPage);
+            setUnavailableLimitData(res.data.limitData);
+
         } catch (error) {
             console.log(error);
         }
@@ -190,8 +203,10 @@ const TenantRoomDetail = (props) => {
     // Get special price
     const getSpecialPrice = async () => {
         try {
-            let res = await Axios.get(API_URL + `/specialprices/getspecialprice?${search.split('&')[1]}`);
-            setPriceData(res.data);
+            let res = await Axios.get(API_URL + `/specialprices/getspecialprice?${search.split('&')[1]}&page=${pagePrice}&sort=${sortPrice}&order=${orderPrice}`);
+            setPriceData(res.data.allData);
+            setTotalPagePrice(res.data.totalPage);
+            setPriceLimitData(res.data.limitData);
         } catch (error) {
             console.log(error);
         }
@@ -277,30 +292,47 @@ const TenantRoomDetail = (props) => {
         }
     }
 
+    // Unavailability table pagination
+    const handlePageClickUnavailability = (data) => {
+        setPageUnavailability(data.selected);
+    }
+
+    // Special price table pagination
+    const handlePageClickPrice = (data) => {
+        setPagePrice(data.selected);
+    }
+
     useEffect(() => {
         getPropertyName();
         getDetail();
-        getUnavailability();
         getSpecialPrice();
-    }, [])
+    }, []);
+
+    useEffect(() => {
+        getUnavailability();
+    }, [pageUnavailability, sortUnavailablility, orderUnavailability]);
+
+    useEffect(() => {
+        getSpecialPrice();
+    }, [pagePrice, sortPrice, orderPrice]);
 
     return (
-        <Box px={16} py={8} bg='gray.100'>
-            <Flex mb={8} flexDirection='column' alignItems='center'>
-                <Text mb={8} fontSize='sm' color='gray.500' fontWeight='semibold'>
+        <Box pb={24}>
+            <Flex px={16} pt={8} pb={12} bg='gray.100' flexDirection='column' alignItems='center'>
+                <Text fontSize='sm' color='gray.500' fontWeight='semibold'>
                     <Link href='/tenant/property' _hover={{ textDecoration: 'none' }}>Property </Link>
                     /
                     <Link href={'/tenant/room' + search.split('&')[0]} _hover={{ textDecoration: 'none' }}> {propertyName} </Link>
                     / {name}
                 </Text>
-                <Card maxW={700}>
+                <Card mt={8} maxW={800}>
                     <CardHeader>
                         <Text fontSize='2xl' fontWeight='bold' mb={2}>{name}</Text>
                         <Text bg='green.500' w='max-content' px={4} mb={2} rounded={20} color='white'>Room</Text>
                     </CardHeader>
                     <CardBody>
                         <Flex justifyContent='center' mb={8}>
-                            <Image src={picture} rounded={16} />
+                            <Image src={picture} rounded={16} objectFit='cover' />
                         </Flex>
                         <Text fontWeight='bold'>Description:</Text>
                         <Text mb={2}>{description}</Text>
@@ -309,89 +341,127 @@ const TenantRoomDetail = (props) => {
                         <Text color='gray.500'>/ room / night(s)</Text>
                     </CardBody>
                     <Divider />
-                    <CardFooter justifyContent='flex-end'>
-                        <ButtonGroup>
-                            <Button onClick={onPriceOpen}>Set room special price</Button>
-                            <SpecialPriceModal data={{
-                                isOpen: isPriceOpen, onClose: onPriceClose, selectedDates: priceDates, onDateChange: setPriceDates, onChangeNominal: (e) => setNominal(e.target.value), onChangePercent: (e) => setPercent(e.target.value), onClick: () => {
-                                    onPriceClose()
-                                    specialPrice()
-                                }
-                            }} />
-                            <Button onClick={onUnavailableOpen}>Set room unavailability</Button>
-                            <UnavailabilityModal data={{
-                                isOpen: isUnavailableOpen, onClose: onUnavailableClose, selectedDates: unavailableDates, onDateChange: setUnavailableDates, onClick: () => {
-                                    onUnavailableClose()
-                                    unavailability()
-                                }
-                            }} />
-                            <Button onClick={onEditOpen}>Edit</Button>
-                            <EditRoomModal data={{
-                                isOpen: isEditOpen, onClose: onEditClose, initialValues: { name, price, description, picture: '' }, validationSchema: roomValidation, onSubmit: (values, actions) => {
-                                    onEditClose();
-                                    editRoom(values);
-                                }
-                            }} />
-                            <Button onClick={onDeleteOpen}>Delete</Button>
-                            <DeleteRoomAlert data={{
-                                isOpen: isDeleteOpen, leastDestructiveRef: cancelRef, onClose: onDeleteClose, onClick: () => {
-                                    onDeleteClose();
-                                    deleteRoom();
-                                }
-                            }} />
-                        </ButtonGroup>
+                    <CardFooter justifyContent='center'>
+                        <Grid templateColumns={['repeat(2, 1fr)', null, 'repeat(4, 1fr)']} gap={4}>
+                            <GridItem>
+                                <Button onClick={onPriceOpen} w={40}>Set special price</Button>
+                                <SpecialPriceModal data={{
+                                    title: 'Set room special price', isOpen: isPriceOpen, onClose: onPriceClose, selectedDates: priceDates, onDateChange: setPriceDates, nominal, percent, value: radioValue, setValue: (e) => {
+                                        setRadioValue(e.target.value)
+                                        setNominal('');
+                                        setPercent('');
+                                    }, onChangeNominal: (e) => {
+                                        setNominal(e.target.value);
+                                        setPercent(null);
+                                    }, onChangePercent: (e) => {
+                                        setPercent(e.target.value);
+                                        setNominal(null);
+                                    }, onClick: () => {
+                                        onPriceClose();
+                                        specialPrice();
+                                    }
+                                }} />
+                            </GridItem>
+                            <GridItem>
+                                <Button onClick={onUnavailableOpen} w={40}>Set unavailability</Button>
+                                <UnavailabilityModal data={{
+                                    title: 'Set room unavailability', isOpen: isUnavailableOpen, onClose: onUnavailableClose, selectedDates: unavailableDates, onDateChange: setUnavailableDates, onClick: () => {
+                                        onUnavailableClose();
+                                        unavailability();
+                                    }
+                                }} />
+                            </GridItem>
+                            <GridItem>
+                                <Button onClick={onEditOpen} w={40}>Edit</Button>
+                                <EditRoomModal data={{
+                                    isOpen: isEditOpen, onClose: onEditClose, initialValues: { name, price, description, picture: '' }, validationSchema: roomValidation, onSubmit: (values, actions) => {
+                                        onEditClose();
+                                        editRoom(values);
+                                    }
+                                }} />
+                            </GridItem>
+                            <GridItem>
+                                <Button onClick={onDeleteOpen} w={40}>Delete</Button>
+                                <DeleteRoomAlert data={{
+                                    isOpen: isDeleteOpen, leastDestructiveRef: cancelRef, onClose: onDeleteClose, onClick: () => {
+                                        onDeleteClose();
+                                        deleteRoom();
+                                    }
+                                }} />
+                            </GridItem>
+                        </Grid>
                     </CardFooter>
                 </Card>
             </Flex>
-            <Grid justifyContent='center' templateColumns='repeat(2, 1fr)' gap={6}>
-                <GridItem>
-                    <CalendarCard data={{ events: unavailableData.concat(priceData) }} />
-                </GridItem>
-                <GridItem>
-                    <UnavailabilityTable data={{
-                        unavailableData, pagination: <Pagination />, edit: (value) => {
-                            setUnavailableId(value);
-                            onEditUnavailableOpen();
-                        }, delete: (value) => {
-                            setUnavailableId(value);
-                            onDeleteUnavailableOpen();
-                        }
-                    }} />
-                    <UnavailabilityEditModal data={{
-                        isOpen: isEditUnavailableOpen, onClose: onEditUnavailableClose, selectedDates: editUnavailableDates, onDateChange: setEditUnavailableDates, onClick: () => {
-                            onEditUnavailableClose();
-                            editUnavailability();
-                        }
-                    }} />
-                    <UnavailabilityDeleteAlert data={{
-                        isOpen: isDeleteUnavailableOpen, leastDestructiveRef: cancelRef, onClose: onDeleteUnavailableClose, onClick: () => {
-                            onDeleteUnavailableClose();
-                            deleteUnavailability();
-                        }
-                    }} />
-                    <SpecialPriceTable data={{
-                        priceData, pagination: <Pagination />, edit: (value) => {
-                            setPriceId(value);
-                            onEditPriceOpen();
-                        }, delete: (value) => {
-                            setPriceId(value);
-                            onDeletePriceOpen();
-                        }
-                    }} />
-                    <SpecialPriceEditModal data={{
-                        isOpen: isEditPriceOpen, onClose: onEditPriceClose, selectedDates: editPriceDates, onChangeNominal: (e) => setNominal(e.target.value), onChangePercent: (e) => setPercent(e.target.value), onDateChange: setEditPriceDates, onClick: () => {
-                            onEditPriceClose();
-                            editSpecialPrice();
-                        }
-                    }} />
-                    <SpecialPriceDeleteAlert data={{
-                        isOpen: isDeletePriceOpen, leastDestructiveRef: cancelRef, onClose: onDeletePriceClose, onClick: () => {
-                            onDeletePriceClose();
-                            deleteSpecialPrice();
-                        }
-                    }} />
-                </GridItem>
-            </Grid>
+            <Box p={16}>
+                <CalendarCard data={{ events: [...unavailableData, ...priceData] }} />
+            </Box>
+            <Divider />
+            <Box mt={16} px={12}>
+                <UnavailabilityTable data={{
+                    unavailableLimitData, pagination: <Pagination data={{ totalPage: totalPageUnavailability, handlePageClick: handlePageClickUnavailability }} />, edit: (value) => {
+                        setUnavailableId(value);
+                        onEditUnavailableOpen();
+                    }, delete: (value) => {
+                        setUnavailableId(value);
+                        onDeleteUnavailableOpen();
+                    }, sort: (value) => {
+                        setSortUnavailability(value);
+                    }, order: (value) => {
+                        setOrderUnavailability(value);
+                    }
+                }} />
+                <UnavailabilityModal data={{
+                    title: 'Edit room unavailability', isOpen: isEditUnavailableOpen, onClose: onEditUnavailableClose, selectedDates: editUnavailableDates, onDateChange: setEditUnavailableDates, onClick: () => {
+                        onEditUnavailableClose();
+                        editUnavailability();
+                    }
+                }} />
+                <UnavailabilityDeleteAlert data={{
+                    isOpen: isDeleteUnavailableOpen, leastDestructiveRef: cancelRef, onClose: onDeleteUnavailableClose, onClick: () => {
+                        onDeleteUnavailableClose();
+                        deleteUnavailability();
+                    }
+                }} />
+            </Box>
+            <Divider mt={16} />
+            <Box mt={16} px={12}>
+                <SpecialPriceTable data={{
+                    priceLimitData, pagination: <Pagination data={{ totalPage: totalPagePrice, handlePageClick: handlePageClickPrice }} />, edit: (value) => {
+                        setPriceId(value);
+                        onEditPriceOpen();
+                    }, delete: (value) => {
+                        setPriceId(value);
+                        onDeletePriceOpen();
+                    }, sort: (value) => {
+                        setSortPrice(value);
+                    }, order: (value) => {
+                        setOrderPrice(value);
+                    }
+                }} />
+                <SpecialPriceModal data={{
+                    title: 'Edit room special price', isOpen: isEditPriceOpen, onClose: onEditPriceClose, selectedDates: editPriceDates, onDateChange: setEditPriceDates, nominal, percent, value: radioValue, setValue: (e) => {
+                        setRadioValue(e.target.value)
+                        setNominal('');
+                        setPercent('');
+                    }, onChangeNominal: (e) => {
+                        setNominal(e.target.value);
+                        setPercent(null);
+                    }, onChangePercent: (e) => {
+                        setPercent(e.target.value);
+                        setNominal(null);
+                    }, onClick: () => {
+                        onEditPriceClose();
+                        editSpecialPrice();
+                    }
+                }} />
+                <SpecialPriceDeleteAlert data={{
+                    isOpen: isDeletePriceOpen, leastDestructiveRef: cancelRef, onClose: onDeletePriceClose, onClick: () => {
+                        onDeletePriceClose();
+                        deleteSpecialPrice();
+                    }
+                }} />
+            </Box>
         </Box>
     )
 }
