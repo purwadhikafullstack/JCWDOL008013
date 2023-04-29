@@ -314,7 +314,7 @@ module.exports = {
     // get user ID from token payload
     // console.log('id_user',req.decript.id_user)
     // yang disimpan ke database : /idCard/filename
- 
+
     dbConf.query(
       `UPDATE users set cardNumber=${dbConf.escape(
         req.body.cardNumber
@@ -403,5 +403,19 @@ module.exports = {
         );
       }
     );
+  },
+  profileData: async (req, res) => {
+    try {
+      let data = await UsersModel.findAll({
+        attributes: ["username", "email", "gender", "birthdate", "picture"],
+        where: {
+          id_user: req.decript.id_user,
+        },
+      });
+      return res.status(200).send(data[0]);
+    } catch (error) {
+      console.log(error);
+      return res.status(500).send(error);
+    }
   },
 };

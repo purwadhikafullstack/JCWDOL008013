@@ -50,3 +50,13 @@ export const roomValidation = yup.object().shape({
       (value) => value && value.size <= 1048576
     ),
 });
+
+export const profileValidation = yup.object().shape({
+  username: yup.string().required("Required"),
+  email: yup
+    .string()
+    .email("Please enter a valid email address")
+    .required("Required"),
+  gender: yup.string().required("Required"),
+  birthdate: yup.string().required("Required"),
+});
