@@ -116,8 +116,6 @@ const Navbar = (props) => {
                                     </MenuButton>
                                     <MenuList>
                                         <MenuItem onClick={() => navigate("/mybooking")}>My Dashboard</MenuItem>
-                                        <MenuItem onClick={() => navigate("/profile")}>Profile</MenuItem>
-                                        <MenuItem onClick={() => navigate("/tenant/property")}>Property</MenuItem>
                                         <MenuDivider />
                                         <MenuItem onClick={() => dispatch(logoutAction())}>Sign Out <AiOutlineLogout /></MenuItem>
                                     </MenuList>

@@ -19,7 +19,7 @@ const RoomDetailCard = (props) => {
             </CardBody>
             <Divider />
             <CardFooter justifyContent='center'>
-                <Grid templateColumns={['repeat(2, 1fr)', null, 'repeat(4, 1fr)']} gap={4}>
+                <Grid templateColumns={['repeat(2, 1fr)', null, null, 'repeat(4, 1fr)']} gap={4}>
                     <GridItem>
                         <Button onClick={props.data.onPriceOpen} w={40}>Set special price</Button>
                     </GridItem>

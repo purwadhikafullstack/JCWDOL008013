@@ -117,9 +117,9 @@ const TenantProperty = (props) => {
 
 
     return (
-        <Box p={8} bg='gray.100'>
-            <Grid mb={4} justifyContent='center' templateColumns={['repeat(1, 1fr)', null, 'repeat(3, 1fr)']}>
-                <GridItem justifySelf='flex-end' w={['full', null, 250]}>
+        <Box ms={[0, null, 60]} p={8} bg='gray.100'>
+            <Grid mb={4} justifyContent='center' templateColumns={['repeat(1, 1fr)', null, null, 'repeat(5, 1fr)']}>
+                <GridItem w={['full', null, null, 250]}>
                     <SortOrderCard data={{
                         selectSort: (e) => setSort(e.target.value), optionValue1: 'id_property', option1: 'ID', optionValue2: 'name', option2: 'Name', optionValue3: 'id_city', option3: 'City', selectOrder: (e) => setOrder(e.target.value)
                     }} />
@@ -134,7 +134,7 @@ const TenantProperty = (props) => {
                         }
                     }} />
                 </GridItem>
-                <GridItem colSpan={[1, null, 2]} ms={[0, null, 6]} mt={[4, null, 0]}>
+                <GridItem colSpan={[1, null, null, 4]} ms={[0, null, null, 6]} mt={[4, null, null, 0]}>
                     <PropertyListCard data={{ propertyData }} />
                 </GridItem>
             </Grid>

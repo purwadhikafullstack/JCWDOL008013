@@ -7,8 +7,8 @@ const PropertyListCard = (props) => {
             {props.data.propertyData.map((value) => {
                 let propertyPicture = API_URL + value.picture;
                 return (
-                    <Link href={'/tenant/room?property=' + value.id_property} _hover={{ textDecoration: 'none' }} key={value.id_property}>
-                        <Card mb={4} maxW={700} _hover={{ bg: 'gray.100' }}>
+                    <Link href={'/admin/room?property=' + value.id_property} _hover={{ textDecoration: 'none' }} key={value.id_property}>
+                        <Card mb={4} _hover={{ bg: 'gray.100' }}>
                             <Flex>
                                 <Image src={propertyPicture} maxW={[150, null, 200]} roundedLeft={5} />
                                 <CardBody alignSelf='center'>

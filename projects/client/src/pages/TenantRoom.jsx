@@ -202,10 +202,10 @@ const TenantRoom = (props) => {
     }, [page, sort, order, keyword]);
 
     return (
-        <Box p={8} bg='gray.100'>
+        <Box ms={[0, null, 60]} p={8} bg='gray.100'>
             <Flex flexDirection='column' alignItems='center' mb={8}>
                 <Text mb={8} fontSize='sm' color='gray.500' fontWeight='semibold'>
-                    <Link href='/tenant/property' _hover={{ textDecoration: 'none' }}>Property </Link>
+                    <Link href='/admin/property' _hover={{ textDecoration: 'none' }}>Property </Link>
                     / {name}
                 </Text>
                 <PropertyDetailCard data={{
@@ -224,8 +224,8 @@ const TenantRoom = (props) => {
                     }
                 }} />
             </Flex>
-            <Grid mb={4} justifyContent='center' templateColumns={['repeat(1, 1fr)', null, 'repeat(3, 1fr)']}>
-                <GridItem justifySelf='flex-end' w={['full', null, 250]}>
+            <Grid mb={4} justifyContent='center' templateColumns={['repeat(1, 1fr)', null, null, 'repeat(5, 1fr)']}>
+                <GridItem justifySelf='flex-end' w={['full', null, null, 250]}>
                     <SortOrderCard data={{
                         selectSort: (e) => setSort(e.target.value), optionValue1: 'id_room', option1: 'ID', optionValue2: 'name', option2: 'Name', optionValue3: 'basePrice', option3: 'Price', selectOrder: (e) => setOrder(e.target.value)
                     }} />
@@ -240,7 +240,7 @@ const TenantRoom = (props) => {
                         }
                     }} />
                 </GridItem>
-                <GridItem colSpan={[1, null, 2]} ms={[0, null, 6]} mt={[4, null, 0]}>
+                <GridItem colSpan={[1, null, null, 4]} ms={[0, null, null, 6]} mt={[4, null, null, 0]}>
                     <RoomListCard data={{ roomData, search }} />
                 </GridItem>
             </Grid>

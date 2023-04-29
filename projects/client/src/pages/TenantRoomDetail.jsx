@@ -1,4 +1,4 @@
-import { Box, Text, Flex, useDisclosure, Divider, useToast, Link } from '@chakra-ui/react';
+import { Box, Text, Flex, useDisclosure, Divider, useToast, Link, Card } from '@chakra-ui/react';
 import React, { useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import Axios from 'axios'
@@ -309,19 +309,16 @@ const TenantRoomDetail = (props) => {
 
     useEffect(() => {
         getUnavailability();
-    }, [pageUnavailability, sortUnavailablility, orderUnavailability]);
-
-    useEffect(() => {
         getSpecialPrice();
-    }, [pagePrice, sortPrice, orderPrice]);
+    }, [pageUnavailability, sortUnavailablility, orderUnavailability, pagePrice, sortPrice, orderPrice]);
 
     return (
-        <Box pb={8}>
-            <Flex p={8} bg='gray.100' flexDirection='column' alignItems='center'>
+        <Box ms={[0, null, 60]} p={8} bg='gray.100'>
+            <Flex flexDirection='column' alignItems='center'>
                 <Text fontSize='sm' color='gray.500' fontWeight='semibold'>
-                    <Link href='/tenant/property' _hover={{ textDecoration: 'none' }}>Property </Link>
+                    <Link href='/admin/property' _hover={{ textDecoration: 'none' }}>Property </Link>
                     /
-                    <Link href={'/tenant/room' + search.split('&')[0]} _hover={{ textDecoration: 'none' }}> {propertyName} </Link>
+                    <Link href={'/admin/room' + search.split('&')[0]} _hover={{ textDecoration: 'none' }}> {propertyName} </Link>
                     / {name}
                 </Text>
                 <RoomDetailCard data={{
@@ -362,11 +359,10 @@ const TenantRoomDetail = (props) => {
                     }
                 }} />
             </Flex>
-            <Box p={16}>
-                <CalendarCard data={{ events: [...unavailableData, ...priceData] }} />
-            </Box>
-            <Divider />
-            <Box mt={16} px={12}>
+            <Card px={8} py={16} mt={8}>
+                <CalendarCard data={{ unavailability: unavailableData, specialPrice: priceData }} />
+            </Card>
+            <Card px={8} py={16} mt={8}>
                 <UnavailabilityTable data={{
                     unavailableLimitData, pagination: <Pagination data={{ totalPage: totalPageUnavailability, handlePageClick: handlePageClickUnavailability }} />, edit: (value) => {
                         setUnavailableId(value);
@@ -392,9 +388,8 @@ const TenantRoomDetail = (props) => {
                         deleteUnavailability();
                     }
                 }} />
-            </Box>
-            <Divider mt={16} />
-            <Box mt={16} px={12}>
+            </Card>
+            <Card px={8} py={16} mt={8}>
                 <SpecialPriceTable data={{
                     priceLimitData, pagination: <Pagination data={{ totalPage: totalPagePrice, handlePageClick: handlePageClickPrice }} />, edit: (value) => {
                         setPriceId(value);
@@ -430,7 +425,7 @@ const TenantRoomDetail = (props) => {
                         deleteSpecialPrice();
                     }
                 }} />
-            </Box>
+            </Card>
         </Box>
     )
 }

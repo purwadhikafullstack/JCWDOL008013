@@ -8,8 +8,8 @@ const RoomListCard = (props) => {
             {props.data.roomData.map((value) => {
                 let roomPicture = API_URL + value.picture;
                 return (
-                    <Link href={'/tenant/room/detail' + search + '&room=' + value.id_room} _hover={{ textDecoration: 'none' }} key={value.id_room}>
-                        <Card mb={4} maxW={700} _hover={{ bg: 'gray.100' }}>
+                    <Link href={'/admin/room/detail' + search + '&room=' + value.id_room} _hover={{ textDecoration: 'none' }} key={value.id_room}>
+                        <Card mb={4} _hover={{ bg: 'gray.100' }}>
                             <Flex>
                                 <Image src={roomPicture} maxW={[150, null, 200]} roundedLeft={5} />
                                 <CardBody alignSelf='center'>
