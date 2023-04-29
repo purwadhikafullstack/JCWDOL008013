@@ -232,7 +232,7 @@ const TenantRoom = (props) => {
                     <SearchCard data={{
                         placeholder: 'Room', query, onChange: (e) => setQuery(e.target.value), searchButton, resetButton
                     }} />
-                    <CreatePropertyRoomCard data={{ title: 'Create new room:', onCreateOpen }} />
+                    <CreatePropertyRoomCard data={{ title: 'Create new room:', onOpen: onCreateOpen }} />
                     <RoomModal data={{
                         title: 'Create new room', isOpen: isCreateOpen, onClose: onCreateClose, initialValues: { name: '', price: '', description: '', picture: '' }, validationSchema: roomValidation, onSubmit: (values, actions) => {
                             onCreateClose();

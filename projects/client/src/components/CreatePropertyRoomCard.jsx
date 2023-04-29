@@ -5,7 +5,7 @@ const CreatePropertyRoomCard = (props) => {
         <Card>
             <CardBody>
                 <FormLabel>{props.data.title}</FormLabel>
-                <Button w='full' onClick={props.data.onCreateOpen}>Create</Button>
+                <Button w='full' onClick={props.data.onOpen}>Create</Button>
             </CardBody>
         </Card>
     )
