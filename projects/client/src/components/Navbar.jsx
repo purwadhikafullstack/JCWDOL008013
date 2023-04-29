@@ -27,6 +27,12 @@ import { logoutAction } from "../actions/userAction";
 
 import { useNavigate } from "react-router-dom"
 
+import { useEffect, useState } from 'react';
+
+import Axios from 'axios';
+
+import API_URL from '../helper';
+
 const Links = [
     { title: "Dashboard", url: "/" },
     { title: "Projects", url: "/projects" },
@@ -61,6 +67,26 @@ const Navbar = (props) => {
     const { isOpen, onOpen, onClose } = useDisclosure();
 
     const navigate = useNavigate()
+
+    const [picture, setPicture] = useState('');
+
+    // Get profile picture
+    const profileData = async () => {
+        try {
+            let getLocalStorage = localStorage.getItem('prw_login');
+            if (getLocalStorage) {
+                let res = await Axios.get(API_URL + '/users/profiledata', { headers: { Authorization: `Bearer ${getLocalStorage}` } });
+                setPicture(API_URL + res.data.picture);
+            }
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
+    useEffect(() => {
+        profileData();
+    }, []);
+    
 
     return (
         <>
@@ -109,9 +135,7 @@ const Navbar = (props) => {
                                     >
                                         <Avatar
                                             size={"sm"}
-                                            src={
-                                                "https://images.unsplash.com/photo-1493666438817-866a91353ca9?ixlib=rb-0.3.5&q=80&fm=jpg&crop=faces&fit=crop&h=200&w=200&s=b616b2c5b373a80ffc9636ba24f7a4a9"
-                                            }
+                                            src={picture}
                                         />
                                     </MenuButton>
                                     <MenuList>
