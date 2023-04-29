@@ -1,4 +1,4 @@
-import { Box, Card, CardHeader, CardBody, CardFooter, Text, Flex, Image, Button, useDisclosure, Divider, ButtonGroup, useToast, Link, Grid, GridItem } from '@chakra-ui/react';
+import { Box, Text, Flex, useDisclosure, Divider, useToast, Link } from '@chakra-ui/react';
 import React, { useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import Axios from 'axios'
@@ -6,14 +6,13 @@ import API_URL from '../helper';
 import { roomValidation } from '../schemas';
 import SpecialPriceTable from '../components/SpecialPriceTable';
 import UnavailabilityTable from '../components/UnavailabilityTable';
-import EditRoomModal from '../components/EditRoomModal';
-import DeleteRoomAlert from '../components/DeleteRoomAlert';
+import RoomModal from '../components/RoomModal';
 import Pagination from '../components/Pagination';
 import SpecialPriceModal from '../components/SpecialPriceModal';
 import UnavailabilityModal from '../components/UnavailabilityModal';
 import CalendarCard from '../components/CalendarCard';
-import UnavailabilityDeleteAlert from '../components/UnavailabilityDeleteAlert';
-import SpecialPriceDeleteAlert from '../components/SpecialPriceDeleteAlert';
+import DeleteAlert from '../components/DeleteAlert';
+import RoomDetailCard from '../components/RoomDetailCard';
 
 const TenantRoomDetail = (props) => {
     // Redirect page
@@ -317,81 +316,51 @@ const TenantRoomDetail = (props) => {
     }, [pagePrice, sortPrice, orderPrice]);
 
     return (
-        <Box pb={24}>
-            <Flex px={16} pt={8} pb={12} bg='gray.100' flexDirection='column' alignItems='center'>
+        <Box pb={8}>
+            <Flex p={8} bg='gray.100' flexDirection='column' alignItems='center'>
                 <Text fontSize='sm' color='gray.500' fontWeight='semibold'>
                     <Link href='/tenant/property' _hover={{ textDecoration: 'none' }}>Property </Link>
                     /
                     <Link href={'/tenant/room' + search.split('&')[0]} _hover={{ textDecoration: 'none' }}> {propertyName} </Link>
                     / {name}
                 </Text>
-                <Card mt={8} maxW={800}>
-                    <CardHeader>
-                        <Text fontSize='2xl' fontWeight='bold' mb={2}>{name}</Text>
-                        <Text bg='green.500' w='max-content' px={4} mb={2} rounded={20} color='white'>Room</Text>
-                    </CardHeader>
-                    <CardBody>
-                        <Flex justifyContent='center' mb={8}>
-                            <Image src={picture} rounded={16} objectFit='cover' />
-                        </Flex>
-                        <Text fontWeight='bold'>Description:</Text>
-                        <Text mb={2}>{description}</Text>
-                        <Text fontWeight='bold'>Price:</Text>
-                        <Text color='blue.500' fontWeight='bold'>Rp {price.toLocaleString('id')}</Text>
-                        <Text color='gray.500'>/ room / night(s)</Text>
-                    </CardBody>
-                    <Divider />
-                    <CardFooter justifyContent='center'>
-                        <Grid templateColumns={['repeat(2, 1fr)', null, 'repeat(4, 1fr)']} gap={4}>
-                            <GridItem>
-                                <Button onClick={onPriceOpen} w={40}>Set special price</Button>
-                                <SpecialPriceModal data={{
-                                    title: 'Set room special price', isOpen: isPriceOpen, onClose: onPriceClose, selectedDates: priceDates, onDateChange: setPriceDates, nominal, percent, value: radioValue, setValue: (e) => {
-                                        setRadioValue(e.target.value)
-                                        setNominal('');
-                                        setPercent('');
-                                    }, onChangeNominal: (e) => {
-                                        setNominal(e.target.value);
-                                        setPercent(null);
-                                    }, onChangePercent: (e) => {
-                                        setPercent(e.target.value);
-                                        setNominal(null);
-                                    }, onClick: () => {
-                                        onPriceClose();
-                                        specialPrice();
-                                    }
-                                }} />
-                            </GridItem>
-                            <GridItem>
-                                <Button onClick={onUnavailableOpen} w={40}>Set unavailability</Button>
-                                <UnavailabilityModal data={{
-                                    title: 'Set room unavailability', isOpen: isUnavailableOpen, onClose: onUnavailableClose, selectedDates: unavailableDates, onDateChange: setUnavailableDates, onClick: () => {
-                                        onUnavailableClose();
-                                        unavailability();
-                                    }
-                                }} />
-                            </GridItem>
-                            <GridItem>
-                                <Button onClick={onEditOpen} w={40}>Edit</Button>
-                                <EditRoomModal data={{
-                                    isOpen: isEditOpen, onClose: onEditClose, initialValues: { name, price, description, picture: '' }, validationSchema: roomValidation, onSubmit: (values, actions) => {
-                                        onEditClose();
-                                        editRoom(values);
-                                    }
-                                }} />
-                            </GridItem>
-                            <GridItem>
-                                <Button onClick={onDeleteOpen} w={40}>Delete</Button>
-                                <DeleteRoomAlert data={{
-                                    isOpen: isDeleteOpen, leastDestructiveRef: cancelRef, onClose: onDeleteClose, onClick: () => {
-                                        onDeleteClose();
-                                        deleteRoom();
-                                    }
-                                }} />
-                            </GridItem>
-                        </Grid>
-                    </CardFooter>
-                </Card>
+                <RoomDetailCard data={{
+                    name, picture, description, price, onPriceOpen, onUnavailableOpen, onEditOpen, onDeleteOpen,
+                }} />
+                <SpecialPriceModal data={{
+                    title: 'Set room special price', isOpen: isPriceOpen, onClose: onPriceClose, selectedDates: priceDates, onDateChange: setPriceDates, nominal, percent, value: radioValue, setValue: (e) => {
+                        setRadioValue(e.target.value)
+                        setNominal('');
+                        setPercent('');
+                    }, onChangeNominal: (e) => {
+                        setNominal(e.target.value);
+                        setPercent(null);
+                    }, onChangePercent: (e) => {
+                        setPercent(e.target.value);
+                        setNominal(null);
+                    }, onClick: () => {
+                        onPriceClose();
+                        specialPrice();
+                    }
+                }} />
+                <UnavailabilityModal data={{
+                    title: 'Set room unavailability', isOpen: isUnavailableOpen, onClose: onUnavailableClose, selectedDates: unavailableDates, onDateChange: setUnavailableDates, onClick: () => {
+                        onUnavailableClose();
+                        unavailability();
+                    }
+                }} />
+                <RoomModal data={{
+                    title: 'Edit your room', isOpen: isEditOpen, onClose: onEditClose, initialValues: { name, price, description, picture: '' }, validationSchema: roomValidation, onSubmit: (values, actions) => {
+                        onEditClose();
+                        editRoom(values);
+                    }
+                }} />
+                <DeleteAlert data={{
+                    title: 'Delete room', isOpen: isDeleteOpen, leastDestructiveRef: cancelRef, onClose: onDeleteClose, onClick: () => {
+                        onDeleteClose();
+                        deleteRoom();
+                    }
+                }} />
             </Flex>
             <Box p={16}>
                 <CalendarCard data={{ events: [...unavailableData, ...priceData] }} />
@@ -417,8 +386,8 @@ const TenantRoomDetail = (props) => {
                         editUnavailability();
                     }
                 }} />
-                <UnavailabilityDeleteAlert data={{
-                    isOpen: isDeleteUnavailableOpen, leastDestructiveRef: cancelRef, onClose: onDeleteUnavailableClose, onClick: () => {
+                <DeleteAlert data={{
+                    title: 'Delete unavailable dates', isOpen: isDeleteUnavailableOpen, leastDestructiveRef: cancelRef, onClose: onDeleteUnavailableClose, onClick: () => {
                         onDeleteUnavailableClose();
                         deleteUnavailability();
                     }
@@ -455,8 +424,8 @@ const TenantRoomDetail = (props) => {
                         editSpecialPrice();
                     }
                 }} />
-                <SpecialPriceDeleteAlert data={{
-                    isOpen: isDeletePriceOpen, leastDestructiveRef: cancelRef, onClose: onDeletePriceClose, onClick: () => {
+                <DeleteAlert data={{
+                    title: 'Delete special price dates', isOpen: isDeletePriceOpen, leastDestructiveRef: cancelRef, onClose: onDeletePriceClose, onClick: () => {
                         onDeletePriceClose();
                         deleteSpecialPrice();
                     }

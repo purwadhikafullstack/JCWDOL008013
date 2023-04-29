@@ -1,12 +1,12 @@
 import { Button, FormControl, FormErrorMessage, FormLabel, Input, Modal, ModalBody, ModalCloseButton, ModalContent, ModalFooter, ModalHeader, ModalOverlay, VStack } from "@chakra-ui/react";
 import { Form, Formik } from 'formik';
 
-const EditRoomModal = (props) => {
+const RoomModal = (props) => {
     return (
         <Modal isOpen={props.data.isOpen} onClose={props.data.onClose} scrollBehavior='outside' isCentered>
             <ModalOverlay />
             <ModalContent>
-                <ModalHeader>Edit your room</ModalHeader>
+                <ModalHeader>{props.data.title}</ModalHeader>
                 <ModalCloseButton />
                 <Formik
                     initialValues={props.data.initialValues}
@@ -74,4 +74,4 @@ const EditRoomModal = (props) => {
     )
 }
 
-export default EditRoomModal
+export default RoomModal
