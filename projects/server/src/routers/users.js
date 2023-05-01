@@ -1,7 +1,7 @@
 const express = require("express");
 const route = express.Router();
 const { usersController } = require("../controllers");
-const {checkUser, checkChangePass, checkCardNumber} = require('../config/validator')
+const {checkUser, checkChangePass, checkCardNumber, checkEditProfile } = require('../config/validator')
 const { readToken } = require("../config/encript");
 const { uploader } = require("../config/uploader");
 
@@ -9,7 +9,7 @@ route.get("/", usersController.getUsersData);
 route.post("/regis",checkUser, usersController.regis);
 route.post("/login", usersController.login);
 route.post("/keep", readToken, usersController.keepLogin);
-route.patch("/profile", readToken, usersController.editProfile);
+route.patch("/profile", checkEditProfile, readToken, usersController.editProfile);
 route.patch(
   "/profilepicture",
   readToken,
