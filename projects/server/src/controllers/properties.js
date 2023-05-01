@@ -14,7 +14,7 @@ module.exports = {
   },
   addProperty: async (req, res) => {
     try {
-      let { name, address, id_city, description, rules, room } = JSON.parse(
+      let { name, address, id_city, description, rules } = JSON.parse(
         req.body.data
       );
       let create = await PropertiesModel.create({
@@ -24,7 +24,6 @@ module.exports = {
         picture: `/imgProperty/${req.files[0].filename}`,
         description,
         rules,
-        room,
         createdBy: req.decript.id_user,
       });
       res.status(200).send({
