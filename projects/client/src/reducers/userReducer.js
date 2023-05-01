@@ -4,6 +4,7 @@ const INITIAL_STATE = {
   email: "",
   isVerified: "false",
   isTenant: "false",
+  picture: "",
 };
 
 export const userReducer = (state = INITIAL_STATE, action) => {

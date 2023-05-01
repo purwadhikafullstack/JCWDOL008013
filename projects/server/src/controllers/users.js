@@ -112,7 +112,7 @@ module.exports = {
   },
   login: (req, res) => {
     dbConf.query(
-      `Select id_user, username, email, password, isTenant
+      `Select id_user, username, email, password, isTenant, picture
         from users where email=${dbConf.escape(
           req.body.email
         )} or username=${dbConf.escape(req.body.name)};`,
@@ -150,7 +150,7 @@ module.exports = {
   keepLogin: (req, res) => {
     // console.log(`req : ${JSON.stringify(req.decript)}`);
     dbConf.query(
-      `Select id_user, username, email, password, isVerified, isTenant 
+      `Select id_user, username, email, password, isVerified, isTenant, picture 
         from users where id_user=${dbConf.escape(
           req.decript.id_user
         )} or username=${dbConf.escape(req.body.name)};`,

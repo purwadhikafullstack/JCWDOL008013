@@ -27,10 +27,6 @@ import { logoutAction } from "../actions/userAction";
 
 import { useNavigate } from "react-router-dom"
 
-import { useEffect, useState } from 'react';
-
-import Axios from 'axios';
-
 import API_URL from '../helper';
 
 const Links = [
@@ -56,10 +52,11 @@ const NavLink = ({ children, url }) => (
 );
 
 const Navbar = (props) => {
-    const { username,isTenant } = useSelector((state) => {
+    const { username, isTenant, picture } = useSelector((state) => {
         return {
             username: state.userReducer.username,
             isTenant: state.userReducer.isTenant,
+            picture: API_URL + state.userReducer.picture,
         };
     });
 
@@ -67,26 +64,6 @@ const Navbar = (props) => {
     const { isOpen, onOpen, onClose } = useDisclosure();
 
     const navigate = useNavigate()
-
-    const [picture, setPicture] = useState('');
-
-    // Get profile picture
-    const profileData = async () => {
-        try {
-            let getLocalStorage = localStorage.getItem('prw_login');
-            if (getLocalStorage) {
-                let res = await Axios.get(API_URL + '/users/profiledata', { headers: { Authorization: `Bearer ${getLocalStorage}` } });
-                setPicture(API_URL + res.data.picture);
-            }
-        } catch (error) {
-            console.log(error);
-        }
-    }
-
-    useEffect(() => {
-        profileData();
-    }, []);
-    
 
     return (
         <>
