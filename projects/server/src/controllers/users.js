@@ -3,7 +3,7 @@ const { dbConf } = require("../config/db");
 const { hashPassword, createToken } = require("../config/encript");
 const bcrypt = require("bcrypt");
 const { transport } = require("../config/nodemailer");
-const { createOTP } = require("../config/createOTP");
+const { createOTP } = require("../config/createOtp");
 const { generatePassword } = require("../middleware/generate");
 
 module.exports = {
