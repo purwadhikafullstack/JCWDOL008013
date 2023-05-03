@@ -32,7 +32,7 @@ module.exports = {
   },
   getRoom: async (req, res) => {
     try {
-      const id_property = req.query.id;
+      const id_property = req.query.property;
       const page = parseInt(req.query.page) || 0;
       const limit = 5;
       const offset = limit * page;
@@ -100,6 +100,22 @@ module.exports = {
         success: true,
         message: "Delete Room Success",
       });
+    } catch (error) {
+      console.log(error);
+      return res.status(500).send(error);
+    }
+  },
+  getDetail: async (req, res) => {
+    try {
+      const id_property = req.query.property;
+      const id_room = req.query.room;
+      let data = await RoomsModel.findAll({
+        where: {
+          id_property,
+          id_room,
+        },
+      });
+      return res.status(200).send(data);
     } catch (error) {
       console.log(error);
       return res.status(500).send(error);
