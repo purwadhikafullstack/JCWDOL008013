@@ -27,7 +27,7 @@ function DetailProperty() {
     const [selectedCity,setSelectedCity]= useState(null);
     const [property,setProperty] = useState(null)
     const [pricecal , setPriceCal] = useState([])
-    const [price,setPrice] = useState([{id: 1, data: 20}])
+    const [price,setPrice] = useState([])
 
     const [other,setOther] = useState({})
     const [formdate,setformdate] = useState("")
@@ -72,13 +72,14 @@ function DetailProperty() {
             Authorization: `Bearer ${getLocalStorage}`
         }})
         .then((res) => {
-            setData(res.data.data)
             if(res.data.data.length != 0){
                 setProperty(res.data.data[0].property) 
             }
             for(let r of res.data.data){
                 findprice(r.id_room)
             }
+            console.log(price,data)
+            setData(res.data.data)
         })
         .catch((err) => {
             console.log(err)
@@ -273,13 +274,12 @@ function DetailProperty() {
                     Rooms
                 </Heading>
                 <Flex flexWrap="wrap" justifyContent="center" direction={"column"} gap={5}>
-                    {data != null ?data.map(room => {
-                        let priceroom = room.sprice.length != 0?room.sprice[0].nominal != null?room.sprice[0].nominal:room.basePrice+((room.sprice[0].percent/100)*room.basePrice):room.basePrice
-
+                    {data != null && price.length == data.length ?data.map(room => {
+                        {/* price[price.findIndex(x=>x.id==room.id_room)].data */}
                         let orderdata = {
                             id_property:room.id_property,
                             id_room:room.id_room,
-                            price: price[price.findIndex(x=>x.id==room.id_room)].data || priceroom,
+                            price: price[price.findIndex(x=>x.id==room.id_room)].data,
                             cityId:selectedCity.value,
                             startDate:selectedDates[0],
                             endDate:selectedDates[1],
@@ -296,7 +296,7 @@ function DetailProperty() {
                                         {room.name}
                                         </Text>
                                         <Text fontSize="lg" color="gray.600">
-                                        {price[price.findIndex(x=>x.id==room.id_room)].data.toLocaleString('id',{ style: 'currency', currency: 'IDR' }) || priceroom} per night
+                                        { price[price.findIndex(x=>x.id==room.id_room)].data.toLocaleString('id',{ style: 'currency', currency: 'IDR' })} per night
                                         </Text>
                                     </Box>
                                     <Text mt="2" fontSize="md" color="gray.600">
