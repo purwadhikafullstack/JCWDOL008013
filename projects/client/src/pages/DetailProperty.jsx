@@ -204,6 +204,15 @@ function DetailProperty() {
     const onOrderBtn = (data)=>{
         console.log(data)
         // TODO: mas rajib di sini kirim data ordernya 
+        let od = {
+            id_property: data.id_property,
+            id_room: data.id_room,
+            checkin_date: data.startDate,
+            checkout_date: data.endDate,
+            total: data.price,
+        };
+        localStorage.setItem("prw_order", JSON.stringify(od));
+        navigate("/detail")
     }
 
     const onSubmitBtn = (data)=>{
