@@ -33,9 +33,6 @@ const PropertiesModel = dbSequelize.define(
       type: DataTypes.INTEGER,
       defaultValue: 1,
     },
-    room: {
-      type: DataTypes.STRING,
-    },
     createdBy: {
       type: DataTypes.INTEGER,
     },

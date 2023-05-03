@@ -14,7 +14,6 @@ import ToBeTenant from "./pages/ToBeTenant";
 import ResetPassword from "./pages/ResetPassword";
 import Profile from "./pages/Profile";
 import ProfilePicture from "./pages/ProfilePicture";
-import Property from "./pages/Property";
 import Detail from "./pages/Detail";
 import Confirmation from "./pages/Confirmation";
 import Payment from "./pages/Payment";
@@ -29,12 +28,14 @@ import Axios from "axios";
 import API_URL from "./helper";
 import OrderList from "./pages/OrderList";
 import { Box } from "@chakra-ui/react";
-import ReportList from "./pages/ReportList";
-import Room from "./pages/Room";
+import TenantRoom from "./pages/TenantRoom";
+import TenantRoomDetail from "./pages/TenantRoomDetail";
 import OrderDetail from "./pages/OrderDetail";
 import RatingUser from "./pages/RatingUser";
 import AvaliableProperty from "./pages/AvaliableProperty";
 import DetailProperty from "./pages/DetailProperty";
+import TenantProperty from "./pages/TenantProperty";
+import ReportList from "./pages/ReportList";
 
 function App() {
   const [message, setMessage] = useState("");
@@ -104,8 +105,9 @@ function App() {
           <Route path="/profilepicture" element={<ProfilePicture />} />
           <Route path= "/admin/order" element={<OrderList />} />
           <Route path= "/admin/report" element={<ReportList />} />
-          <Route path="/property" element={<Property />} />
-          <Route path="/room" element={<Room />} />
+          <Route path="/tenant/property" element={<TenantProperty />} />
+          <Route path="/tenant/room" element={<TenantRoom />} />
+        <Route path="/tenant/room/detail" element={<TenantRoomDetail />} />
           <Route path="/admin/order/detail/:id/:action" element={<OrderDetail />} />
           <Route path="/rating/:id" element={<RatingUser />} />
           <Route path="/search" element={<AvaliableProperty />} />
