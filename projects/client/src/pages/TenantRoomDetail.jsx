@@ -360,7 +360,7 @@ const TenantRoomDetail = (props) => {
                 }} />
             </Flex>
             <Card px={8} py={16} mt={8}>
-                <CalendarCard data={{ unavailability: unavailableData, specialPrice: priceData }} />
+                <CalendarCard data={{ unavailability: unavailableData, specialPrice: priceData, price }} />
             </Card>
             <Card px={8} py={16} mt={8}>
                 <UnavailabilityTable data={{

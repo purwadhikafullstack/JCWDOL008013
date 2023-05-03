@@ -60,11 +60,6 @@ module.exports = {
           id_room,
         },
       });
-      let allDataMap = allData.map((value) => ({
-        ...value.dataValues,
-        title: "Unavailable",
-        color: "red",
-      }));
       let limitData = await UnavailabilitiesModel.findAndCountAll({
         attributes: [
           ["id_availability", "id"],
@@ -93,7 +88,7 @@ module.exports = {
         order: [[sort, order]],
       });
       return res.status(200).send({
-        allData: allDataMap,
+        allData: allData,
         limitData: limitData.rows,
         totalPage: Math.ceil(limitData.count / limit),
       });

@@ -84,10 +84,6 @@ module.exports = {
           id_room,
         },
       });
-      let allDataMap = allData.map((value) => ({
-        ...value.dataValues,
-        title: "Special Price",
-      }));
       let limitData = await SpecialPricesModel.findAndCountAll({
         attributes: [
           ["id_special_price", "id"],
@@ -118,7 +114,7 @@ module.exports = {
         order: [[sort, order]],
       });
       return res.status(200).send({
-        allData: allDataMap,
+        allData: allData,
         limitData: limitData.rows,
         totalPage: Math.ceil(limitData.count / limit),
       });
