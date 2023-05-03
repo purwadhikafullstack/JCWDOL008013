@@ -26,7 +26,7 @@ route.get("/availableroom", ordersController.getAvailableRoom);
 route.get("/availableproperty", ordersController.getAvailableProperty);
 
 route.get("/totalprice", ordersController.getPrice);
-route.get("/testing", ordersController.testing);
+route.get("/getPriceCalendarBydate", ordersController.getPriceCalendarBydate);
 
 
 module.exports = route

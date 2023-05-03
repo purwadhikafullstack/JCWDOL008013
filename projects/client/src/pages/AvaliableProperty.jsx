@@ -4,7 +4,7 @@ import API_URL from '../helper';
 import { useDispatch, useSelector } from 'react-redux';
 import { useParams } from "react-router-dom";
 import { useNavigate } from 'react-router-dom';
-import { Box, Button, Center, Container, Flex, FormControl, Grid, Heading, Image, Skeleton, Text } from '@chakra-ui/react';
+import { Box, Button, Center, Container, Flex, FormControl, Grid, Heading, Image, Skeleton, Text, VStack, Select as SelectCakra} from '@chakra-ui/react';
 import { Select } from "chakra-react-select";
 import {RangeDatepicker} from 'chakra-dayzed-datepicker'
 import { activeOrder, resetOrder } from '../actions/orderUserAction';
@@ -119,7 +119,8 @@ function AvaliableProperty(props) {
     }
 
     const onSubmitBtn = ()=>{
-        console.log("submit",selectedDates,selectedCity,selectedDates.length == 2,selectedCity != null)
+        // console.log("submit",selectedDates,selectedCity,selectedDates.length == 2,selectedCity != null)
+        
         if(selectedDates.length == 2 && selectedCity != null){
             let orderdata = {startDate:selectedDates[0],endDate:selectedDates[1],cityId:selectedCity}
             let formed = JSON.stringify(orderdata)
@@ -165,11 +166,24 @@ function AvaliableProperty(props) {
             </Box>
             <Heading>List of Properties</Heading>
             <Flex>
-                <Box width={300} height={400}>
-                    Filter Box
-                    <Skeleton width={300} height={400}></Skeleton>
+                <Box width={300} height={250} border='2px' borderColor='gray.200'  boxShadow='xl'>
+                    <VStack p={5} margin={2}>
+                        <Heading size={'l'}>Filter Box</Heading>
+                        <SelectCakra placeholder='Sort By' onChange={(e)=>e.target.value!=""?setSort(e.target.value):setSort("id_property")}>
+                            <option value='name'>Name</option>
+                            <option value='id_property'>Property Terbaru</option>
+                            {/* <option value='basePrice'>Price</option> */}
+                        </SelectCakra>
+                        <SelectCakra placeholder='Order By' onChange={(e)=>e.target.value!=""?setOrder(e.target.value):setOrder("asc")}>
+                            <option value='asc'>ASC</option>
+                            <option value='desc'>DESC</option>
+                        </SelectCakra>
+                        <Center p={5}>
+                            <Button p={5} colorScheme='blue' onClick={onSubmitBtn}>Submit</Button>
+                        </Center>
+                    </VStack>
                 </Box>
-                <Flex flex={1} direction={"column"} gap={6}>
+                <Flex marginStart={10} flex={1} direction={"column"} gap={6}>
                     {data != null ?data.map(property => (
                     <Flex key={property.id_property} flex={1} flexDirection={"row"} >
                         <Box p={6}>

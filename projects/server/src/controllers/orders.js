@@ -449,7 +449,7 @@ module.exports = {
           let total = 0
           for(var d = startDate; d<= endDate; d.setDate(d.getDate()+1)){
               let querydate= d.toISOString().slice(0, 19).replace("T", " ")
-              console.log(querydate)
+              
               let special = await SpecialPricesModel.findOne(
                 {where:{[Op.and]:[
                   {id_room:idRoom},
@@ -465,18 +465,18 @@ module.exports = {
                   if(special.nominal != null){
                       let price = +special.nominal
                       total+=price
-                      data.push(total)
+                      data.push(d.getDate()+" : "+total)
                   }else if(special.percent != null){
                       let price = +special.percent
                       total+=basePrice+((basePrice/100)*price)
-                      data.push(total)
+                      data.push(d.getDate()+" : "+total)
                   }else{
                       total+=basePrice
-                      data.push(total)
+                      data.push(d.getDate()+" : "+total)
                   }
               }else{
                   total +=basePrice 
-                  data.push(total)
+                  data.push(d.getDate()+" : "+total)
               }
               
           }
@@ -500,6 +500,7 @@ module.exports = {
       let startDate = new Date(req.query.startDate).toISOString().slice(0, 19).replace("T", " ") 
       let endDate = new Date(req.query.endDate).toISOString().slice(0, 19).replace("T", " ") 
       let id_city = req.query.cityId
+      
 
       const page = parseInt(req.query.page-1) || 0;
       const limit = 10;
@@ -507,12 +508,22 @@ module.exports = {
       const keyword = req.query.keyword || "";
       const sort = req.query.sort || "id_property";
       const order = req.query.order || "ASC";
+      let arrOrder = [sort,order]
+      if(sort === "basePrice"){
+          arrOrder = [{model:RoomsModel,as:"listrooms"},sort, order]
+      }
 
       // for proprety base price
       const availableRooms = await PropertiesModel.findAll({
         include:[
           { model: CitiesModel,as: "city",required: true, },
-          { model: RoomsModel, as: "listrooms",required: false, },
+          { model: RoomsModel, as: "listrooms",required: false, include:[{model:SpecialPricesModel, as:"sprice",required:false,where:{
+            [Op.or]:[
+              {start_date:{[Op.between]:[startDate,endDate]}},
+              {end_date:{[Op.between]:[startDate,endDate]}},
+              {[Op.and]:[{start_date:{[Op.lte]:startDate},end_date:{[Op.gte]:endDate}}]}
+            ]
+          }}]},
         ],
         limit,
         offset,        
@@ -547,7 +558,9 @@ module.exports = {
               )
           }
         },
-        order: [[sort, order]],
+        order: [arrOrder],
+        // order: [[{model:RoomsModel,as:"listrooms"},"basePrice", 'asc']],
+
         
       });
 
@@ -595,7 +608,14 @@ module.exports = {
             ]
           },
           include:[
-              {model:PropertiesModel}
+              {model:PropertiesModel},
+              {model:SpecialPricesModel, as:"sprice",required:false,where:{
+                [Op.or]:[
+                  {start_date:{[Op.between]:[startDate,endDate]}},
+                  {end_date:{[Op.between]:[startDate,endDate]}},
+                  {[Op.and]:[{start_date:{[Op.lte]:startDate},end_date:{[Op.gte]:endDate}}]}
+                ]
+              }}
           ]
         });
 
@@ -795,19 +815,81 @@ module.exports = {
       res.status(500).send({ success: false, message: "Server error" });
     }
   },
-  testing:async(req,res)=>{
-    const rooms = await PropertiesModel.findAll({
-      include: [
-        {
-          model: RoomsModel,
-          as: "listrooms" // use the alias of the association between the two models
+  getPriceCalendarBydate:async(req,res)=>{
+    try{
+        let startDate = new Date(req.query.startDate)
+        // startDate.setDate(startDate.getDate()+1)
+        let endDate = new Date(req.query.endDate)
+        let id_property = req.query.id_property
+        let data = []
+
+        let total = 0
+        for(var d = startDate; d<= endDate; d.setDate(d.getDate()+1)){
+            let querydate= d.toISOString().slice(0, 19).replace("T", " ")
+            const availableRooms = await RoomsModel.findAll({
+                where: {[Op.and]:[
+                  {id_property:id_property},
+                  {id_room: {
+                      [Op.notIn]: Sequelize.literal(
+                        `(
+                          SELECT orders.id_room
+                          FROM orders
+                          JOIN properties ON orders.id_property=properties.id_property
+                          WHERE orders.order_status = "CONFIRMED"
+                          AND (
+                                (orders.checkin_date BETWEEN '${querydate}' AND '${querydate}')
+                                OR (orders.checkout_date BETWEEN '${querydate}' AND '${querydate}')
+                                OR (orders.checkin_date <= '${querydate}'  AND orders.checkout_date >= '${querydate}') 
+                          )  
+                        )`
+                      )
+                  }}
+                  ]
+                },
+                include:[
+                    {model:SpecialPricesModel, as:"sprice",required:false,where:{
+                      [Op.or]:[
+                        {start_date:{[Op.between]:[startDate,endDate]}},
+                        {end_date:{[Op.between]:[startDate,endDate]}},
+                        {[Op.and]:[{start_date:{[Op.lte]:startDate},end_date:{[Op.gte]:endDate}}]}
+                      ]
+                    }}
+                ]
+              });
+            let minprice = null
+            
+            for(let a of availableRooms){
+              let calcprice
+              if(a.sprice.length != 0){
+                // console.log(d , new Date(new Date(a.sprice[0].start_date).setHours(0,0,0,0)) )
+                if(d >= new Date(a.sprice[0].start_date) && d <= new Date(a.sprice[0].end_date)){
+                  calcprice =a.sprice[0].nominal != null?a.sprice[0].nominal:a.basePrice+((a.sprice[0].percent/100)*a.basePrice) 
+                }else{
+                  calcprice = a.basePrice
+                }
+              }else{
+                calcprice = a.basePrice
+              }
+              
+              if(minprice == null || minprice > calcprice)
+                minprice = calcprice
+            }
+            // data.push(d.getDate() + " : "+minprice)
+            data.push(minprice)
         }
-      ]
-    });
-    return res.status(200).send({
-      data:rooms,
-      success: true,
-    })
+          
+        return res.status(200).send({
+            data,
+            success: true,
+        })
+    }catch(error){
+        console.log(error)
+        return res.status(500).send({
+            success: false,
+            message: "Something Gone Wrong",
+            logs:error
+        });
+    }
   }
   
 };

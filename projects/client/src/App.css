@@ -36,3 +36,18 @@
     transform: rotate(360deg);
   }
 }
+
+.calendar{
+  text-align: center;
+  color: #666666;
+}
+.day {
+  display: inline-block;
+  width: 12%;
+  height: auto; /* change to auto to allow for multiple lines */
+  min-height: 4em; /* set a minimum height to ensure consistent spacing */
+  padding: 1em 0; /* reduce padding to make room for multiple lines */
+  border: 1px solid #ccc;
+  text-align: center; /* center the text horizontally */
+  word-wrap: break-word; /* allow words to break onto multiple lines */
+}

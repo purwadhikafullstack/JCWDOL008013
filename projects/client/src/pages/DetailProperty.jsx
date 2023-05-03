@@ -4,12 +4,13 @@ import API_URL from '../helper';
 import { useDispatch, useSelector } from 'react-redux';
 import { useParams } from "react-router-dom";
 import { useNavigate } from 'react-router-dom';
-import { Box, Button, Card, Center, Container, Flex, FormControl, Grid, Heading, Image, Text } from '@chakra-ui/react';
+import { Box, Button, Card, Center, Container, Flex, FormControl, Grid, Heading, Image, Stack, Text } from '@chakra-ui/react';
 import {RangeDatepicker} from 'chakra-dayzed-datepicker'
 
 import { Select } from "chakra-react-select";
 import { activeOrder, resetOrder } from '../actions/orderUserAction';
-
+import CalendarTable from '../components/CalendarTable'
+import leftPad from 'left-pad';
 
 function DetailProperty() {
     const dispatch = useDispatch();
@@ -19,8 +20,17 @@ function DetailProperty() {
     const [groupedOptions,setGroupedOptions] = useState([])
     const [selectedDates, setSelectedDates] = useState([]);
     const today = new Date()
+    const end = 2024;
+    const start = 2023;
+    const yearRange = Array.from({length: (end - start)}, (v, k) => k + start);
+
     const [selectedCity,setSelectedCity]= useState(null);
     const [property,setProperty] = useState(null)
+    const [pricecal , setPriceCal] = useState([])
+    const [price,setPrice] = useState([{id: 1, data: 20}])
+
+    const [other,setOther] = useState({})
+    const [formdate,setformdate] = useState("")
 
     const { id_user } = useSelector((state) => {
         return {
@@ -62,11 +72,40 @@ function DetailProperty() {
             Authorization: `Bearer ${getLocalStorage}`
         }})
         .then((res) => {
-            console.log(res.data.data)
             setData(res.data.data)
             if(res.data.data.length != 0){
                 setProperty(res.data.data[0].property) 
             }
+            for(let r of res.data.data){
+                findprice(r.id_room)
+            }
+        })
+        .catch((err) => {
+            console.log(err)
+            if (!err.response.data.success) {
+                alert(err.response.data.message);
+            }
+            console.log("check error", err)
+        });
+    }
+
+    const findprice = async(roomid) =>{
+        let getLocalStorage = localStorage.getItem("prw_login")
+        Axios.get(API_URL + `/orders/totalprice`,{params:{
+            startDate:selectedDates[0],
+            endDate:selectedDates[1],
+            idRoom:roomid
+        },headers: {
+            Authorization: `Bearer ${getLocalStorage}`
+        }})
+        .then((res) => {
+            let arr = price
+            if(arr.findIndex(x=>x.id===roomid) >= 0){
+                arr[arr.findIndex(x=>x.id===roomid)].data = res.data.total
+            }else{
+                arr.push({id:roomid,data:res.data.total})
+            }
+            setPrice(arr)
         })
         .catch((err) => {
             console.log(err)
@@ -88,7 +127,6 @@ function DetailProperty() {
                 arr.push(new Date(presistentData.startDate))
                 arr.push(new Date(presistentData.endDate))
                 setSelectedDates((x)=>x=arr)
-                console.log(selectedCity,selectedDates)
                 // loadRoomAvaliable()
             }else{
                 dispatch(resetOrder)
@@ -99,35 +137,91 @@ function DetailProperty() {
         }
     }
 
+    const checkcalendar = async()=>{
+        
+        let getLocalStorage = localStorage.getItem("prw_login")
+        let date = new Date(formdate), y = date.getFullYear(), m = date.getMonth();
+
+        if(!isNaN(y) && !isNaN(m)){
+            let firstDay = new Date(y, m, 1).toISOString().substring(0,10);
+            let lastDay = new Date(y, m + 1, 0).toISOString().substring(0,10);
+
+            Axios.get(API_URL + `/orders/getPriceCalendarBydate`,{params:{
+                startDate:firstDay,
+                endDate:lastDay,
+                id_property:id
+            },headers: {
+                Authorization: `Bearer ${getLocalStorage}`
+            }})
+            .then((res) => {
+                setPriceCal(res.data.data)
+            })
+            .catch((err) => {
+                console.log(err)
+                if (!err.response.data.success) {
+                    alert(err.response.data.message);
+                }
+                console.log("check error", err)
+            });
+        }
+        
+    }
+
     useEffect(()=>{
         loadCity()
         checksavedorder()
+        const today = new Date();
+
+        const dateOfMonth = today.getDate();
+        const monthOfYear = today.getMonth() + 1; // 0 based
+        const year        = today.getFullYear();
+        
+        setOther( {
+            day: dateOfMonth,
+            month: monthOfYear,
+            year: year
+        })
+        
     },[])
+
+    useEffect(()=>{
+        setformdate ( [
+            leftPad(other.year, 4, 0),
+            leftPad(other.month, 2, 0),
+            leftPad(other.day, 2, 0)
+        ].join("-"))
+    },[other])
+
+    useEffect(()=>{
+        checkcalendar()
+    },[formdate])
     
     useEffect(()=>{
         if(selectedDates.length == 2 && selectedCity != null)
             loadRoomAvaliable()
     },[selectedCity,selectedDates])
 
-
-
-    const onSubmitBtn = ()=>{
+    const onOrderBtn = (data)=>{
+        console.log(data)
+        // TODO: mas rajib di sini kirim data ordernya 
     }
 
-    const onOrderBtn = ()=>{
+    const onSubmitBtn = (data)=>{
+        loadRoomAvaliable()
     }
 
 
     return (
         <Box p={10}>
-            {/* <Box p={5} >
+            <Box p={5} >
                 <Flex border='2px' borderColor='gray.200'  boxShadow='xl' >
                     <FormControl isRequired p={5}>
                         <Select
                             name="colors"
                             options={groupedOptions}
                             placeholder="Select City"
-                            onChange={(el)=>setForm({...form,cityId:el.value})}
+                            onChange={setSelectedCity}
+                            value={selectedCity}
                         />
                     </FormControl>
                     <FormControl isRequired p={5}>
@@ -148,8 +242,8 @@ function DetailProperty() {
                         <Button p={5} colorScheme='blue' onClick={onSubmitBtn}>Submit</Button>
                     </Center>
                 </Flex>
-            </Box> */}
-            <Flex flexWrap="wrap">
+            </Box>
+            <Flex flexWrap="wrap" borderWidth="1px" borderRadius="lg" >
                 {property != null ?<>
                     <Box flex="1" mr="4">
                         <Image src={property.image} alt={property.name} height={500} objectFit="cover" mb="4" />
@@ -166,34 +260,74 @@ function DetailProperty() {
             
             </Flex>
             <Flex direction={"column"} mt="8">
-            <Heading as="h2" size="lg" mb="4">
-                Rooms
-            </Heading>
-            <Flex flexWrap="wrap" justifyContent="center" direction={"column"} gap={5}>
-                {data != null ?data.map(room => (
-                    <Box key={room.id} flex={1} borderWidth="1px" borderRadius="lg" >
-                        <Flex>
-                            <Box mr={4} flex={1}>
-                                <Image src={room.picture} alt={room.name} height={240} objectFit="fill" mb="4" mx="4"/>
-                            </Box>
-                            <Box p="6" flex={2}>
-                                <Box d="flex" alignItems="baseline">
-                                    <Text fontWeight="semibold" fontSize="xl" mr="2">
-                                    {room.name}
-                                    </Text>
-                                    <Text fontSize="lg" color="gray.600">
-                                    ${room.basePrice} per night
-                                    </Text>
+                <Heading as="h2" size="lg" mb="4">
+                    Rooms
+                </Heading>
+                <Flex flexWrap="wrap" justifyContent="center" direction={"column"} gap={5}>
+                    {data != null ?data.map(room => {
+                        let priceroom = room.sprice.length != 0?room.sprice[0].nominal != null?room.sprice[0].nominal:room.basePrice+((room.sprice[0].percent/100)*room.basePrice):room.basePrice
+
+                        let orderdata = {
+                            id_property:room.id_property,
+                            id_room:room.id_room,
+                            price: price[price.findIndex(x=>x.id==room.id_room)].data || priceroom,
+                            cityId:selectedCity.value,
+                            startDate:selectedDates[0],
+                            endDate:selectedDates[1],
+                        }
+                        return (
+                        <Box key={room.id} flex={1} borderWidth="1px" borderRadius="lg" >
+                            <Flex>
+                                <Box mr={4} flex={1}>
+                                    <Image src={room.picture} alt={room.name} height={240} objectFit="fill" mb="4" mx="4"/>
                                 </Box>
-                                <Text mt="2" fontSize="md" color="gray.600">
-                                    {room.description}
-                                </Text>
-                                <Button p={5} colorScheme='blue' onClick={onOrderBtn}>Order</Button>
-                            </Box>
-                        </Flex>
-                    </Box>
-                )):<Text>No Room Data</Text>}
-            </Flex>
+                                <Box p="6" flex={2}>
+                                    <Box d="flex" alignItems="baseline">
+                                        <Text fontWeight="semibold" fontSize="xl" mr="2">
+                                        {room.name}
+                                        </Text>
+                                        <Text fontSize="lg" color="gray.600">
+                                        {price[price.findIndex(x=>x.id==room.id_room)].data.toLocaleString('id',{ style: 'currency', currency: 'IDR' }) || priceroom} per night
+                                        </Text>
+                                    </Box>
+                                    <Text mt="2" fontSize="md" color="gray.600">
+                                        {room.description}
+                                    </Text>
+                                    <Button p={5} colorScheme='blue' onClick={()=>onOrderBtn(orderdata)}>Order</Button>
+                                </Box>
+                            </Flex>
+                        </Box>
+                    )}):<Text>No Room Data</Text>}
+                </Flex>
+                <br/><br/>
+                <Heading as="h2" size="lg" mb="4">
+                    Price Calendar This Month
+                </Heading>
+                <Stack border='2px' borderColor='gray.200'  boxShadow='sm' padding={5}>
+                <label htmlFor="month">Month</label>
+                <select className='form-control' name="month" value={other.month} onChange={(e) => setOther({...other,month: e.target.value})}>
+                    <option value="1">01 - January</option>
+                    <option value="2">02 - February</option>
+                    <option value="3">03 - March</option>
+                    <option value="4">04 - April</option>
+                    <option value="5">05 - May</option>
+                    <option value="6">06 - June</option>
+                    <option value="7">07 - July</option>
+                    <option value="8">08 - August</option>
+                    <option value="9">09 - September</option>
+                    <option value="10">10 - October</option>
+                    <option value="11">11 - November</option>
+                    <option value="12">12 - December</option>
+                </select>
+                <label htmlFor="year">Year</label>
+                <select className='form-control' name="year" value={other.year}  onChange={(e) => setOther({...other,year: e.target.value})}>
+                    {yearRange.map( (year) => {
+                        return <option key={year} value={year}>{year}</option>
+                    })}
+                </select>
+                </Stack>
+                <br/>
+                <CalendarTable data={pricecal} date={formdate}/>
             </Flex>
         </Box>
     );
