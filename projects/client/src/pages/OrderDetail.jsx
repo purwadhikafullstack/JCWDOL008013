@@ -5,6 +5,8 @@ import { useNavigate } from 'react-router-dom';
 import { Box, Button, ButtonGroup, Card, CardBody, Center, Container, Flex, Heading, Image, Input, Select, Spacer, Text } from '@chakra-ui/react';
 import { useSelector } from 'react-redux';
 import { useParams } from "react-router-dom";
+import Moment from 'react-moment';
+
 
 function OrderDetail() {
     const navigate = useNavigate();
@@ -81,6 +83,8 @@ function OrderDetail() {
         loadOrder()
     },[])
 
+    const pad = (n)=> {return n < 10 ? "0"+n : n;}
+
     return !isTenant?
             <Box p={10} flex={1}>
                 <Center>
@@ -102,7 +106,7 @@ function OrderDetail() {
                                 <Text fontSize="4xl">{data.no_invoice}</Text>
                                 <Text fontSize="3xl">{data.user.username}</Text>
                                 <Text>{data.order_status}</Text>
-                                <Text>{data.checkin_date} - {data.checkout_date}</Text>
+                                <Text><Moment format="YYYY/MM/DD">{data.checkin_date}</Moment> - <Moment format="YYYY/MM/DD">{data.checkout_date}</Moment></Text>
                             </Box>
                         </Flex>
                     </CardBody>

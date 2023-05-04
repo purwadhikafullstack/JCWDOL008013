@@ -1,5 +1,7 @@
 const { Sequelize } = require("sequelize");
 const { dbSequelize } = require("../config/db");
+const PropertiesModel = require("./properties");
+const SpecialPricesModel = require("./specialprices");
 const { DataTypes } = Sequelize;
 
 const RoomsModel = dbSequelize.define(
@@ -32,4 +34,9 @@ const RoomsModel = dbSequelize.define(
   }
 );
 
+RoomsModel.belongsTo(PropertiesModel,{foreignKey:"id_property"})
+PropertiesModel.hasMany(RoomsModel,{foreignKey:"id_property",as:"listrooms"})
+PropertiesModel.belongsTo(RoomsModel,{foreignKey:"id_property",as:"available"})
+
+RoomsModel.hasMany(SpecialPricesModel,{foreignKey:"id_room",as:"sprice"})
 module.exports = RoomsModel;
