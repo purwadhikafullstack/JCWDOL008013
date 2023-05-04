@@ -16,27 +16,31 @@ const CalendarCard = (props) => {
     let dateFormat = dateList.map((val) => val.toISOString().split("T")[0]);
 
     // Unavailability data
-    let unavailabilityData = props.data.unavailability
+    let unavailabilityData = props.data.unavailability;
     let unavailabilityEvent = unavailabilityData.map((val) => {
-        return { ...val, title: 'unavailable', color: 'red' }
-    });
+        let end = new Date(val.end);
+        end.setDate(end.getDate() + 1);
+        return { id: val.id, start: val.start, end: end.toISOString().split("T")[0], title: 'unavailable', color: 'red' }
+    })
 
     // Special price data
     let specialPriceData = props.data.specialPrice;
     let specialPriceEvent = specialPriceData.map((val) => {
+        let end = new Date(val.end);
+        end.setDate(end.getDate() + 1);
         if (val.nominal === null) {
             let title = price + (price * val.percent / 100);
-            return { ...val, title: `Rp ${title.toLocaleString('id')}`, color: 'orange' }
+            return { id: val.id, start: val.start, end: end.toISOString().split("T")[0], title: `Rp ${title.toLocaleString('id')}`, color: 'orange' }
         } else if (val.percent === null) {
             let title = price + val.nominal;
-            return { ...val, title: `Rp ${title.toLocaleString('id')}`, color: 'orange' }
+            return { id: val.id, start: val.start, end: end.toISOString().split("T")[0], title: `Rp ${title.toLocaleString('id')}`, color: 'orange' }
         }
-    })
+    });
 
     // Generate calendar events
     let eventCombine = [...unavailabilityEvent, ...specialPriceEvent];
     let event = [];
-    let endDate = new Date().toISOString().split("T")[0];
+    let endDate = new Date().toISOString().split('T')[0];
 
     for (let i = 0; i < dateFormat.length; i++) {
         let day = dateFormat[i];

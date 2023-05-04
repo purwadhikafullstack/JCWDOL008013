@@ -142,13 +142,17 @@ const TenantRoomDetail = (props) => {
         }
     }
 
+    // console.log(unavailableDates[0]);
+    // console.log(unavailableDates[0].toISOString());
+    // console.log(new Date(unavailableDates[0].getTime() - (unavailableDates[0].getTimezoneOffset() * 60000)).toISOString());
+    // console.log(unavailableDates[1]);
+    // console.log(new Date(unavailableDates[1].getTime() - (unavailableDates[1].getTimezoneOffset() * 60000)).toISOString());
+
     // Set room unavailability
     const unavailability = async () => {
         try {
             let start_date = new Date(unavailableDates[0].getTime() - (unavailableDates[0].getTimezoneOffset() * 60000)).toISOString();
-            let end_date = new Date(unavailableDates[1].getTime() - (unavailableDates[1].getTimezoneOffset() * 60000));
-            end_date.setDate(end_date.getDate() + 1);
-            end_date.toISOString();
+            let end_date = new Date(unavailableDates[1].getTime() - (unavailableDates[1].getTimezoneOffset() * 60000)).toISOString();
             let res = await Axios.post(API_URL + '/unavailabilities/unavailability', { id_room: search.split('=')[2], start_date, end_date });
             if (res.data.success) {
                 toast({
@@ -180,9 +184,7 @@ const TenantRoomDetail = (props) => {
     const specialPrice = async () => {
         try {
             let start_date = new Date(priceDates[0].getTime() - (priceDates[0].getTimezoneOffset() * 60000)).toISOString();
-            let end_date = new Date(priceDates[1].getTime() - (priceDates[1].getTimezoneOffset() * 60000));
-            end_date.setDate(end_date.getDate() + 1);
-            end_date.toISOString();
+            let end_date = new Date(priceDates[1].getTime() - (priceDates[1].getTimezoneOffset() * 60000)).toISOString();
             let res = await Axios.post(API_URL + '/specialprices/setprice', { id_room: search.split('=')[2], start_date, end_date, nominal, percent });
             if (res.data.success) {
                 toast({
