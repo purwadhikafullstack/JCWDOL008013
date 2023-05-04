@@ -32,6 +32,8 @@ import TenantRoom from "./pages/TenantRoom";
 import TenantRoomDetail from "./pages/TenantRoomDetail";
 import OrderDetail from "./pages/OrderDetail";
 import RatingUser from "./pages/RatingUser";
+import AvaliableProperty from "./pages/AvaliableProperty";
+import DetailProperty from "./pages/DetailProperty";
 import TenantProperty from "./pages/TenantProperty";
 import ReportList from "./pages/ReportList";
 
@@ -108,6 +110,9 @@ function App() {
         <Route path="/admin/room/detail" element={<TenantRoomDetail />} />
           <Route path="/admin/order/detail/:id/:action" element={<OrderDetail />} />
           <Route path="/rating/:id" element={<RatingUser />} />
+          <Route path="/search" element={<AvaliableProperty />} />
+          <Route path="/detailproperty/:id" element={<DetailProperty />} />
+          
         </Routes>
       {/* {yang pakai Footer dan navbar */}
       </Box>
