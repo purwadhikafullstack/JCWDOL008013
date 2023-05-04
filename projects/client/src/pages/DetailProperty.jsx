@@ -213,7 +213,7 @@ function DetailProperty() {
             total: data.price,
         };
         localStorage.setItem("prw_order", JSON.stringify(od));
-        navigate("/detail")
+        navigate("/confirmation")
     }
 
     const onSubmitBtn = (data)=>{
