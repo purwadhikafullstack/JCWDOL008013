@@ -150,15 +150,27 @@ const TenantRoomDetail = (props) => {
             end_date.setDate(end_date.getDate() + 1);
             end_date.toISOString();
             let res = await Axios.post(API_URL + '/unavailabilities/unavailability', { id_room: search.split('=')[2], start_date, end_date });
-            toast({
-                title: `${res.data.message}`,
-                description: "You've successfully set unavailable dates",
-                status: 'success',
-                position: 'top',
-                duration: 9000,
-                isClosable: true,
-                onCloseComplete: () => window.location.reload(false)
-            });
+            if (res.data.success) {
+                toast({
+                    title: `${res.data.message}`,
+                    description: "You've successfully set unavailable dates",
+                    status: 'success',
+                    position: 'top',
+                    duration: 9000,
+                    isClosable: true,
+                    onCloseComplete: () => window.location.reload(false)
+                });
+            } else {
+                toast({
+                    title: `${res.data.message}`,
+                    description: "Set unavailable dates failed",
+                    status: 'error',
+                    position: 'top',
+                    duration: 9000,
+                    isClosable: true,
+                    onCloseComplete: () => window.location.reload(false)
+                });
+            }
         } catch (error) {
             console.log(error);
         }
@@ -172,15 +184,27 @@ const TenantRoomDetail = (props) => {
             end_date.setDate(end_date.getDate() + 1);
             end_date.toISOString();
             let res = await Axios.post(API_URL + '/specialprices/setprice', { id_room: search.split('=')[2], start_date, end_date, nominal, percent });
-            toast({
-                title: `${res.data.message}`,
-                description: "You've successfully set special price",
-                status: 'success',
-                position: 'top',
-                duration: 9000,
-                isClosable: true,
-                onCloseComplete: () => window.location.reload(false)
-            });
+            if (res.data.success) {
+                toast({
+                    title: `${res.data.message}`,
+                    description: "You've successfully set special price",
+                    status: 'success',
+                    position: 'top',
+                    duration: 9000,
+                    isClosable: true,
+                    onCloseComplete: () => window.location.reload(false)
+                });
+            } else {
+                toast({
+                    title: `${res.data.message}`,
+                    description: "Set special price failed",
+                    status: 'error',
+                    position: 'top',
+                    duration: 9000,
+                    isClosable: true,
+                    onCloseComplete: () => window.location.reload(false)
+                });
+            }
         } catch (error) {
             console.log(error);
         }

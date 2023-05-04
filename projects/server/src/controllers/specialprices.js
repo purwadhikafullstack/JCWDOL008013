@@ -1,5 +1,7 @@
 const SpecialPricesModel = require("../model/specialprices");
 const { dbSequelize } = require("../config/db");
+const UnavailabilitiesModel = require("../model/unavailabilities");
+const { Op } = require("sequelize");
 
 module.exports = {
   getSpecialPricesData: async (req, res) => {
@@ -34,17 +36,96 @@ module.exports = {
   setPrice: async (req, res) => {
     try {
       let { id_room, start_date, end_date, nominal, percent } = req.body;
-      let create = await SpecialPricesModel.create({
-        id_room,
-        start_date,
-        end_date,
-        nominal,
-        percent,
+
+      // Check special price dates
+      // First check if the date you want to select exceeds the existing date
+      let specialPriceDataCheck = await SpecialPricesModel.findAll({
+        where: {
+          id_room,
+          [Op.or]: [
+            {
+              start_date: {
+                [Op.between]: [start_date, end_date],
+              },
+            },
+            {
+              end_date: {
+                [Op.between]: [start_date, end_date]
+              }
+            }
+          ],
+        },
       });
-      return res.status(200).send({
-        success: true,
-        message: "Special Price Has Been Set",
+      // Second check if the date you want to select is between the existing dates
+      let specialPriceData = await SpecialPricesModel.findAll({
+        where: {
+          id_room,
+        },
       });
+      let specialPriceDataCheck2 = specialPriceData.find(
+        (val) =>
+          val.start_date <= new Date(start_date) &&
+          new Date(start_date) <= val.end_date &&
+          val.start_date <= new Date(end_date) &&
+          new Date(end_date) <= val.end_date
+      );
+
+      // Check unavailable dates
+      // First check if the date you want to select exceeds the existing date
+      let unavailableDataCheck = await UnavailabilitiesModel.findAll({
+        where: {
+          id_room,
+          [Op.or]: [
+            {
+              start_date: {
+                [Op.between]: [start_date, end_date],
+              },
+            },
+            {
+              end_date: {
+                [Op.between]: [start_date, end_date]
+              }
+            }
+          ],
+        },
+      });
+      // Second check if the date you want to select is between the existing dates
+      let unavailableData = await UnavailabilitiesModel.findAll({
+        where: {
+          id_room,
+        },
+      });
+      let unavailableDataCheck2 = unavailableData.find(
+        (val) =>
+          val.start_date <= new Date(start_date) &&
+          new Date(start_date) <= val.end_date &&
+          val.start_date <= new Date(end_date) &&
+          new Date(end_date) <= val.end_date
+      );
+
+      if (specialPriceDataCheck.length > 0 || specialPriceDataCheck2) {
+        return res.status(200).send({
+          success: false,
+          message: "The dates has been assigned before",
+        });
+      } else if (unavailableDataCheck.length > 0 || unavailableDataCheck2) {
+        return res.status(200).send({
+          success: false,
+          message: "The dates has been assigned with unavailable"
+        })
+      } else {
+        let create = await SpecialPricesModel.create({
+          id_room,
+          start_date,
+          end_date,
+          nominal,
+          percent,
+        });
+        return res.status(200).send({
+          success: true,
+          message: "Special Price Has Been Set",
+        });
+      }
     } catch (error) {
       console.log(error);
       return res.status(500).send(error);
