@@ -1,4 +1,4 @@
-import { Button, FormControl, FormLabel, Input, Modal, ModalBody, ModalCloseButton, ModalContent, ModalFooter, ModalHeader, ModalOverlay, VStack } from "@chakra-ui/react"
+import { Button, FormControl, FormLabel, Input, Modal, ModalBody, ModalCloseButton, ModalContent, ModalFooter, ModalHeader, ModalOverlay, Radio, RadioGroup, Stack, VStack } from "@chakra-ui/react"
 import { RangeDatepicker } from "chakra-dayzed-datepicker"
 
 const SpecialPriceModal = (props) => {
@@ -6,7 +6,7 @@ const SpecialPriceModal = (props) => {
         <Modal isOpen={props.data.isOpen} onClose={props.data.onClose}>
             <ModalOverlay />
             <ModalContent>
-                <ModalHeader>Set room special price</ModalHeader>
+                <ModalHeader>{props.data.title}</ModalHeader>
                 <ModalCloseButton />
                 <ModalBody>
                     <VStack>
@@ -28,12 +28,14 @@ const SpecialPriceModal = (props) => {
                             />
                         </FormControl>
                         <FormControl>
-                            <FormLabel>Nominal</FormLabel>
-                            <Input type='number' onChange={props.data.onChangeNominal} />
-                        </FormControl>
-                        <FormControl>
-                            <FormLabel>Percent</FormLabel>
-                            <Input type='number' onChange={props.data.onChangePercent} />
+                            <FormLabel>Special Price</FormLabel>
+                            <RadioGroup value={props.data.value}>
+                                <Stack direction='row' spacing='4'>
+                                    <Radio value='1' onChange={props.data.setValue}>Nominal</Radio>
+                                    <Radio value='2' onChange={props.data.setValue}>Percent</Radio>
+                                </Stack>
+                            </RadioGroup>
+                            <Input mt={2} type='number' value={props.data.value === '1' ? props.data.nominal : props.data.percent} onChange={props.data.value === '1' ? props.data.onChangeNominal : props.data.onChangePercent} />
                         </FormControl>
                     </VStack>
                 </ModalBody>

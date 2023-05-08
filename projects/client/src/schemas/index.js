@@ -50,3 +50,33 @@ export const roomValidation = yup.object().shape({
       (value) => value && value.size <= 1048576
     ),
 });
+
+export const profileValidation = yup.object().shape({
+  username: yup.string().required("Required"),
+  email: yup
+    .string()
+    .email("Please enter a valid email address")
+    .required("Required"),
+  gender: yup.string().required("Required"),
+  birthdate: yup.string().required("Required"),
+});
+
+export const profilePictureValidation = yup.object().shape({
+  picture: yup
+    .mixed()
+    .required("Required")
+    .test(
+      "fileFormat",
+      "Unsupported format",
+      (value) =>
+        value &&
+        ["image/jpg", "image/jpeg", "image/gif", "image/png"].includes(
+          value.type
+        )
+    )
+    .test(
+      "is-valid-size",
+      "Max allowed size is 1MB",
+      (value) => value && value.size <= 1048576
+    ),
+});

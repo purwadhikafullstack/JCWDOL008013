@@ -37,6 +37,9 @@ module.exports = {
       fileFilter: (req, file, cb) => {
         const extFilter = /\.(jpg|png|gif)/;
         let check = file.originalname.toLowerCase().match(extFilter);
+        if (!file.size > 1048576) {
+          cb(new Error("Your file size too large", false));
+        }
         if (check) {
           cb(null, true);
         } else {

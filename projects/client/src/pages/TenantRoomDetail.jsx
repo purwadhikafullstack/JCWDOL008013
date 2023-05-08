@@ -1,4 +1,4 @@
-import { Box, Card, CardHeader, CardBody, CardFooter, Text, Flex, Image, Button, useDisclosure, Divider, ButtonGroup, useToast, Link, Grid, GridItem, useStatStyles } from '@chakra-ui/react';
+import { Box, Text, Flex, useDisclosure, Divider, useToast, Link, Card } from '@chakra-ui/react';
 import React, { useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import Axios from 'axios'
@@ -6,16 +6,13 @@ import API_URL from '../helper';
 import { roomValidation } from '../schemas';
 import SpecialPriceTable from '../components/SpecialPriceTable';
 import UnavailabilityTable from '../components/UnavailabilityTable';
-import EditRoomModal from '../components/EditRoomModal';
-import DeleteRoomAlert from '../components/DeleteRoomAlert';
+import RoomModal from '../components/RoomModal';
 import Pagination from '../components/Pagination';
 import SpecialPriceModal from '../components/SpecialPriceModal';
 import UnavailabilityModal from '../components/UnavailabilityModal';
 import CalendarCard from '../components/CalendarCard';
-import UnavailabilityEditModal from '../components/UnavailabilityEditModal';
-import UnavailabilityDeleteAlert from '../components/UnavailabilityDeleteAlert';
-import SpecialPriceEditModal from '../components/SpecialPriceEditModal';
-import SpecialPriceDeleteAlert from '../components/SpecialPriceDeleteAlert';
+import DeleteAlert from '../components/DeleteAlert';
+import RoomDetailCard from '../components/RoomDetailCard';
 
 const TenantRoomDetail = (props) => {
     // Redirect page
@@ -36,16 +33,28 @@ const TenantRoomDetail = (props) => {
     // State for room special price
     const [priceDates, setPriceDates] = useState([]);
     const [editPriceDates, setEditPriceDates] = useState([]);
-    const [nominal, setNominal] = useState(0);
-    const [percent, setPercent] = useState(0);
+    const [radioValue, setRadioValue] = useState('1');
+    const [nominal, setNominal] = useState('');
+    const [percent, setPercent] = useState('');
     const [priceData, setPriceData] = useState([]);
     const [priceId, setPriceId] = useState(0);
+    const [pagePrice, setPagePrice] = useState(0);
+    const [totalPagePrice, setTotalPagePrice] = useState(0);
+    const [priceLimitData, setPriceLimitData] = useState([]);
+    const [sortPrice, setSortPrice] = useState('id_special_price');
+    const [orderPrice, setOrderPrice] = useState('ASC');
+
 
     // State for room unavailability
     const [unavailableDates, setUnavailableDates] = useState([]);
     const [editUnavailableDates, setEditUnavailableDates] = useState([]);
     const [unavailableData, setUnavailableData] = useState([]);
     const [unavailableId, setUnavailableId] = useState(0);
+    const [pageUnavailability, setPageUnavailability] = useState(0);
+    const [totalPageUnavailability, setTotalPageUnavailability] = useState(0);
+    const [unavailableLimitData, setUnavailableLimitData] = useState([]);
+    const [sortUnavailablility, setSortUnavailability] = useState('id_availability');
+    const [orderUnavailability, setOrderUnavailability] = useState('ASC');
 
     // Pop up notification
     const toast = useToast();
@@ -133,23 +142,39 @@ const TenantRoomDetail = (props) => {
         }
     }
 
+    // console.log(unavailableDates[0]);
+    // console.log(unavailableDates[0].toISOString());
+    // console.log(new Date(unavailableDates[0].getTime() - (unavailableDates[0].getTimezoneOffset() * 60000)).toISOString());
+    // console.log(unavailableDates[1]);
+    // console.log(new Date(unavailableDates[1].getTime() - (unavailableDates[1].getTimezoneOffset() * 60000)).toISOString());
+
     // Set room unavailability
     const unavailability = async () => {
         try {
             let start_date = new Date(unavailableDates[0].getTime() - (unavailableDates[0].getTimezoneOffset() * 60000)).toISOString();
-            let end_date = new Date(unavailableDates[1].getTime() - (unavailableDates[1].getTimezoneOffset() * 60000));
-            end_date.setDate(end_date.getDate() + 1);
-            end_date.toISOString();
+            let end_date = new Date(unavailableDates[1].getTime() - (unavailableDates[1].getTimezoneOffset() * 60000)).toISOString();
             let res = await Axios.post(API_URL + '/unavailabilities/unavailability', { id_room: search.split('=')[2], start_date, end_date });
-            toast({
-                title: `${res.data.message}`,
-                description: "You've successfully set unavailable dates",
-                status: 'success',
-                position: 'top',
-                duration: 9000,
-                isClosable: true,
-                onCloseComplete: () => window.location.reload(false)
-            });
+            if (res.data.success) {
+                toast({
+                    title: `${res.data.message}`,
+                    description: "You've successfully set unavailable dates",
+                    status: 'success',
+                    position: 'top',
+                    duration: 9000,
+                    isClosable: true,
+                    onCloseComplete: () => window.location.reload(false)
+                });
+            } else {
+                toast({
+                    title: `${res.data.message}`,
+                    description: "Set unavailable dates failed",
+                    status: 'error',
+                    position: 'top',
+                    duration: 9000,
+                    isClosable: true,
+                    onCloseComplete: () => window.location.reload(false)
+                });
+            }
         } catch (error) {
             console.log(error);
         }
@@ -159,19 +184,29 @@ const TenantRoomDetail = (props) => {
     const specialPrice = async () => {
         try {
             let start_date = new Date(priceDates[0].getTime() - (priceDates[0].getTimezoneOffset() * 60000)).toISOString();
-            let end_date = new Date(priceDates[1].getTime() - (priceDates[1].getTimezoneOffset() * 60000));
-            end_date.setDate(end_date.getDate() + 1);
-            end_date.toISOString();
+            let end_date = new Date(priceDates[1].getTime() - (priceDates[1].getTimezoneOffset() * 60000)).toISOString();
             let res = await Axios.post(API_URL + '/specialprices/setprice', { id_room: search.split('=')[2], start_date, end_date, nominal, percent });
-            toast({
-                title: `${res.data.message}`,
-                description: "You've successfully set special price",
-                status: 'success',
-                position: 'top',
-                duration: 9000,
-                isClosable: true,
-                onCloseComplete: () => window.location.reload(false)
-            });
+            if (res.data.success) {
+                toast({
+                    title: `${res.data.message}`,
+                    description: "You've successfully set special price",
+                    status: 'success',
+                    position: 'top',
+                    duration: 9000,
+                    isClosable: true,
+                    onCloseComplete: () => window.location.reload(false)
+                });
+            } else {
+                toast({
+                    title: `${res.data.message}`,
+                    description: "Set special price failed",
+                    status: 'error',
+                    position: 'top',
+                    duration: 9000,
+                    isClosable: true,
+                    onCloseComplete: () => window.location.reload(false)
+                });
+            }
         } catch (error) {
             console.log(error);
         }
@@ -180,8 +215,11 @@ const TenantRoomDetail = (props) => {
     // Get unavailable date
     const getUnavailability = async () => {
         try {
-            let res = await Axios.get(API_URL + `/unavailabilities/getunavailability?${search.split('&')[1]}`);
-            setUnavailableData(res.data);
+            let res = await Axios.get(API_URL + `/unavailabilities/getunavailability?${search.split('&')[1]}&page=${pageUnavailability}&sort=${sortUnavailablility}&order=${orderUnavailability}`);
+            setUnavailableData(res.data.allData);
+            setTotalPageUnavailability(res.data.totalPage);
+            setUnavailableLimitData(res.data.limitData);
+
         } catch (error) {
             console.log(error);
         }
@@ -190,8 +228,10 @@ const TenantRoomDetail = (props) => {
     // Get special price
     const getSpecialPrice = async () => {
         try {
-            let res = await Axios.get(API_URL + `/specialprices/getspecialprice?${search.split('&')[1]}`);
-            setPriceData(res.data);
+            let res = await Axios.get(API_URL + `/specialprices/getspecialprice?${search.split('&')[1]}&page=${pagePrice}&sort=${sortPrice}&order=${orderPrice}`);
+            setPriceData(res.data.allData);
+            setTotalPagePrice(res.data.totalPage);
+            setPriceLimitData(res.data.limitData);
         } catch (error) {
             console.log(error);
         }
@@ -277,121 +317,141 @@ const TenantRoomDetail = (props) => {
         }
     }
 
+    // Unavailability table pagination
+    const handlePageClickUnavailability = (data) => {
+        setPageUnavailability(data.selected);
+    }
+
+    // Special price table pagination
+    const handlePageClickPrice = (data) => {
+        setPagePrice(data.selected);
+    }
+
     useEffect(() => {
         getPropertyName();
         getDetail();
+        getSpecialPrice();
+    }, []);
+
+    useEffect(() => {
         getUnavailability();
         getSpecialPrice();
-    }, [])
+    }, [pageUnavailability, sortUnavailablility, orderUnavailability, pagePrice, sortPrice, orderPrice]);
 
     return (
-        <Box px={16} py={8} bg='gray.100'>
-            <Flex mb={8} flexDirection='column' alignItems='center'>
-                <Text mb={8} fontSize='sm' color='gray.500' fontWeight='semibold'>
-                    <Link href='/tenant/property' _hover={{ textDecoration: 'none' }}>Property </Link>
+        <Box ms={[0, null, 60]} p={8} bg='gray.100'>
+            <Flex flexDirection='column' alignItems='center'>
+                <Text fontSize='sm' color='gray.500' fontWeight='semibold'>
+                    <Link href='/admin/property' _hover={{ textDecoration: 'none' }}>Property </Link>
                     /
-                    <Link href={'/tenant/room' + search.split('&')[0]} _hover={{ textDecoration: 'none' }}> {propertyName} </Link>
+                    <Link href={'/admin/room' + search.split('&')[0]} _hover={{ textDecoration: 'none' }}> {propertyName} </Link>
                     / {name}
                 </Text>
-                <Card maxW={700}>
-                    <CardHeader>
-                        <Text fontSize='2xl' fontWeight='bold' mb={2}>{name}</Text>
-                        <Text bg='green.500' w='max-content' px={4} mb={2} rounded={20} color='white'>Room</Text>
-                    </CardHeader>
-                    <CardBody>
-                        <Flex justifyContent='center' mb={8}>
-                            <Image src={picture} rounded={16} />
-                        </Flex>
-                        <Text fontWeight='bold'>Description:</Text>
-                        <Text mb={2}>{description}</Text>
-                        <Text fontWeight='bold'>Price:</Text>
-                        <Text color='blue.500' fontWeight='bold'>Rp {price.toLocaleString('id')}</Text>
-                        <Text color='gray.500'>/ room / night(s)</Text>
-                    </CardBody>
-                    <Divider />
-                    <CardFooter justifyContent='flex-end'>
-                        <ButtonGroup>
-                            <Button onClick={onPriceOpen}>Set room special price</Button>
-                            <SpecialPriceModal data={{
-                                isOpen: isPriceOpen, onClose: onPriceClose, selectedDates: priceDates, onDateChange: setPriceDates, onChangeNominal: (e) => setNominal(e.target.value), onChangePercent: (e) => setPercent(e.target.value), onClick: () => {
-                                    onPriceClose()
-                                    specialPrice()
-                                }
-                            }} />
-                            <Button onClick={onUnavailableOpen}>Set room unavailability</Button>
-                            <UnavailabilityModal data={{
-                                isOpen: isUnavailableOpen, onClose: onUnavailableClose, selectedDates: unavailableDates, onDateChange: setUnavailableDates, onClick: () => {
-                                    onUnavailableClose()
-                                    unavailability()
-                                }
-                            }} />
-                            <Button onClick={onEditOpen}>Edit</Button>
-                            <EditRoomModal data={{
-                                isOpen: isEditOpen, onClose: onEditClose, initialValues: { name, price, description, picture: '' }, validationSchema: roomValidation, onSubmit: (values, actions) => {
-                                    onEditClose();
-                                    editRoom(values);
-                                }
-                            }} />
-                            <Button onClick={onDeleteOpen}>Delete</Button>
-                            <DeleteRoomAlert data={{
-                                isOpen: isDeleteOpen, leastDestructiveRef: cancelRef, onClose: onDeleteClose, onClick: () => {
-                                    onDeleteClose();
-                                    deleteRoom();
-                                }
-                            }} />
-                        </ButtonGroup>
-                    </CardFooter>
-                </Card>
+                <RoomDetailCard data={{
+                    name, picture, description, price, onPriceOpen, onUnavailableOpen, onEditOpen, onDeleteOpen,
+                }} />
+                <SpecialPriceModal data={{
+                    title: 'Set room special price', isOpen: isPriceOpen, onClose: onPriceClose, selectedDates: priceDates, onDateChange: setPriceDates, nominal, percent, value: radioValue, setValue: (e) => {
+                        setRadioValue(e.target.value)
+                        setNominal('');
+                        setPercent('');
+                    }, onChangeNominal: (e) => {
+                        setNominal(e.target.value);
+                        setPercent(null);
+                    }, onChangePercent: (e) => {
+                        setPercent(e.target.value);
+                        setNominal(null);
+                    }, onClick: () => {
+                        onPriceClose();
+                        specialPrice();
+                    }
+                }} />
+                <UnavailabilityModal data={{
+                    title: 'Set room unavailability', isOpen: isUnavailableOpen, onClose: onUnavailableClose, selectedDates: unavailableDates, onDateChange: setUnavailableDates, onClick: () => {
+                        onUnavailableClose();
+                        unavailability();
+                    }
+                }} />
+                <RoomModal data={{
+                    title: 'Edit your room', isOpen: isEditOpen, onClose: onEditClose, initialValues: { name, price, description, picture: '' }, validationSchema: roomValidation, onSubmit: (values, actions) => {
+                        onEditClose();
+                        editRoom(values);
+                    }
+                }} />
+                <DeleteAlert data={{
+                    title: 'Delete room', isOpen: isDeleteOpen, leastDestructiveRef: cancelRef, onClose: onDeleteClose, onClick: () => {
+                        onDeleteClose();
+                        deleteRoom();
+                    }
+                }} />
             </Flex>
-            <Grid justifyContent='center' templateColumns='repeat(2, 1fr)' gap={6}>
-                <GridItem>
-                    <CalendarCard data={{ events: unavailableData.concat(priceData) }} />
-                </GridItem>
-                <GridItem>
-                    <UnavailabilityTable data={{
-                        unavailableData, pagination: <Pagination />, edit: (value) => {
-                            setUnavailableId(value);
-                            onEditUnavailableOpen();
-                        }, delete: (value) => {
-                            setUnavailableId(value);
-                            onDeleteUnavailableOpen();
-                        }
-                    }} />
-                    <UnavailabilityEditModal data={{
-                        isOpen: isEditUnavailableOpen, onClose: onEditUnavailableClose, selectedDates: editUnavailableDates, onDateChange: setEditUnavailableDates, onClick: () => {
-                            onEditUnavailableClose();
-                            editUnavailability();
-                        }
-                    }} />
-                    <UnavailabilityDeleteAlert data={{
-                        isOpen: isDeleteUnavailableOpen, leastDestructiveRef: cancelRef, onClose: onDeleteUnavailableClose, onClick: () => {
-                            onDeleteUnavailableClose();
-                            deleteUnavailability();
-                        }
-                    }} />
-                    <SpecialPriceTable data={{
-                        priceData, pagination: <Pagination />, edit: (value) => {
-                            setPriceId(value);
-                            onEditPriceOpen();
-                        }, delete: (value) => {
-                            setPriceId(value);
-                            onDeletePriceOpen();
-                        }
-                    }} />
-                    <SpecialPriceEditModal data={{
-                        isOpen: isEditPriceOpen, onClose: onEditPriceClose, selectedDates: editPriceDates, onChangeNominal: (e) => setNominal(e.target.value), onChangePercent: (e) => setPercent(e.target.value), onDateChange: setEditPriceDates, onClick: () => {
-                            onEditPriceClose();
-                            editSpecialPrice();
-                        }
-                    }} />
-                    <SpecialPriceDeleteAlert data={{
-                        isOpen: isDeletePriceOpen, leastDestructiveRef: cancelRef, onClose: onDeletePriceClose, onClick: () => {
-                            onDeletePriceClose();
-                            deleteSpecialPrice();
-                        }
-                    }} />
-                </GridItem>
-            </Grid>
+            <Card px={8} py={16} mt={8}>
+                <CalendarCard data={{ unavailability: unavailableData, specialPrice: priceData, price }} />
+            </Card>
+            <Card px={8} py={16} mt={8}>
+                <UnavailabilityTable data={{
+                    unavailableLimitData, pagination: <Pagination data={{ totalPage: totalPageUnavailability, handlePageClick: handlePageClickUnavailability }} />, edit: (value) => {
+                        setUnavailableId(value);
+                        onEditUnavailableOpen();
+                    }, delete: (value) => {
+                        setUnavailableId(value);
+                        onDeleteUnavailableOpen();
+                    }, sort: (value) => {
+                        setSortUnavailability(value);
+                    }, order: (value) => {
+                        setOrderUnavailability(value);
+                    }
+                }} />
+                <UnavailabilityModal data={{
+                    title: 'Edit room unavailability', isOpen: isEditUnavailableOpen, onClose: onEditUnavailableClose, selectedDates: editUnavailableDates, onDateChange: setEditUnavailableDates, onClick: () => {
+                        onEditUnavailableClose();
+                        editUnavailability();
+                    }
+                }} />
+                <DeleteAlert data={{
+                    title: 'Delete unavailable dates', isOpen: isDeleteUnavailableOpen, leastDestructiveRef: cancelRef, onClose: onDeleteUnavailableClose, onClick: () => {
+                        onDeleteUnavailableClose();
+                        deleteUnavailability();
+                    }
+                }} />
+            </Card>
+            <Card px={8} py={16} mt={8}>
+                <SpecialPriceTable data={{
+                    priceLimitData, pagination: <Pagination data={{ totalPage: totalPagePrice, handlePageClick: handlePageClickPrice }} />, edit: (value) => {
+                        setPriceId(value);
+                        onEditPriceOpen();
+                    }, delete: (value) => {
+                        setPriceId(value);
+                        onDeletePriceOpen();
+                    }, sort: (value) => {
+                        setSortPrice(value);
+                    }, order: (value) => {
+                        setOrderPrice(value);
+                    }
+                }} />
+                <SpecialPriceModal data={{
+                    title: 'Edit room special price', isOpen: isEditPriceOpen, onClose: onEditPriceClose, selectedDates: editPriceDates, onDateChange: setEditPriceDates, nominal, percent, value: radioValue, setValue: (e) => {
+                        setRadioValue(e.target.value)
+                        setNominal('');
+                        setPercent('');
+                    }, onChangeNominal: (e) => {
+                        setNominal(e.target.value);
+                        setPercent(null);
+                    }, onChangePercent: (e) => {
+                        setPercent(e.target.value);
+                        setNominal(null);
+                    }, onClick: () => {
+                        onEditPriceClose();
+                        editSpecialPrice();
+                    }
+                }} />
+                <DeleteAlert data={{
+                    title: 'Delete special price dates', isOpen: isDeletePriceOpen, leastDestructiveRef: cancelRef, onClose: onDeletePriceClose, onClick: () => {
+                        onDeletePriceClose();
+                        deleteSpecialPrice();
+                    }
+                }} />
+            </Card>
         </Box>
     )
 }
