@@ -256,7 +256,7 @@ function DetailProperty() {
             <Flex flexWrap="wrap" borderWidth="1px" borderRadius="lg" >
                 {property != null ?<>
                     <Box flex="1" mr="4">
-                        <Image src={property.image} alt={property.name} height={500} objectFit="cover" mb="4" />
+                        <Image src={API_URL + property.picture} alt={property.name} height={500} objectFit="cover" mb="4" />
                     </Box>
                     <Box flex="2">
                         <Heading as="h1" size="xl" mb="2">
@@ -288,7 +288,7 @@ function DetailProperty() {
                         <Box key={room.id} flex={1} borderWidth="1px" borderRadius="lg" >
                             <Flex>
                                 <Box mr={4} flex={1}>
-                                    <Image src={room.picture} alt={room.name} height={240} objectFit="fill" mb="4" mx="4"/>
+                                    <Image src={API_URL + room.picture} alt={room.name} height={240} objectFit="fill" mb="4" mx="4"/>
                                 </Box>
                                 <Box p="6" flex={2}>
                                     <Box d="flex" alignItems="baseline">

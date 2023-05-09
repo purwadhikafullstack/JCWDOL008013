@@ -10,5 +10,6 @@ route.get("/getproperty", readToken, propertiesController.getProperty);
 route.get("/getpropertydetail", readToken, propertiesController.getPropertyDetail);
 route.patch("/editproperty", uploader("/imgProperty", "IMGPROPERTY").array("images", 1), propertiesController.editProperty);
 route.patch("/deleteproperty", propertiesController.deleteProperty);
+route.get("/landingproperty", propertiesController.getLandingProperty);
 
 module.exports = route
