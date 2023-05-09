@@ -25,17 +25,17 @@ app.use(express.json());
 // Check sequelize connection
 const { checkSequelize, dbSequelize } = require("./config/db");
 checkSequelize();
-dbSequelize.sync();
+dbSequelize.sync({ alter: true });
 
-// const { dbConf } = require("./config/db");
-// //testing mysql connection
-// dbConf.getConnection((err, connection) => {
-//   if (err) {
-//     console.log(`Error mySQL Connection`, err.message);
-//   }
+const { dbConf } = require("./config/db");
+//testing mysql connection
+dbConf.getConnection((err, connection) => {
+  if (err) {
+    console.log(`Error mySQL Connection`, err.message);
+  }
 
-//   console.log(`Connect MySQL ✅ : ${connection.threadId}`);
-// });
+  console.log(`Connect MySQL ✅ : ${connection.threadId}`);
+});
 
 // Config routes
 const {
