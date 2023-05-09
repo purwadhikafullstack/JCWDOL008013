@@ -27,15 +27,15 @@ const { checkSequelize, dbSequelize } = require("./config/db");
 checkSequelize();
 dbSequelize.sync();
 
-const { dbConf } = require("./config/db");
-//testing mysql connection
-dbConf.getConnection((err, connection) => {
-  if (err) {
-    console.log(`Error mySQL Connection`, err.message);
-  }
+// const { dbConf } = require("./config/db");
+// //testing mysql connection
+// dbConf.getConnection((err, connection) => {
+//   if (err) {
+//     console.log(`Error mySQL Connection`, err.message);
+//   }
 
-  console.log(`Connect MySQL ✅ : ${connection.threadId}`);
-});
+//   console.log(`Connect MySQL ✅ : ${connection.threadId}`);
+// });
 
 // Config routes
 const {
