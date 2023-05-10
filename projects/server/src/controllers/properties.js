@@ -1,6 +1,8 @@
 const PropertiesModel = require("../model/properties");
 const CitiesModel = require("../model/cities");
 const { Op } = require("sequelize");
+const RoomsModel = require("../model/rooms");
+const { dbSequelize } = require("../config/db");
 
 module.exports = {
   getPropertiesData: async (req, res) => {
@@ -48,7 +50,6 @@ module.exports = {
           model: CitiesModel,
           as: "city",
         },
-        required: true,
         limit,
         offset,
         where: {
@@ -90,7 +91,6 @@ module.exports = {
           model: CitiesModel,
           as: "city",
         },
-        required: true,
         where: {
           createdBy: req.decript.id_user,
           status: 1,
@@ -147,6 +147,32 @@ module.exports = {
       return res.status(200).send({
         success: true,
         message: "Delete Property Success",
+      });
+    } catch (error) {
+      console.log(error);
+      return res.status(500).send(error);
+    }
+  },
+  getLandingProperty: async (req, res) => {
+    try {
+      let page = req.query.page || 0;
+      const limit = 16;
+      const offset = limit * page;
+      let propertyData = await PropertiesModel.findAll({});
+      let data = await PropertiesModel.findAll({
+        include: [
+          { model: CitiesModel, as: "city" },
+          { model: RoomsModel, as: "listrooms" },
+        ],
+        where: {
+          status: 1,
+        },
+        limit,
+        offset,
+      });
+      return res.status(200).send({
+        data,
+        totalPage: Math.ceil(propertyData.length / limit),
       });
     } catch (error) {
       console.log(error);

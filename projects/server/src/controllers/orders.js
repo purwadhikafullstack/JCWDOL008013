@@ -529,6 +529,7 @@ module.exports = {
         offset,        
         required: true,
         where: {
+          id_city,
           status: 1,
           [Op.or]:[ 
             {

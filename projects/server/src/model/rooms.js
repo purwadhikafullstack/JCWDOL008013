@@ -19,7 +19,7 @@ const RoomsModel = dbSequelize.define(
       type: DataTypes.STRING,
     },
     description: {
-      type: DataTypes.STRING,
+      type: DataTypes.STRING(1000),
     },
     picture: {
       type: DataTypes.STRING,

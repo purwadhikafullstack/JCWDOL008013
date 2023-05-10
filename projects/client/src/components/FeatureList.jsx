@@ -25,7 +25,7 @@ const FeatureBox = ( {title, text, icon} ) => {
 export default function FeatureList(props) {
     
     return (
-        <Box p={10} >
+        <Box px={36} my={24}>
             <SimpleGrid columns={{ base: 1, md: 3 }} spacing={10}>
                 {props.fitur.map((data,index)=>(
                     <FeatureBox
