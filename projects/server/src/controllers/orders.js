@@ -442,12 +442,13 @@ module.exports = {
           let startDate = new Date(req.query.startDate)
           startDate.setDate(startDate.getDate()+1)
           let endDate = new Date(req.query.endDate)
+          startDate.setDate(startDate.getDate()-1)
           let idRoom = req.query.idRoom 
           let data = []
           let getBasePrice = await RoomsModel.findOne({attributes:['basePrice']},{where:{id:idRoom}})
           let basePrice = +getBasePrice.basePrice || 0
           let total = 0
-          for(var d = startDate; d<= endDate; d.setDate(d.getDate()+1)){
+          for(var d = startDate; d<endDate; d.setDate(d.getDate()+1)){
               let querydate= d.toISOString().slice(0, 19).replace("T", " ")
               
               let special = await SpecialPricesModel.findOne(
@@ -581,8 +582,8 @@ module.exports = {
   getAvailableRoom: async(req,res)=>{
       // Query for available rooms
       try{
-        let startDate = new Date(req.query.startDate).toISOString().slice(0, 19).replace("T", " ") ||new Date('2023-03-22').toISOString().slice(0, 19).replace("T", " ");
-        let endDate = new Date(req.query.endDate).toISOString().slice(0, 19).replace("T", " ") ||new Date('2023-03-28').toISOString().slice(0, 19).replace("T", " ");
+        let startDate = new Date(req.query.startDate).toISOString().slice(0, 19).replace("T", " ") 
+        let endDate = new Date(req.query.endDate).toISOString().slice(0, 19).replace("T", " ")
         let id_city = req.query.cityId || "1";
         let id_property  = req.query.propertyId ||"2";
 
@@ -818,8 +819,10 @@ module.exports = {
   getPriceCalendarBydate:async(req,res)=>{
     try{
         let startDate = new Date(req.query.startDate)
-        // startDate.setDate(startDate.getDate()+1)
+        startDate.setDate(startDate.getDate()+1)
         let endDate = new Date(req.query.endDate)
+        endDate.setDate(endDate.getDate()+1)
+
         let id_property = req.query.id_property
         let data = []
 
