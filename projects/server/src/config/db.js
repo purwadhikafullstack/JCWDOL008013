@@ -1,6 +1,6 @@
 // Sequelize configuration
 const { Sequelize } = require("sequelize");
-const mysql = require("mysql");
+const mysql = require("mysql2");
 
 const dbSequelize = new Sequelize(
   process.env.DB_NAME,

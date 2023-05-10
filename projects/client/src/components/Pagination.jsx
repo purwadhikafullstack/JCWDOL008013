@@ -6,10 +6,10 @@ const Pagination = (props) => {
             previousLabel={'Previous'}
             nextLabel={'Next'}
             breakLabel={'...'}
-            // pageCount={props.data.totalPage}
+            pageCount={props.data.totalPage}
             marginPagesDisplayed={2}
             pageRangeDisplayed={3}
-            // onPageChange={props.data.handlePageClick}
+            onPageChange={props.data.handlePageClick}
             containerClassName={'pagination justify-content-center'}
             pageClassName={'page-item'}
             pageLinkClassName={'page-link'}

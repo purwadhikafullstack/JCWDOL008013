@@ -84,7 +84,7 @@ function App() {
   return (
     <div style={{display:"flex",flexDirection:'column', minHeight:"100vh",height:"100%" ,margin:0}}>
 {/* {yang pakai sidebar/>} */}
-{['/dashboard','/changepass','/profile','/tobetenant','/changepict', '/mybooking','/profile','/profilepicture'].includes(location.pathname) ? <Sidebar loading={loading}/> : <Navbar loading={loading} />}
+{['/dashboard','/changepass','/profile','/tobetenant','/changepict', '/mybooking','/profile','/profilepicture', '/admin/property', '/admin/room', '/admin/room/detail'].includes(location.pathname) ? <Sidebar loading={loading}/> : <Navbar loading={loading} />}
       <Box flex={1}>
         <Routes>
           <Route path="/" element={<Landing />} />
@@ -105,9 +105,9 @@ function App() {
           <Route path="/profilepicture" element={<ProfilePicture />} />
           <Route path= "/admin/order" element={<OrderList />} />
           <Route path= "/admin/report" element={<ReportList />} />
-          <Route path="/tenant/property" element={<TenantProperty />} />
-          <Route path="/tenant/room" element={<TenantRoom />} />
-        <Route path="/tenant/room/detail" element={<TenantRoomDetail />} />
+          <Route path="/admin/property" element={<TenantProperty />} />
+          <Route path="/admin/room" element={<TenantRoom />} />
+        <Route path="/admin/room/detail" element={<TenantRoomDetail />} />
           <Route path="/admin/order/detail/:id/:action" element={<OrderDetail />} />
           <Route path="/rating/:id" element={<RatingUser />} />
           <Route path="/search" element={<AvaliableProperty />} />

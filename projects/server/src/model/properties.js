@@ -24,10 +24,10 @@ const PropertiesModel = dbSequelize.define(
       type: DataTypes.STRING,
     },
     description: {
-      type: DataTypes.STRING,
+      type: DataTypes.STRING(1000),
     },
     rules: {
-      type: DataTypes.STRING,
+      type: DataTypes.STRING(1000),
     },
     status: {
       type: DataTypes.INTEGER,

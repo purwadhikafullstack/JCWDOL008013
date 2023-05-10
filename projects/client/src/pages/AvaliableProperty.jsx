@@ -187,7 +187,7 @@ function AvaliableProperty(props) {
                     {data != null ?data.map(property => (
                     <Flex key={property.id_property} flex={1} flexDirection={"row"} >
                         <Box p={6}>
-                            <Image src={property.picture} alt={property.name}  height={200}/>
+                            <Image src={API_URL + property.picture} alt={property.name}  height={200}/>
                         </Box>
 
                         <Box p="6">

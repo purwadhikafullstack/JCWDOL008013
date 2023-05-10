@@ -59,4 +59,27 @@ module.exports ={
         } console.log('cardNumber validator',cardNumber)
         next();
       },
+    checkEditProfile: async (req, res, next) => {
+      try {
+        await check("username").notEmpty().isAlphanumeric().run(req);
+        await check("email").notEmpty().isEmail().run(req);
+        await check("gender").notEmpty().run(req);
+        await check("birthdate").notEmpty().run(req);
+
+        const validation = validationResult(req);
+        console.log(validation);
+
+        if (validation.isEmpty()) {
+          next();
+        } else {
+          return res.status(400).send({
+            success: false,
+            message: "Validation invalid",
+            error: validation.errors,
+          });
+        }
+      } catch (error) {
+        return res.status(500).send(error);
+      }
+    }
 }
