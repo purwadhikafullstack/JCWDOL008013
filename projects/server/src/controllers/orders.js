@@ -504,7 +504,7 @@ module.exports = {
       
 
       const page = parseInt(req.query.page-1) || 0;
-      const limit = 10;
+      const limit = parseInt(req.query.perpage) || 10;
       const offset = limit * page;
       const keyword = req.query.keyword || "";
       const sort = req.query.sort || "id_property";
@@ -515,7 +515,7 @@ module.exports = {
       }
 
       // for proprety base price
-      const availableRooms = await PropertiesModel.findAll({
+      const { rows } = await PropertiesModel.findAndCountAll({
         include:[
           { model: CitiesModel,as: "city",required: true, },
           { model: RoomsModel, as: "listrooms",required: false, include:[{model:SpecialPricesModel, as:"sprice",required:false,where:{
@@ -530,6 +530,7 @@ module.exports = {
         offset,        
         required: true,
         where: {
+          id_city,
           status: 1,
           [Op.or]:[ 
             {
@@ -561,13 +562,64 @@ module.exports = {
         },
         order: [arrOrder],
         // order: [[{model:RoomsModel,as:"listrooms"},"basePrice", 'asc']],
-
-        
+      });
+      const count = await PropertiesModel.findAll({
+          include:[
+            { model: CitiesModel,as: "city",required: true, },
+            { model: RoomsModel, as: "listrooms",required: false, include:[{model:SpecialPricesModel, as:"sprice",required:false,where:{
+              [Op.or]:[
+                {start_date:{[Op.between]:[startDate,endDate]}},
+                {end_date:{[Op.between]:[startDate,endDate]}},
+                {[Op.and]:[{start_date:{[Op.lte]:startDate},end_date:{[Op.gte]:endDate}}]}
+              ]
+            }}]},
+          ],  
+          required: true,
+          where: {
+            id_city,
+            status: 1,
+            [Op.or]:[ 
+              {
+                name: {
+                  [Op.like]: "%" + keyword + "%",
+                },
+              },
+              {
+                address: {
+                  [Op.like]: "%" + keyword + "%",
+                },
+              },
+            ], 
+            id_property: {
+                [Op.notIn]: Sequelize.literal(
+                  `(
+                    SELECT orders.id_property
+                    FROM orders
+                    JOIN properties ON orders.id_property=properties.id_property
+                    WHERE orders.order_status = "CONFIRMED" AND properties.id_city='${id_city}'
+                    AND (
+                          (orders.checkin_date BETWEEN '${startDate}' AND '${endDate}')
+                          OR (orders.checkout_date BETWEEN '${startDate}' AND '${endDate}')
+                          OR (orders.checkin_date <= '${startDate}'  AND orders.checkout_date >= '${endDate}') 
+                    )  
+                  )`
+                )
+            }
+          },
+          order: [arrOrder],
+          // order: [[{model:RoomsModel,as:"listrooms"},"basePrice", 'asc']],
       });
 
+      let compiled = {
+          total : count.length,
+          page : +offset+1,
+          perpage : +limit,
+          data : rows
+      }
+
       return res.status(200).send({
-        data:availableRooms,
         success: true,
+        data:compiled,
       })
     }catch(error){
         console.log(error)
@@ -584,8 +636,7 @@ module.exports = {
       try{
         let startDate = new Date(req.query.startDate).toISOString().slice(0, 19).replace("T", " ") 
         let endDate = new Date(req.query.endDate).toISOString().slice(0, 19).replace("T", " ")
-        let id_city = req.query.cityId || "1";
-        let id_property  = req.query.propertyId ||"2";
+        let id_property  = req.query.propertyId;
 
         // for rooms fix by base price
         const availableRooms = await RoomsModel.findAll({
@@ -597,7 +648,7 @@ module.exports = {
                     SELECT orders.id_room
                     FROM orders
                     JOIN properties ON orders.id_property=properties.id_property
-                    WHERE orders.order_status = "CONFIRMED" AND properties.id_city='${id_city}'
+                    WHERE orders.order_status = "CONFIRMED" AND properties.id_property='${id_property}'
                     AND (
                           (orders.checkin_date BETWEEN '${startDate}' AND '${endDate}')
                           OR (orders.checkout_date BETWEEN '${startDate}' AND '${endDate}')
