@@ -9,6 +9,8 @@ import Pagination from "./Pagination"
 
 const LandingProperty = (props) => {
     const today = new Date(new Date().setHours(0, 0, 0, 0));
+    let tomorrow = new Date(new Date().setHours(0, 0, 0, 0));
+    tomorrow.setDate(tomorrow.getDate() + 1);
     const dispatch = useDispatch();
     const navigate = useNavigate();
 
@@ -31,7 +33,7 @@ const LandingProperty = (props) => {
     }
 
     const onSubmitBtn = (value) => {
-        let orderdata = { startDate: today, endDate: today, cityId: { value: value.id_city, label: value.name } }
+        let orderdata = { startDate: today, endDate: tomorrow, cityId: { value: value.id_city, label: value.name } }
         let formed = JSON.stringify(orderdata)
         localStorage.setItem('order_form', formed)
         dispatch(activeOrder(formed))

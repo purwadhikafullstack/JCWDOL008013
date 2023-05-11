@@ -19,8 +19,6 @@ import { FcAssistant, FcLock, FcMoneyTransfer } from 'react-icons/fc';
 import { activeOrder, resetOrder } from '../actions/orderUserAction';
 import TrendingDestinations from '../components/TrendingDestinations';
 import LandingProperty from '../components/LandingProperty';
-import TrendingDestinations from '../components/TrendingDestinations';
-import LandingProperty from '../components/LandingProperty';
 
 const Landing = () => {
     const navigate = useNavigate();

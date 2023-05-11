@@ -9,9 +9,11 @@ const TrendingDestinations = (props) => {
     const dispatch = useDispatch();
     const navigate = useNavigate();
     const today = new Date(new Date().setHours(0, 0, 0, 0));
+    let tomorrow = new Date(new Date().setHours(0, 0, 0, 0));
+    tomorrow.setDate(tomorrow.getDate() + 1);
 
     const onSubmitBtn = (value) => {
-        let orderdata = { startDate: today, endDate: today, cityId: value };
+        let orderdata = { startDate: today, endDate: tomorrow, cityId: value };
         let formed = JSON.stringify(orderdata);
         localStorage.setItem('order_form', formed);
         dispatch(activeOrder(formed));
