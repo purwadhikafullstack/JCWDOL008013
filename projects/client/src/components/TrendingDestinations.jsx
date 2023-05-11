@@ -8,8 +8,10 @@ import { useNavigate } from "react-router-dom";
 const TrendingDestinations = (props) => {
     const dispatch = useDispatch();
     const navigate = useNavigate();
-    const today = new Date(new Date().setHours(0, 0, 0, 0));
-    let tomorrow = new Date(new Date().setHours(0, 0, 0, 0));
+
+    // Config date and time
+    let today = new Date(new Date().setHours(7, 0, 0, 0));
+    let tomorrow = new Date(new Date().setHours(7, 0, 0, 0));
     tomorrow.setDate(tomorrow.getDate() + 1);
 
     const onSubmitBtn = (value) => {

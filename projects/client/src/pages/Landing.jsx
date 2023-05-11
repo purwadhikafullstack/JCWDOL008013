@@ -27,6 +27,8 @@ const Landing = () => {
     const [cities, setCities] = useState([])
     const [selectedDates, setSelectedDates] = useState([]);
     const today = new Date()
+    let yesterday = new Date()
+    yesterday.setDate(yesterday.getDate() - 1)
     const [selectedCity, setSelectedCity] = useState("");
     const cards = [
         {
@@ -92,7 +94,9 @@ const Landing = () => {
 
     const onSubmitBtn = () => {
         if (selectedDates.length == 2 && selectedCity != "") {
-            let orderdata = { startDate: selectedDates[0], endDate: selectedDates[1], cityId: selectedCity }
+            let startDate = new Date(selectedDates[0].setHours(7, 0, 0, 0));
+            let endDate = new Date(selectedDates[1].setHours(7, 0, 0, 0));
+            let orderdata = { startDate, endDate, cityId: selectedCity }
             let formed = JSON.stringify(orderdata)
             localStorage.setItem('order_form', formed)
             dispatch(activeOrder(formed))
@@ -144,11 +148,14 @@ const Landing = () => {
                             selectedDates={selectedDates}
                             onDateChange={setSelectedDates}
                             closeOnSelect={true}
-                            minDate={today}
+                            minDate={yesterday}
                             propsConfigs={{
                                 inputProps: {
                                     placeholder: "Check In - Check Out"
                                 },
+                            }}
+                            configs={{
+                                dateFormat: 'dd/MM/yyyy'
                             }}
                         />
                     </FormControl>
