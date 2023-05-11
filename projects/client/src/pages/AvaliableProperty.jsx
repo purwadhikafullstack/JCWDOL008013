@@ -9,6 +9,8 @@ import { Select } from "chakra-react-select";
 import {RangeDatepicker} from 'chakra-dayzed-datepicker'
 import { activeOrder, resetOrder } from '../actions/orderUserAction';
 
+import ReactPaginate from 'react-paginate';
+
 function AvaliableProperty(props) {
     const dispatch = useDispatch();
     const navigate = useNavigate();
@@ -23,6 +25,9 @@ function AvaliableProperty(props) {
     const [selectedDates, setSelectedDates] = useState([]);
     const [selectedCity,setSelectedCity]= useState(null);
 
+    const [perpage,setPerPage]= useState(10)
+    const [total, setTotalItem] = useState(0)
+
     const today = new Date()
 
     const { id_user } = useSelector((state) => {
@@ -32,14 +37,13 @@ function AvaliableProperty(props) {
     });
 
     const loadListPropertyAvailable = ()=>{
-        console.log("avail prop")
-
         let getLocalStorage = localStorage.getItem("prw_login")
         Axios.get(API_URL + `/orders/availableproperty`,{params:{
             startDate:selectedDates[0],
             endDate:selectedDates[1],
             cityId:selectedCity.value,
             page,
+            perpage,
             keyword,
             sort,
             order
@@ -47,8 +51,8 @@ function AvaliableProperty(props) {
             Authorization: `Bearer ${getLocalStorage}`
         }})
         .then((res) => {
-            console.log(res.data.data)
-            setData(res.data.data)
+            setData(res.data.data.data)
+            setTotalItem(res.data.data.total)
         })
         .catch((err) => {
             console.log(err)
@@ -57,8 +61,6 @@ function AvaliableProperty(props) {
             }
             console.log("check error", err)
         });
-        
-        
     }
 
     const checksavedorder = async()=>{
@@ -72,7 +74,6 @@ function AvaliableProperty(props) {
                 arr.push(new Date(presistentData.startDate))
                 arr.push(new Date(presistentData.endDate))
                 setSelectedDates((x)=>x=arr)
-                console.log(selectedCity,selectedDates)
             }else{
                 dispatch(resetOrder)
             }
@@ -112,11 +113,19 @@ function AvaliableProperty(props) {
     useEffect(()=>{
         if(selectedDates.length == 2 && selectedCity != null)
                 loadListPropertyAvailable()
-    },[selectedCity,selectedDates])
+    },[selectedCity,selectedDates,page])
+
+    useEffect(()=>{
+        console.log(Math.ceil(total/perpage),total,perpage)
+    },[total])
 
     const checkRoomBtn = (id)=>{
         navigate("/detailproperty/"+id)
     }
+
+    const handlePageClick = (event) => {
+        setPage(event.selected+1)
+    };
 
     const onSubmitBtn = ()=>{
         // console.log("submit",selectedDates,selectedCity,selectedDates.length == 2,selectedCity != null)
@@ -184,8 +193,11 @@ function AvaliableProperty(props) {
                     </VStack>
                 </Box>
                 <Flex marginStart={10} flex={1} direction={"column"} gap={6}>
+                    <style>
+                        @import "https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css";
+                    </style>
                     {data != null ?data.map(property => (
-                    <Flex key={property.id_property} flex={1} flexDirection={"row"} >
+                    <Flex key={property.id_property} flex={1} flexDirection={"row"} boxShadow='outline' p='6' rounded='md' bg='white' >
                         <Box p={6}>
                             <Image src={API_URL + property.picture} alt={property.name}  height={200}/>
                         </Box>
@@ -199,7 +211,7 @@ function AvaliableProperty(props) {
                                 Start From {property.listrooms.length != 0?property.listrooms[0].basePrice.toLocaleString('id',{ style: 'currency', currency: 'IDR' }):"Rp. 0,00"} per night
                                 </Text>
                             </Box>
-                            <Text mt="2" fontSize="md" color="gray.600">
+                            <Text mt="2" fontSize="md" color="gray.600" noOfLines={2} align={'justify'}>
                                 {property.description}
                             </Text>
                             {property.listrooms.length != 0?<Button onClick={()=>checkRoomBtn(property.id_property)}>Check Room</Button>:<Text>No Rooms Avaliable</Text>}
@@ -207,7 +219,30 @@ function AvaliableProperty(props) {
                         </Box>
                     </Flex>
                     )):<Heading p={10}>No Data to Show</Heading>}
+                    {data != null && total > perpage ?<Center p={5}>
+                        <ReactPaginate
+                            onPageChange={handlePageClick}
+                            pageCount={Math.ceil(total/perpage) || 0}
+                            pageRangeDisplayed={3}
+                            marginPagesDisplayed={2}
+                            nextLabel="next >"
+                            previousLabel="< previous"
+                            pageClassName="page-item"
+                            pageLinkClassName="page-link"
+                            previousClassName="page-item"
+                            previousLinkClassName="page-link"
+                            nextClassName="page-item"
+                            nextLinkClassName="page-link"
+                            breakLabel="..."
+                            breakClassName="page-item"
+                            breakLinkClassName="page-link"
+                            containerClassName="pagination"
+                            activeClassName="active"
+                            renderOnZeroPageCount={null}
+                        />
+                    </Center>:<></>}
                 </Flex>
+                
             </Flex>
             
         </Box>
