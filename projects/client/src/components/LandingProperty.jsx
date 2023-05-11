@@ -66,10 +66,10 @@ const LandingProperty = (props) => {
     }, [page]);
 
     return (
-        <Box px={36} mt={12}>
+        <Box px={[8, null, 36]} mt={12}>
             <Text fontSize='3xl' fontWeight='bold'>Homes Guests Love</Text>
             <Text color='gray.500'>Most popular choices for travelers</Text>
-            <Grid mt={4} mb={8} templateColumns='repeat(4, 1fr)' gap={4}>
+            <Grid mt={4} mb={8} templateColumns={['repeat(2, 1fr)', null, 'repeat(4, 1fr)']} gap={4}>
                 {property.map((val) => {
                     let price = {};
                     if (val.listrooms.length !== 0) {
@@ -79,7 +79,7 @@ const LandingProperty = (props) => {
                     }
                     return (
                         <GridItem key={val.id_property} cursor='pointer' onClick={() => onSubmitBtn({ id_city: val.city.id_city, name: val.city.name, id_property: val.id_property })}>
-                            <Image src={API_URL + val.picture} w='full' h='200px' objectFit='cover' />
+                            <Image borderRadius={8} src={API_URL + val.picture} w='full' h={[150, null, 200]} objectFit='cover' />
                             <Text mt={2} fontWeight='bold'>{val.name}</Text>
                             <Text color='gray.500'>{val.city.name}, {val.city.province}</Text>
                             <Text fontSize='sm'>Starting from {Object.keys(price).length === 0 ? '-' : price.basePrice.toLocaleString('id', { style: 'currency', currency: 'IDR' })}</Text>
