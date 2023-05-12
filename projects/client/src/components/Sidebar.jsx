@@ -110,8 +110,9 @@ const Sidebar = () => {
         as="nav"
         display={{ base: "none", md: "block" }}
         bg="white"
+        borderTopWidth="4px"
         borderRightWidth="1px"
-        borderColor="gray.200"
+        borderColor="blue.400"
         w="60"
         h="full"
         pos="fixed"
