@@ -2,6 +2,9 @@ import {
     Button,
     Container,
     Divider,
+    Flex,
+    Icon,
+    Image,
     Input,
     Stack,
     Text,
@@ -9,9 +12,11 @@ import {
 
 import { Logo } from "./Logo";
 
+import { MdHotel } from "react-icons/md"
+
 const Footer = () => {
     return (
-        <Container as="footer" role="contentinfo" maxWidth="100%" p={10}>
+        <Container as="footer" role="contentinfo" maxWidth="100%" bg='blue.400' px={[8, null, 36]}>
             <Stack
                 spacing="8"
                 direction={{
@@ -25,52 +30,40 @@ const Footer = () => {
                 }}
             >
                 <Stack
-                    spacing={{
-                        base: "6",
-                        md: "8",
-                    }}
                     align="start"
-                >
-                    <Logo />
-                    <Text color="muted">Create beautiful websites remarkably fast.</Text>
-                </Stack>
-                <Stack
                     direction={{
-                        base: "column-reverse",
+                        base: "row",
                         md: "column",
-                        lg: "row",
-                    }}
-                    spacing={{
-                        base: "12",
-                        md: "8",
                     }}
                 >
-                    <Stack direction="row" spacing="8">
-                        <Stack spacing="4" minW="36" flex="1">
-                            <Text fontSize="sm" fontWeight="semibold" color="subtle">
-                                Product
-                            </Text>
-                            <Stack spacing="3" shouldWrapChildren>
-                                <Button variant="link">How it works</Button>
-                                <Button variant="link">Pricing</Button>
-                                <Button variant="link">Use Cases</Button>
-                            </Stack>
-                        </Stack>
-                        <Stack spacing="4" minW="36" flex="1">
-                            <Text fontSize="sm" fontWeight="semibold" color="subtle">
-                                Legal
-                            </Text>
-                            <Stack spacing="3" shouldWrapChildren>
-                                <Button variant="link">Privacy</Button>
-                                <Button variant="link">Terms</Button>
-                                <Button variant="link">License</Button>
-                            </Stack>
+                    {/* <Logo /> */}
+                    <Icon as={MdHotel} boxSize={20} color='white' mt={[-4, null, 0]} me={[4, null, 0]} />
+                    <Text color="white" fontSize='3xl' fontWeight='bold'>StayComfy</Text>
+                </Stack>
+                <Divider display={['block', null, 'none']} />
+                <Flex direction="row" gap={12}>
+                    <Stack spacing="4" minW="36" flex="1">
+                        <Text fontSize='xl' fontWeight="bold" color='white'>
+                            Product
+                        </Text>
+                        <Stack spacing="3" shouldWrapChildren>
+                            <Button variant="link" color='white'>How it works</Button>
+                            <Button variant="link" color='white'>Pricing</Button>
+                            <Button variant="link" color='white'>Use Cases</Button>
                         </Stack>
                     </Stack>
-                    
-                </Stack>
+                    <Stack spacing="4" minW="36" flex="1">
+                        <Text fontSize='xl' fontWeight="bold" color='white'>
+                            Legal
+                        </Text>
+                        <Stack spacing="3" shouldWrapChildren>
+                            <Button variant="link" color='white'>Privacy</Button>
+                            <Button variant="link" color='white'>Terms</Button>
+                            <Button variant="link" color='white'>License</Button>
+                        </Stack>
+                    </Stack>
+                </Flex>
             </Stack>
-            <Divider />
         </Container>
     )
 };
