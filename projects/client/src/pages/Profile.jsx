@@ -61,8 +61,8 @@ const Profile = (props) => {
     }, []);
 
     return (
-        <Box bg="gray.100" ms={[0, null, 60]} px={8}>
-            <Flex h='100vh' justifyContent='center' alignItems='center'>
+        <Box ms={[0, null, 60]} px={8} borderTopWidth={[0, null, '4px']} borderColor='blue.400'>
+            <Flex justifyContent='center' mt={[8, null, 32]}>
                 <ProfileCard data={{
                     picture, username, email, gender, birthdate, onOpen
                 }} />

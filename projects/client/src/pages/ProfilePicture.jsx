@@ -1,4 +1,4 @@
-import { Avatar, Box, Button, Card, CardBody, CardFooter, CardHeader, Flex, FormControl, FormErrorMessage, Input, useToast } from '@chakra-ui/react';
+import { Avatar, Box, Button, Flex, FormControl, FormErrorMessage, Input, useToast } from '@chakra-ui/react';
 import React, { useEffect, useState } from 'react';
 import Axios from 'axios';
 import API_URL from '../helper';
@@ -48,14 +48,12 @@ const ProfilePicture = (props) => {
     }, []);
 
     return (
-        <Box bg='gray.100' ms={[0, null, 60]} px={8}>
-            <Flex h='100vh' justifyContent='center' alignItems='center'>
-                <Card w={500}>
-                    <CardHeader>
-                        <Flex justifyContent='center'>
-                            <Avatar size='2xl' mt={10} src={picture} />
-                        </Flex>
-                    </CardHeader>
+        <Box ms={[0, null, 60]} px={8} borderTopWidth={[0, null, '4px']} borderColor='blue.400'>
+            <Flex justifyContent='center' mt={[8, null, 32]}>
+                <Box w={500} p={8} border={[0, null, '1px']} borderColor={['', null, 'blue.400']} borderRadius={8}>
+                    <Flex justifyContent='center'>
+                        <Avatar size='2xl' src={picture} />
+                    </Flex>
                     <Formik
                         initialValues={{ picture }}
                         validationSchema={profilePictureValidation}
@@ -66,27 +64,23 @@ const ProfilePicture = (props) => {
                     >
                         {(props) => (
                             <Form>
-                                <CardBody>
-                                    <FormControl isInvalid={props.errors.picture && props.touched.picture}>
-                                        <Input
-                                            id='picture'
-                                            type='file'
-                                            accept='image/*'
-                                            onChange={(e) => {
-                                                props.setFieldValue('picture', e.target.files[0]);
-                                            }}
-                                            onBlur={props.handleBlur}
-                                        />
-                                        <FormErrorMessage>{props.errors.picture}</FormErrorMessage>
-                                    </FormControl>
-                                </CardBody>
-                                <CardFooter>
-                                    <Button w="full" type='submit' isLoading={props.isSubmitting}>Save</Button>
-                                </CardFooter>
+                                <FormControl isInvalid={props.errors.picture && props.touched.picture} mt={12}>
+                                    <Input
+                                        id='picture'
+                                        type='file'
+                                        accept='image/*'
+                                        onChange={(e) => {
+                                            props.setFieldValue('picture', e.target.files[0]);
+                                        }}
+                                        onBlur={props.handleBlur}
+                                    />
+                                    <FormErrorMessage>{props.errors.picture}</FormErrorMessage>
+                                </FormControl>
+                                <Button mt={4} colorScheme='blue' w="full" type='submit' isLoading={props.isSubmitting}>Save</Button>
                             </Form>
                         )}
                     </Formik>
-                </Card>
+                </Box>
             </Flex>
         </Box>
     )
