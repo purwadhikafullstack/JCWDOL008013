@@ -9,10 +9,10 @@ const DeleteAlert = (props) => {
                     <AlertDialogBody>Are you sure?</AlertDialogBody>
                     <AlertDialogFooter>
                         <ButtonGroup>
-                            <Button ref={props.data.leastDestructiveRef} onClick={props.data.onClose}>
+                            <Button colorScheme='blue' ref={props.data.leastDestructiveRef} onClick={props.data.onClose}>
                                 Cancel
                             </Button>
-                            <Button colorScheme='red' onClick={props.data.onClick}>
+                            <Button colorScheme='red' variant='outline' onClick={props.data.onClick}>
                                 Delete
                             </Button>
                         </ButtonGroup>

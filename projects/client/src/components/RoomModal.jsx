@@ -64,7 +64,7 @@ const RoomModal = (props) => {
                                 </VStack>
                             </ModalBody>
                             <ModalFooter>
-                                <Button type='submit' isLoading={props.isSubmitting}>Save</Button>
+                                <Button colorScheme='blue' w='full' type='submit' isLoading={props.isSubmitting}>Save</Button>
                             </ModalFooter>
                         </Form>
                     )}
