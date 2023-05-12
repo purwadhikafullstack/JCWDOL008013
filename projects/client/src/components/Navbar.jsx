@@ -241,6 +241,9 @@ const Navbar = (props) => {
                                         <NavLink url='/mybooking'>
                                             My Booking
                                         </NavLink>
+                                        <NavLink url='/profile'>
+                                            Profile
+                                        </NavLink>
                                     </Stack>
                             }
                         </DrawerBody>
