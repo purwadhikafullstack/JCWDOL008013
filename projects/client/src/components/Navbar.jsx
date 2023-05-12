@@ -169,7 +169,10 @@ const Navbar = (props) => {
                                             </>
                                         }
                                         <MenuDivider />
-                                        <MenuItem onClick={() => dispatch(logoutAction())}>Sign Out <Icon as={AiOutlineLogout} ms={1} mt={0.5} /></MenuItem>
+                                        <MenuItem onClick={() => {
+                                            dispatch(logoutAction())
+                                            navigate("/")
+                                        }}>Sign Out <Icon as={AiOutlineLogout} ms={1} mt={0.5} /></MenuItem>
                                     </MenuList>
                                 </Menu>
                             ) : (
