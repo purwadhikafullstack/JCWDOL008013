@@ -178,7 +178,6 @@ const Navbar = (props) => {
                                         variant={"solid"}
                                         colorScheme="blue"
                                         size={"sm"}
-                                        mr={4}
                                         as="a"
                                         href={"/login"}
                                     >
@@ -189,7 +188,6 @@ const Navbar = (props) => {
                                         variant="outline"
                                         colorScheme="blue"
                                         size={"sm"}
-                                        mr={4}
                                         as="a"
                                         href={"/register"}
                                     >
