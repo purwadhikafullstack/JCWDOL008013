@@ -91,12 +91,10 @@ const Navbar = (props) => {
                         onClick={onOpen}
                     />
                     <Box display={{ md: "none" }} justifySelf='center'>
-                        <NavLink url='/'>
-                            <Flex gap={2}>
-                                <Icon as={MdHotel} boxSize={6} color='blue.400' />
-                                <Text fontWeight='bold'>StayComfy</Text>
-                            </Flex>
-                        </NavLink>
+                        <Flex gap={2} onClick={() => navigate("/")} cursor="pointer">
+                            <Icon as={MdHotel} boxSize={6} color='blue.400' />
+                            <Text fontWeight='bold'>StayComfy</Text>
+                        </Flex>
                     </Box>
                     <HStack
                         as={"nav"}
