@@ -209,7 +209,7 @@ const Navbar = (props) => {
                     <DrawerContent>
                         <DrawerCloseButton />
                         <DrawerHeader>
-                            <Flex gap={2}>
+                            <Flex gap={2} onClick={() => navigate("/")} cursor="pointer">
                                 <Icon as={MdHotel} boxSize={6} color='blue.400' mt={1} />
                                 <Text fontWeight='bold'>StayComfy</Text>
                             </Flex>
