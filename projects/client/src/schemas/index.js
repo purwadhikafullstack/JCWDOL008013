@@ -23,7 +23,7 @@ export const propertyValidation = yup.object().shape({
     ),
   description: yup
     .string()
-    .max(255, "Description too long")
+    .max(1000, "Description too long")
     .required("Required"),
   rules: yup.string().required("Required"),
 });
@@ -31,7 +31,7 @@ export const propertyValidation = yup.object().shape({
 export const roomValidation = yup.object().shape({
   name: yup.string().required("Required"),
   price: yup.number().positive().integer().required("Required"),
-  description: yup.string().required("Required"),
+  description: yup.string().max(1000, "Description too long").required("Required"),
   picture: yup
     .mixed()
     .required("Required")

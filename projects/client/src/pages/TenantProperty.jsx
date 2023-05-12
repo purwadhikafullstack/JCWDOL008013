@@ -115,9 +115,10 @@ const TenantProperty = (props) => {
         getProperty();
     }, [page, sort, order, keyword]);
 
+    console.log(propertyData);
 
     return (
-        <Box ms={[0, null, 60]} p={8} bg='gray.100'>
+        <Box ms={[0, null, 60]} p={[2, 8]} borderTopWidth={[0, null, '4px']} borderColor='blue.400'>
             <Grid mb={4} justifyContent='center' templateColumns={['repeat(1, 1fr)', null, null, 'repeat(5, 1fr)']}>
                 <GridItem w={['full', null, null, 250]}>
                     <SortOrderCard data={{
