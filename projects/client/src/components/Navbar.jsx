@@ -62,7 +62,6 @@ const NavLink = ({ children, url }) => (
         }}
         href={url}
         fontWeight='semibold'
-        fontWeight='semibold'
     >
         {children}
     </Link>
@@ -89,10 +88,8 @@ const Navbar = (props) => {
                     <IconButton
                         size={"md"}
                         icon={<HamburgerIcon />}
-                        icon={<HamburgerIcon />}
                         aria-label={"Open Menu"}
                         display={{ md: "none" }}
-                        onClick={onOpen}
                         onClick={onOpen}
                     />
                     <Box display={{ md: "none" }} justifySelf='center'>
@@ -183,7 +180,6 @@ const Navbar = (props) => {
                                     <Button
                                         variant={"solid"}
                                         colorScheme="blue"
-                                        colorScheme="blue"
                                         size={"sm"}
                                         as="a"
                                         href={"/login"}
@@ -192,8 +188,6 @@ const Navbar = (props) => {
                                     </Button>
 
                                     <Button
-                                        variant="outline"
-                                        colorScheme="blue"
                                         variant="outline"
                                         colorScheme="blue"
                                         size={"sm"}
