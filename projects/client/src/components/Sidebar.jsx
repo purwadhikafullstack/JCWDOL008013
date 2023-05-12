@@ -87,8 +87,10 @@ const Sidebar = () => {
         justify="space-between"
         py="4"
         px="6"
+        borderTopWidth="4px"
+        borderTopColor="blue.400"
         borderBottomWidth="1px"
-        borderColor="gray.200"
+        borderBottomColor="gray.200"
         display={{ base: "flex", md: "none" }}
       >
         <IconButton
