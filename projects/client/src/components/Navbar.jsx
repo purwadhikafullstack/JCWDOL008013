@@ -47,6 +47,8 @@ const Links = [
     { title: "Projects", url: "/projects" },
     { title: "Order List", url: "/admin/order", tenant: 1 },
     { title: "Order Report", url: "/admin/report", tenant: 1 },
+    { title: "Order List", url: "/admin/order", tenant: 1 },
+    { title: "Order Report", url: "/admin/report", tenant: 1 },
 ];
 
 const NavLink = ({ children, url }) => (
@@ -59,6 +61,7 @@ const NavLink = ({ children, url }) => (
             bg: useColorModeValue("gray.200", "gray.700"),
         }}
         href={url}
+        fontWeight='semibold'
         fontWeight='semibold'
     >
         {children}
@@ -86,17 +89,17 @@ const Navbar = (props) => {
                     <IconButton
                         size={"md"}
                         icon={<HamburgerIcon />}
+                        icon={<HamburgerIcon />}
                         aria-label={"Open Menu"}
                         display={{ md: "none" }}
                         onClick={onOpen}
+                        onClick={onOpen}
                     />
                     <Box display={{ md: "none" }} justifySelf='center'>
-                        <NavLink url='/'>
-                            <Flex gap={2}>
-                                <Icon as={MdHotel} boxSize={6} color='blue.400' />
-                                <Text fontWeight='bold'>StayComfy</Text>
-                            </Flex>
-                        </NavLink>
+                        <Flex gap={2} onClick={() => navigate("/")} cursor="pointer">
+                            <Icon as={MdHotel} boxSize={6} color='blue.400' />
+                            <Text fontWeight='bold'>StayComfy</Text>
+                        </Flex>
                     </Box>
                     <HStack
                         as={"nav"}
@@ -169,13 +172,17 @@ const Navbar = (props) => {
                                             </>
                                         }
                                         <MenuDivider />
-                                        <MenuItem onClick={() => dispatch(logoutAction())}>Sign Out <Icon as={AiOutlineLogout} ms={1} mt={0.5} /></MenuItem>
+                                        <MenuItem onClick={() => {
+                                            dispatch(logoutAction())
+                                            navigate("/")
+                                        }}>Sign Out <Icon as={AiOutlineLogout} ms={1} mt={0.5} /></MenuItem>
                                     </MenuList>
                                 </Menu>
                             ) : (
                                 <ButtonGroup>
                                     <Button
                                         variant={"solid"}
+                                        colorScheme="blue"
                                         colorScheme="blue"
                                         size={"sm"}
                                         as="a"
@@ -185,6 +192,8 @@ const Navbar = (props) => {
                                     </Button>
 
                                     <Button
+                                        variant="outline"
+                                        colorScheme="blue"
                                         variant="outline"
                                         colorScheme="blue"
                                         size={"sm"}
@@ -208,7 +217,7 @@ const Navbar = (props) => {
                     <DrawerContent>
                         <DrawerCloseButton />
                         <DrawerHeader>
-                            <Flex gap={2}>
+                            <Flex gap={2} onClick={() => navigate("/")} cursor="pointer">
                                 <Icon as={MdHotel} boxSize={6} color='blue.400' mt={1} />
                                 <Text fontWeight='bold'>StayComfy</Text>
                             </Flex>
@@ -239,6 +248,9 @@ const Navbar = (props) => {
                                     <Stack>
                                         <NavLink url='/mybooking'>
                                             My Booking
+                                        </NavLink>
+                                        <NavLink url='/profile'>
+                                            Profile
                                         </NavLink>
                                     </Stack>
                             }
