@@ -9,7 +9,7 @@ const app = express();
 app.use(cors());
 const bearerToken = require("express-bearer-token");
 app.use(bearerToken());
-app.use(express.static("src/public"));
+app.use("/api", express.static("src/public"));
 app.use(
   cors({
     origin: [
@@ -48,13 +48,13 @@ const {
   specialPricesRouter,
   unavailabilitiesRouter,
 } = require("./routers");
-app.use("/users", usersRouter);
-app.use("/properties", propertiesRouter);
-app.use("/rooms", roomsRouter);
-app.use("/cities", citiesRouter);
-app.use("/orders", ordersRouter);
-app.use("/specialprices", specialPricesRouter);
-app.use("/unavailabilities", unavailabilitiesRouter);
+app.use("/api/users", usersRouter);
+app.use("/api/properties", propertiesRouter);
+app.use("/api/rooms", roomsRouter);
+app.use("/api/cities", citiesRouter);
+app.use("/api/orders", ordersRouter);
+app.use("/api/specialprices", specialPricesRouter);
+app.use("/api/unavailabilities", unavailabilitiesRouter);
 
 // ===========================
 // NOTE : Add your routes here
