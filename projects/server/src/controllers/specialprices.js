@@ -2,6 +2,7 @@ const SpecialPricesModel = require("../model/specialprices");
 const { dbSequelize } = require("../config/db");
 const UnavailabilitiesModel = require("../model/unavailabilities");
 const { Op } = require("sequelize");
+const OrdersModel = require("../model/orders");
 
 module.exports = {
   getSpecialPricesData: async (req, res) => {
@@ -50,9 +51,9 @@ module.exports = {
             },
             {
               end_date: {
-                [Op.between]: [start_date, end_date]
-              }
-            }
+                [Op.between]: [start_date, end_date],
+              },
+            },
           ],
         },
       });
@@ -83,9 +84,9 @@ module.exports = {
             },
             {
               end_date: {
-                [Op.between]: [start_date, end_date]
-              }
-            }
+                [Op.between]: [start_date, end_date],
+              },
+            },
           ],
         },
       });
@@ -103,6 +104,39 @@ module.exports = {
           new Date(end_date) <= val.end_date
       );
 
+      // Check orders dates
+      // First check if the date you want to select exceeds the existing date
+      let ordersDataCheck = await OrdersModel.findAll({
+        where: {
+          id_room,
+          [Op.or]: [
+            {
+              checkin_date: {
+                [Op.between]: [start_date, end_date],
+              },
+            },
+            {
+              checkout_date: {
+                [Op.between]: [start_date, end_date],
+              },
+            },
+          ],
+        },
+      });
+      // Second check if the date you want to select is between the existing dates
+      let ordersData = await OrdersModel.findAll({
+        where: {
+          id_room,
+        },
+      });
+      let ordersDataCheck2 = ordersData.find(
+        (val) =>
+          val.checkin_date <= new Date(start_date) &&
+          new Date(start_date) <= val.checkout_date &&
+          val.checkin_date <= new Date(end_date) &&
+          new Date(end_date) <= val.checkout_date
+      );
+
       if (specialPriceDataCheck.length > 0 || specialPriceDataCheck2) {
         return res.status(200).send({
           success: false,
@@ -111,8 +145,13 @@ module.exports = {
       } else if (unavailableDataCheck.length > 0 || unavailableDataCheck2) {
         return res.status(200).send({
           success: false,
-          message: "The dates has been assigned with unavailable"
-        })
+          message: "The dates has been assigned with unavailable",
+        });
+      } else if (ordersDataCheck.length > 0 || ordersDataCheck2) {
+        return res.status(200).send({
+          success: false,
+          message: "The room is already booked on the date you selected",
+        });
       } else {
         let create = await SpecialPricesModel.create({
           id_room,
