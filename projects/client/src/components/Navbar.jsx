@@ -47,6 +47,8 @@ const Links = [
     { title: "Projects", url: "/projects" },
     { title: "Order List", url: "/admin/order", tenant: 1 },
     { title: "Order Report", url: "/admin/report", tenant: 1 },
+    { title: "Order List", url: "/admin/order", tenant: 1 },
+    { title: "Order Report", url: "/admin/report", tenant: 1 },
 ];
 
 const NavLink = ({ children, url }) => (
