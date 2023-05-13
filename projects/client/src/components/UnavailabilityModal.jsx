@@ -25,7 +25,7 @@ const UnavailabilityModal = (props) => {
                     />
                 </ModalBody>
                 <ModalFooter>
-                    <Button onClick={props.data.onClick}>Save</Button>
+                    <Button colorScheme='blue' w='full' onClick={props.data.onClick}>Save</Button>
                 </ModalFooter>
             </ModalContent>
         </Modal>
