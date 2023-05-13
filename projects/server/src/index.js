@@ -9,7 +9,7 @@ const app = express();
 app.use(cors());
 const bearerToken = require("express-bearer-token");
 app.use(bearerToken());
-app.use("/api", express.static("src/public"));
+app.use(express.static("src/public"));
 app.use(
   cors({
     origin: [
