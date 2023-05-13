@@ -1,5 +1,5 @@
 import axios from "axios";
-import "bootstrap/dist/css/bootstrap.css"
+import "bootstrap/dist/css/bootstrap.css";
 // import logo from "./logo.svg";
 import "./App.css";
 import { useEffect, useState } from "react";
@@ -22,7 +22,7 @@ import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
 import Sidebar from "./components/Sidebar";
 import { loginAction } from "./actions/userAction";
-import { useDispatch } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import Axios from "axios";
 import API_URL from "./helper";
 import OrderList from "./pages/OrderList";
@@ -38,12 +38,10 @@ import ReportList from "./pages/ReportList";
 
 function App() {
   const [message, setMessage] = useState("");
-  console.log(message)
+  console.log(message);
   useEffect(() => {
     (async () => {
-      const { data } = await axios.get(
-        `${API_URL}/greetings`
-      );
+      const { data } = await axios.get(`${API_URL}/greetings`);
       setMessage(data?.message || "");
     })();
   }, []);
@@ -51,27 +49,31 @@ function App() {
   const [loading, setLoading] = useState(true);
   const dispatch = useDispatch();
   const location = useLocation();
-  const keepLogin = async() => {
+  const keepLogin = async () => {
     try {
-      let getLocalStorage = localStorage.getItem('prw_login');
+      let getLocalStorage = localStorage.getItem("prw_login");
       // console.log('hasilnya keep login adalah  :' ,getLocalStorage)
       if (getLocalStorage) {
-        let res = await Axios.post(API_URL + `/users/keep`,{},{
-          headers:{
-            "Authorization" :`Bearer ${getLocalStorage}`
+        let res = await Axios.post(
+          API_URL + `/users/keep`,
+          {},
+          {
+            headers: {
+              Authorization: `Bearer ${getLocalStorage}`,
+            },
           }
-        })
-          delete res.data.password 
-            dispatch(loginAction(res.data));
-            setLoading(false);
-            localStorage.setItem("prw_login", res.data.token);
+        );
+        delete res.data.password;
+        dispatch(loginAction(res.data));
+        setLoading(false);
+        localStorage.setItem("prw_login", res.data.token);
       } else {
         setLoading(false);
-        console.log()
+        console.log();
       }
-    } catch(err){
-      console.log(err)
-      setLoading(false);// loading dimatikan saat mendapatkan response
+    } catch (err) {
+      console.log(err);
+      setLoading(false); // loading dimatikan saat mendapatkan response
     }
   };
 
@@ -80,41 +82,106 @@ function App() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  const { username, isTenant } = useSelector((state) => {
+    return {
+      username: state.userReducer.username,
+      isTenant: state.userReducer.isTenant,
+    };
+  });
+
   return (
-    <div style={{display:"flex",flexDirection:'column', minHeight:"100vh",height:"100%" ,margin:0}}>
-{/* {yang pakai sidebar/>} */}
-{['/dashboard','/changepass','/profile','/tobetenant','/changepict', '/mybooking','/profile','/profilepicture', '/admin/property', '/admin/room', '/admin/room/detail'].includes(location.pathname) ? <Sidebar loading={loading}/> : <Navbar loading={loading} />}
+    <div
+      style={{
+        display: "flex",
+        flexDirection: "column",
+        minHeight: "100vh",
+        height: "100%",
+        margin: 0,
+      }}
+    >
+      {/* {yang pakai sidebar/>} */}
+      {[
+        "/dashboard",
+        "/changepass",
+        "/profile",
+        "/tobetenant",
+        "/changepict",
+        "/mybooking",
+        "/profile",
+        "/profilepicture",
+        "/admin/property",
+        "/admin/room",
+        "/admin/room/detail",
+      ].includes(location.pathname) ? (
+        <Sidebar loading={loading} />
+      ) : (
+        <Navbar loading={loading} />
+      )}
       <Box flex={1}>
         <Routes>
+          <Route path="*" element={<Page404 loading={loading} />} />
           <Route path="/" element={<Landing />} />
-          <Route path="/login" element={<Login />} />
-          <Route path="/register" element={<Register />} />
-        <Route path="/verification" element={<Verification />} />
-        <Route path="/changepass" element={<ChangePassword />} />
-        {/* <Route path="/dashboard" element={<Dashboard />} /> */}
-        <Route path="/tobetenant" element={<ToBeTenant />} />
-        <Route path="/resetpass" element={<ResetPassword />} />
-        <Route path="/confirmation" element={<Confirmation />} />
-        <Route path="/payment" element={<Payment />} />
-        <Route path="/success" element={<Success />} />
-        <Route path="/mybooking" element={<MyBooking />} />
-        <Route path="/404" element={<Page404 />} />
-          <Route path="/profile" element={<Profile />} />
-          <Route path="/profilepicture" element={<ProfilePicture />} />
-          <Route path= "/admin/order" element={<OrderList />} />
-          <Route path= "/admin/report" element={<ReportList />} />
-          <Route path="/admin/property" element={<TenantProperty />} />
-          <Route path="/admin/room" element={<TenantRoom />} />
-        <Route path="/admin/room/detail" element={<TenantRoomDetail />} />
-          <Route path="/admin/order/detail/:id/:action" element={<OrderDetail />} />
-          <Route path="/rating/:id" element={<RatingUser />} />
+          {username ? (
+            <></>
+          ) : (
+            <>
+              <Route path="/login" element={<Login />} />
+              <Route path="/register" element={<Register />} />
+            </>
+          )}
+          <Route path="/verification" element={<Verification />} />
+          <Route path="/changepass" element={<ChangePassword />} />
+          <Route path="/404" element={<Page404 loading={loading} />} />
           <Route path="/search" element={<AvaliableProperty />} />
           <Route path="/detailproperty/:id" element={<DetailProperty />} />
-          
+          {!username ? (
+            <></>
+          ) : (
+            <>
+              <Route path="/tobetenant" element={<ToBeTenant />} />
+              <Route path="/resetpass" element={<ResetPassword />} />
+              <Route path="/confirmation" element={<Confirmation />} />
+              <Route path="/payment" element={<Payment />} />
+              <Route path="/success" element={<Success />} />
+              <Route path="/mybooking" element={<MyBooking />} />
+              <Route path="/profile" element={<Profile />} />
+              <Route path="/profilepicture" element={<ProfilePicture />} />
+              <Route path="/rating/:id" element={<RatingUser />} />
+              {!isTenant ? (
+                <></>
+              ) : (
+                <>
+                  <Route path="/admin/order" element={<OrderList />} />
+                  <Route path="/admin/report" element={<ReportList />} />
+                  <Route path="/admin/property" element={<TenantProperty />} />
+                  <Route path="/admin/room" element={<TenantRoom />} />
+                  <Route
+                    path="/admin/room/detail"
+                    element={<TenantRoomDetail />}
+                  />
+                  <Route
+                    path="/admin/order/detail/:id/:action"
+                    element={<OrderDetail />}
+                  />
+                </>
+              )}
+            </>
+          )}
         </Routes>
-      {/* {yang pakai Footer dan navbar */}
+        {/* {yang pakai Footer dan navbar */}
       </Box>
-      {['/','/login','/register','/verification','/resetpass','/confirmation','/payment','/success','/404','/property'].includes(location.pathname) && <Footer/>}
+      {[
+        "/",
+        "/login",
+        "/register",
+        "/verification",
+        "/resetpass",
+        "/confirmation",
+        "/payment",
+        "/success",
+        "/404",
+        "/property",
+      ].includes(location.pathname) && <Footer />}
     </div>
   );
 }
