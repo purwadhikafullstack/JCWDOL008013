@@ -1,9 +1,7 @@
 import {
     Box,
     Button,
-    Checkbox,
     Container,
-    Divider,
     FormControl,
     FormLabel,
     Heading,
@@ -14,6 +12,15 @@ import {
     InputGroup,
     InputRightElement,
     IconButton,
+    Modal,
+    ModalOverlay,
+    ModalContent,
+    ModalHeader,
+    ModalFooter,
+    ModalBody,
+    ModalCloseButton,
+    useDisclosure,
+    useToast,
   } from "@chakra-ui/react";
   import { HiEye, HiEyeOff } from "react-icons/hi";
   import { FcGoogle } from "react-icons/fc";
@@ -32,6 +39,10 @@ import {
     const [inputEmail, setInputEmail] = useState("");
     const [inputPass, setInputPass] = useState("");
     const [inputType, setInputType] = useState("password");
+    const [emailVerify, setEmailVerify] = useState("");
+
+    const { isOpen, onOpen, onClose } = useDisclosure();
+    const toast = useToast();
   
     const onBtnLogin = () => {
      
@@ -66,15 +77,42 @@ import {
         setInputType("password");
       }
     };
+
+    const verifyButton = async () => {
+      try {
+        let res = await Axios.post(API_URL + "/users/reverify", { email: emailVerify });
+        if (res.data.success) {
+          toast({
+            title: 'Success',
+            description: res.data.message,
+            status: 'success',
+            duration: 9000,
+            position: 'top',
+            isClosable: true,
+            onCloseComplete: () => onClose(),
+          })
+        } else {
+          toast({
+            title: 'Failed',
+            description: res.data.message,
+            status: 'error',
+            duration: 9000,
+            position: 'top',
+            isClosable: true,
+            onCloseComplete: () => onClose(),
+          })
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    }
+
     return (
       <Container
         maxW="md"
-        py={{
-          base: "12",
-          md: "24",
-        }}
+        py={24}
         px={{
-          base: "0",
+          base: "4",
           sm: "8",
         }}
       >
@@ -121,14 +159,15 @@ import {
               base: "transparent",
               sm: "bg-surface",
             }}
-            boxShadow={{
-              base: "none",
-              sm: "md",
-            }}
             borderRadius={{
-              base: "none",
-              sm: "xl",
+              base: "0px",
+              sm: "8px",
             }}
+            border={{
+              base: "0px",
+              md: "1px"
+            }}
+            borderColor={['', null, 'blue.400']}
           >
             <Stack spacing="6">
               <Stack spacing="5">
@@ -151,6 +190,7 @@ import {
                     <InputRightElement>
                       <IconButton
                         onClick={onClickReveal}
+                        size="sm"
                         icon={inputType === "password" ? <HiEye /> : <HiEyeOff />}
                       />
                     </InputRightElement>
@@ -158,24 +198,34 @@ import {
                 </FormControl>
               </Stack>
               <HStack justify="space-between">
-                <Checkbox defaultChecked>Remember me</Checkbox>
+                <Button variant="link" colorScheme="blue" size="sm" onClick={onOpen}>Verify your account</Button>
+                <Modal isOpen={isOpen} onClose={onClose}>
+                  <ModalOverlay />
+                  <ModalContent>
+                    <ModalHeader>Verify your account</ModalHeader>
+                    <ModalCloseButton />
+                    <ModalBody>
+                      <FormControl>
+                        <FormLabel>Email</FormLabel>
+                        <Input type="email" onChange={(e) => setEmailVerify(e.target.value)} />
+                      </FormControl>
+                    </ModalBody>
+
+                    <ModalFooter>
+                      <Button colorScheme='blue' variant="outline" mr={3} onClick={onClose}>
+                        Close
+                      </Button>
+                      <Button colorScheme="blue" onClick={verifyButton}>Verify</Button>
+                    </ModalFooter>
+                  </ModalContent>
+                </Modal>
                 <Button variant="link" colorScheme="blue" size="sm" onClick={() => navigate("/resetpass")}>
                   Forgot password?
                 </Button>
               </HStack>
-              <Stack spacing="6">
-                <Button colorScheme="teal" variant="solid" onClick={onBtnLogin}>
+                <Button colorScheme="blue" variant="solid" onClick={onBtnLogin}>
                   Login
                 </Button>
-                <HStack>
-                  <Divider />
-                  <Text fontSize="sm" whiteSpace="nowrap" color="muted">
-                    or
-                  </Text>
-                  <Divider />
-                </HStack>
-                <Button leftIcon={<FcGoogle />}>Login in with Google</Button>
-              </Stack>
             </Stack>
           </Box>
         </Stack>

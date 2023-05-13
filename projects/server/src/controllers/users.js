@@ -407,12 +407,115 @@ module.exports = {
   profileData: async (req, res) => {
     try {
       let data = await UsersModel.findAll({
-        attributes: ["username", "email", "gender", "birthdate", "picture"],
+        attributes: [
+          "username",
+          "email",
+          "gender",
+          "birthdate",
+          "picture",
+          "isVerified",
+        ],
         where: {
           id_user: req.decript.id_user,
         },
       });
       return res.status(200).send(data[0]);
+    } catch (error) {
+      console.log(error);
+      return res.status(500).send(error);
+    }
+  },
+  resendVerify: async (req, res) => {
+    try {
+      let data = await UsersModel.findAll({
+        where: {
+          email: req.body.email,
+        },
+      });
+      if (data.length == 0) {
+        return res.status(200).send({
+          success: false,
+          message: "Email not found",
+        });
+      }
+      if (data[0].isVerified) {
+        return res.status(200).send({
+          success: false,
+          message: "Email has been verified",
+        });
+      } else {
+        const otp = createOTP(6);
+        let token = createToken({
+          id: data[0].id_user,
+          username: data[0].username,
+          email: data[0].email,
+          otp,
+        });
+        let currentTime = new Date();
+        currentTime.setHours(currentTime.getHours() + 7);
+        let differenceInTime =
+          currentTime.getTime() - data[0].lastOtpTime.getTime();
+        let differenceInDays = differenceInTime / (1000 * 3600 * 24);
+        if (differenceInDays >= 1) {
+          let update = await UsersModel.update(
+            { countOtp: 1, lastOtpTime: currentTime, retryOtp: otp },
+            {
+              where: {
+                id_user: data[0].id_user,
+              },
+            }
+          );
+          transport.sendMail({
+            from: "StayComfy",
+            to: data[0].email,
+            subject: "Verification Email Account StayComfy",
+            html: `<div>
+            <a href="http://localhost:3000/verification?t=${token}"><h3>Verify Your Account in this link</h3></a>
+            <br><br><br>
+            <h4> With Your OTP Code : </h4>
+            <h4>${otp}</h4>
+            </div>`,
+          });
+          return res.status(200).send({
+            success: true,
+            message: "Please check your email",
+          });
+        }
+        if (data[0].countOtp == 5) {
+          return res.status(200).send({
+            success: false,
+            message:
+              "Send email verification reach limit, please try again tomorrow",
+          });
+        }
+        let update = await UsersModel.update(
+          {
+            countOtp: data[0].countOtp + 1,
+            lastOtpTime: currentTime,
+            retryOtp: otp,
+          },
+          {
+            where: {
+              id_user: data[0].id_user,
+            },
+          }
+        );
+        transport.sendMail({
+          from: "StayComfy",
+          to: data[0].email,
+          subject: "Verification Email Account StayComfy",
+          html: `<div>
+          <a href="http://localhost:3000/verification?t=${token}"><h3>Verify Your Account in this link</h3></a>
+          <br><br><br>
+          <h4> With Your OTP Code : </h4>
+          <h4>${otp}</h4>
+          </div>`,
+        });
+        return res.status(200).send({
+          success: true,
+          message: "Please check your email",
+        });
+      }
     } catch (error) {
       console.log(error);
       return res.status(500).send(error);
