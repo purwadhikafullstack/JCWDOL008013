@@ -14,7 +14,6 @@ import ToBeTenant from "./pages/ToBeTenant";
 import ResetPassword from "./pages/ResetPassword";
 import Profile from "./pages/Profile";
 import ProfilePicture from "./pages/ProfilePicture";
-import Detail from "./pages/Detail";
 import Confirmation from "./pages/Confirmation";
 import Payment from "./pages/Payment";
 import Success from "./pages/Success";
@@ -95,7 +94,6 @@ function App() {
         {/* <Route path="/dashboard" element={<Dashboard />} /> */}
         <Route path="/tobetenant" element={<ToBeTenant />} />
         <Route path="/resetpass" element={<ResetPassword />} />
-        <Route path="/detail" element={<Detail />} />
         <Route path="/confirmation" element={<Confirmation />} />
         <Route path="/payment" element={<Payment />} />
         <Route path="/success" element={<Success />} />
@@ -116,7 +114,7 @@ function App() {
         </Routes>
       {/* {yang pakai Footer dan navbar */}
       </Box>
-      {['/','/login','/register','/verification','/resetpass','/detail','/confirmation','/payment','/success','/404','/property'].includes(location.pathname) && <Footer/>}
+      {['/','/login','/register','/verification','/resetpass','/confirmation','/payment','/success','/404','/property'].includes(location.pathname) && <Footer/>}
     </div>
   );
 }

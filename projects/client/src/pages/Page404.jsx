@@ -15,7 +15,7 @@ const Page404 = () => {
 
         <Text fontSize="3xl" mb={8}>Oops! Page not found.</Text>
         <Link to="/login">
-          <Button colorScheme="teal" size="lg">Go Login</Button>
+          <Button colorScheme="blue" size="lg">Go Login</Button>
         </Link>
       </Box>
     </Flex>
