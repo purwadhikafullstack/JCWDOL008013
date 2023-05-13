@@ -112,7 +112,7 @@ module.exports = {
   },
   login: (req, res) => {
     dbConf.query(
-      `Select id_user, username, email, password, isTenant, picture
+      `Select id_user, username, email, password, isTenant, picture, isVerified
         from users where email=${dbConf.escape(
           req.body.email
         )} or username=${dbConf.escape(req.body.name)};`,
@@ -128,6 +128,15 @@ module.exports = {
             message: "Email is not found",
           });
         }
+
+        if (!results[0].isVerified) {
+          return res.status(401).send({
+            success: false,
+            message: "Please verify your account first",
+          });
+        }
+
+        console.log(results);
 
         const check = bcrypt.compareSync(
           req.body.password,

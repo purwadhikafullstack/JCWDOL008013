@@ -54,9 +54,6 @@ import {
           // console.log(`res login data ${res.data}`);
           dispatch(loginAction(res.data)); // menjalankan fungsi action
           localStorage.setItem('prw_login', res.data.token);
-          if(res.data.isTenant===true) {
-            navigate("/dashboard", {replace:true})
-          }
           navigate("/", { replace: true });
            
         })
@@ -64,7 +61,15 @@ import {
           console.log(err)
           if(!err.response.data.success){
   
-            alert(err.response.data.message);
+            toast({
+              title: 'Failed',
+              description: err.response.data.message,
+              status: 'error',
+              duration: 9000,
+              position: 'top',
+              isClosable: true,
+              onCloseComplete: () => onClose(),
+            });
           }
           console.log("check error", err)
         });
