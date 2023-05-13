@@ -790,10 +790,10 @@ module.exports = {
             message: "tidak bisa ambil data createdAt",
           });
         }
-        const createdAt = new Date(results[0].createdAt);
+        let createdAt = new Date(results[0].createdAt);
+        createdAt.setHours(createdAt.getHours() + 7)
         const diffTime = Math.abs(currentTime - createdAt);
         const diffHours = Math.floor(diffTime / (1000 * 60 * 60));
-        // console.log("diffHours:", diffHours);
         if (diffHours >= 2) {
           // If more than 2 hours have passed, cancel the order
           dbConf.query(
