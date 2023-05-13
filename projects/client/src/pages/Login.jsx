@@ -177,7 +177,7 @@ import {
             <Stack spacing="6">
               <Stack spacing="5">
                 <FormControl>
-                  <FormLabel htmlFor="email">Email</FormLabel>
+                  <FormLabel htmlFor="email">Email or Phone number</FormLabel>
                   <Input
                     id="email"
                     type="email"

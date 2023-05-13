@@ -25,7 +25,7 @@ module.exports = {
     dbConf.query(
       `select * from users where email=${dbConf.escape(
         email
-      )} or username = ${dbConf.escape(username)};`,
+      )} or phone = ${dbConf.escape(phone)};`,
       (err, results) => {
         //jika ambil data dari db terjadi eror
         if (err) {
@@ -38,7 +38,7 @@ module.exports = {
         if (results.length > 0) {
           return res.status(300).send({
             success: false,
-            message: `Username or Email is Already exist`,
+            message: `Email or phone number is already exist`,
           });
         }
         // 3. jika tidak ada yang sama maka registrasi berlanjut
@@ -115,7 +115,7 @@ module.exports = {
       `Select id_user, username, email, password, isTenant, picture, isVerified
         from users where email=${dbConf.escape(
           req.body.email
-        )} or username=${dbConf.escape(req.body.name)};`,
+        )} or phone=${dbConf.escape(req.body.email)};`,
       (err, results) => {
         if (err) {
           console.log(err);
@@ -125,7 +125,7 @@ module.exports = {
         if (results.length === 0) {
           return res.status(401).send({
             success: false,
-            message: "Email is not found",
+            message: "Email or phone number is not found",
           });
         }
 
