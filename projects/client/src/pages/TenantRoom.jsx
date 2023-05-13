@@ -184,7 +184,6 @@ const TenantRoom = (props) => {
     const getRoom = async () => {
         try {
             let res = await Axios.get(API_URL + `/rooms/getroom${search}&page=${page}&keyword=${keyword}&sort=${sort}&order=${order}`);
-            console.log(res.data);
             setTotalPage(res.data.totalPage);
             setRoomData(res.data.rows);
         } catch (error) {
@@ -202,7 +201,7 @@ const TenantRoom = (props) => {
     }, [page, sort, order, keyword]);
 
     return (
-        <Box ms={[0, null, 60]} p={8} bg='gray.100'>
+        <Box ms={[0, null, 60]} p={[2, null, 8]} borderTopWidth={[0, null, '4px']} borderColor='blue.400'>
             <Flex flexDirection='column' alignItems='center' mb={8}>
                 <Text mb={8} fontSize='sm' color='gray.500' fontWeight='semibold'>
                     <Link href='/admin/property' _hover={{ textDecoration: 'none' }}>Property </Link>
