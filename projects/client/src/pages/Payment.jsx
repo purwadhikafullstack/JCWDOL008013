@@ -74,6 +74,7 @@ import {
           status: "error",
           duration: 3000,
           isClosable: true,
+          position: 'top',
         });
         return;
       }
@@ -105,6 +106,7 @@ import {
             status: "error",
             duration: 3000,
             isClosable: true,
+            position: 'top',
           });
         }
       } catch (error) {
@@ -118,6 +120,7 @@ import {
           status: "error",
           duration: 3000,
           isClosable: true,
+          position: 'top',
         });
       }
     };
@@ -159,8 +162,7 @@ import {
                   objectFit="cover"
                   width="auto"
                   height="20%"
-                  borderRadius="md"
-                  boxShadow="md"
+                  borderRadius="md"              
                 />
                 <Box>
                   <Text fontWeight="bold">Bank Central Asia</Text>
@@ -176,7 +178,6 @@ import {
                   width="auto"
                   height="50%"
                   borderRadius="md"
-                  boxShadow="md"
                 />
                 <Box>
                   <Text fontWeight="bold">Bank Mandiri</Text>
@@ -254,7 +255,7 @@ import {
         >
           <Flex width={isMobile ? "50%" : "20%"} flexDirection="column">
             <Button
-              colorScheme="teal"
+              colorScheme="blue"
               mx="auto"
               width="100%"
               mb="4"
@@ -263,7 +264,7 @@ import {
               Confirm Payment
             </Button>
             <Button
-              colorScheme="teal"
+              colorScheme="blue"
               variant="outline"
               mx="auto"
               width="100%"
