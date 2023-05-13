@@ -843,29 +843,18 @@ module.exports = {
     );
   },
   cancelOrder: async (req, res) => {
-    try {
-      // console.log(req.body.id_order);
-      const cancel = await dbConf.query(
-        `update orders set order_status="CANCELED" where id_order =${dbConf.escape(
-          req.body.id_order
-        )};`,
+    dbConf.query(`update orders set order_status="CANCELED" where id_order =${dbConf.escape(req.body.id_order)};`,
         (err, result) => {
           if (err) {
             console.log(err);
             return res.status(500).send(err);
           }
-          return res
-            .status(200)
-            .send({
-              success: true,
-              message: "Your Order Succesfully be Canceled",
-            });
+          return res.status(200).send({
+            success: true,
+            message: "Your Order Succesfully be Canceled",
+          });
         }
       );
-    } catch (err) {
-      console.log(err);
-      res.status(500).send({ success: false, message: "Server error" });
-    }
   },
   getPriceCalendarBydate:async(req,res)=>{
     try{
