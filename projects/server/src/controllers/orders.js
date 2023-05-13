@@ -747,14 +747,14 @@ module.exports = {
     // console.log(invoice_number); // generate the invoice number
 
     dbConf.query(
-      `INSERT INTO orders (id_property, id_room, checkin_date, checkout_date, total, createdBy, no_invoice, order_status, createdAt) 
+      `INSERT INTO orders (id_property, id_room, checkin_date, checkout_date, total, createdBy, no_invoice, order_status, createdAt, updatedAt) 
       VALUES (${dbConf.escape(id_property)}, ${dbConf.escape(
         id_room
       )}, ${dbConf.escape(checkin_date)}, 
               ${dbConf.escape(checkout_date)}, ${dbConf.escape(
         total
       )}, ${dbConf.escape(req.decript.id_user)},
-              ${dbConf.escape(invoice_number)}, "UNPAID", NOW());
+              ${dbConf.escape(invoice_number)}, "UNPAID", NOW(), NOW());
       `,
       (err, results) => {
         if (err) {

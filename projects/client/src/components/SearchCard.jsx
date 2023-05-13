@@ -9,7 +9,7 @@ const SearchCard = (props) => {
                     <Input placeholder={props.data.placeholder} value={props.data.query} onChange={props.data.onChange} />
                 </FormControl>
                 <Button colorScheme='blue' w='full' onClick={props.data.searchButton}>Search</Button>
-                <Button w='full' onClick={props.data.resetButton}>Reset</Button>
+                <Button colorScheme='blue' variant='outline' w='full' onClick={props.data.resetButton}>Reset</Button>
             </VStack>
         </Box>
     )

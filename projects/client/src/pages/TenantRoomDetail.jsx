@@ -339,9 +339,9 @@ const TenantRoomDetail = (props) => {
     }, [pageUnavailability, sortUnavailablility, orderUnavailability, pagePrice, sortPrice, orderPrice]);
 
     return (
-        <Box ms={[0, null, 60]} p={8} bg='gray.100'>
+        <Box ms={[0, null, 60]} p={[2, null, 8]} borderTopWidth={[0, null, '4px']} borderColor='blue.400'>
             <Flex flexDirection='column' alignItems='center'>
-                <Text fontSize='sm' color='gray.500' fontWeight='semibold'>
+                <Text mb={8} fontSize='sm' color='gray.500' fontWeight='semibold'>
                     <Link href='/admin/property' _hover={{ textDecoration: 'none' }}>Property </Link>
                     /
                     <Link href={'/admin/room' + search.split('&')[0]} _hover={{ textDecoration: 'none' }}> {propertyName} </Link>
@@ -385,10 +385,10 @@ const TenantRoomDetail = (props) => {
                     }
                 }} />
             </Flex>
-            <Card px={8} py={16} mt={8}>
+            <Box border='1px' borderColor='blue.400' borderRadius={8} p={8} mt={8}>
                 <CalendarCard data={{ unavailability: unavailableData, specialPrice: priceData, price }} />
-            </Card>
-            <Card px={8} py={16} mt={8}>
+            </Box>
+            <Box border='1px' borderColor='blue.400' borderRadius={8} p={8} mt={8}>
                 <UnavailabilityTable data={{
                     unavailableLimitData, pagination: <Pagination data={{ totalPage: totalPageUnavailability, handlePageClick: handlePageClickUnavailability }} />, edit: (value) => {
                         setUnavailableId(value);
@@ -414,8 +414,8 @@ const TenantRoomDetail = (props) => {
                         deleteUnavailability();
                     }
                 }} />
-            </Card>
-            <Card px={8} py={16} mt={8}>
+            </Box>
+            <Box border='1px' borderColor='blue.400' borderRadius={8} p={8} mt={8}>
                 <SpecialPriceTable data={{
                     priceLimitData, pagination: <Pagination data={{ totalPage: totalPagePrice, handlePageClick: handlePageClickPrice }} />, edit: (value) => {
                         setPriceId(value);
@@ -451,7 +451,7 @@ const TenantRoomDetail = (props) => {
                         deleteSpecialPrice();
                     }
                 }} />
-            </Card>
+            </Box>
         </Box>
     )
 }
