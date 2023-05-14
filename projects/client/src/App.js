@@ -99,7 +99,6 @@ function App() {
         margin: 0,
       }}
     >
-      {/* {yang pakai sidebar/>} */}
       {[
         "/dashboard",
         "/changepass",
@@ -168,7 +167,6 @@ function App() {
             </>
           )}
         </Routes>
-        {/* {yang pakai Footer dan navbar */}
       </Box>
       {[
         "/",
