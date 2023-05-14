@@ -125,37 +125,39 @@ const Sidebar = () => {
           {!username ?
             <></>
             :
-            <Stack spacing="4" mt="8" mx="4">
-              {
-                items.map((item) => (
-                  <Link key={item.label} href={item.url}>
-                    <Flex
-                      key={item.label}
-                      align="center"
-                      px="2"
-                      py="1"
-                      bg={activeMenu === item.label ? "gray.100" : "transparent"}
-                      borderRadius="md"
-                      cursor="pointer"
-                    >
-                      <Icon as={item.icon} mr="2" />
-                      <Text>{item.label}</Text>
-                    </Flex>
-                  </Link>
-                ))
-              }
-            </Stack>
+            <>
+              <Stack spacing="4" mt="8" mx="4">
+                {
+                  items.map((item) => (
+                    <Link key={item.label} href={item.url}>
+                      <Flex
+                        key={item.label}
+                        align="center"
+                        px="2"
+                        py="1"
+                        bg={activeMenu === item.label ? "gray.100" : "transparent"}
+                        borderRadius="md"
+                        cursor="pointer"
+                      >
+                        <Icon as={item.icon} mr="2" />
+                        <Text>{item.label}</Text>
+                      </Flex>
+                    </Link>
+                  ))
+                }
+              </Stack>
+              <Box px={4} mb={4}>
+                <IconButton
+                  w="full"
+                  icon={<FaSignOutAlt />}
+                  onClick={() => {
+                    dispatch(logoutAction());
+                    window.location.href = "/";
+                  }}
+                />
+              </Box>
+            </>
           }
-          <Box px={4} mb={4}>
-            <IconButton
-              w="full"
-              icon={<FaSignOutAlt />}
-              onClick={() => {
-                dispatch(logoutAction());
-                window.location.href = "/";
-              }}
-            />
-          </Box>
         </Flex>
       </Box>
 
@@ -166,43 +168,45 @@ const Sidebar = () => {
           <DrawerCloseButton />
           <DrawerHeader>{activeMenu}</DrawerHeader>
 
-          <DrawerBody>
-            {!username ?
-              <></>
-              :
-              <Stack spacing="4">
-                {items.map((item) => (
-                  <Link key={item.label} href={item.url}>
-                    <Flex
-                      key={item.label}
-                      align="center"
-                      px="2"
-                      py="1"
-                      bg={activeMenu === item.label ? "gray.100" : "transparent"}
-                      borderRadius="md"
-                      cursor="pointer"
-                      onClick={() => {
-                        handleClose();
-                      }}
-                    >
-                      <Icon as={item.icon} mr="2" />
-                      <Text>{item.label}</Text>
-                    </Flex>
-                  </Link>
-                ))}
-              </Stack>
-            }
-          </DrawerBody>
-          <DrawerFooter>
-            <IconButton
-              w="full"
-              icon={<FaSignOutAlt />}
-              onClick={() => {
-                dispatch(logoutAction());
-                window.location.href = "/";
-              }}
-            />
-          </DrawerFooter>
+          {!username ?
+            <></>
+            :
+            <>
+              <DrawerBody>
+                <Stack spacing="4">
+                  {items.map((item) => (
+                    <Link key={item.label} href={item.url}>
+                      <Flex
+                        key={item.label}
+                        align="center"
+                        px="2"
+                        py="1"
+                        bg={activeMenu === item.label ? "gray.100" : "transparent"}
+                        borderRadius="md"
+                        cursor="pointer"
+                        onClick={() => {
+                          handleClose();
+                        }}
+                      >
+                        <Icon as={item.icon} mr="2" />
+                        <Text>{item.label}</Text>
+                      </Flex>
+                    </Link>
+                  ))}
+                </Stack>
+              </DrawerBody>
+              <DrawerFooter>
+                <IconButton
+                  w="full"
+                  icon={<FaSignOutAlt />}
+                  onClick={() => {
+                    dispatch(logoutAction());
+                    window.location.href = "/";
+                  }}
+                />
+              </DrawerFooter>
+            </>
+          }
         </DrawerContent>
       </Drawer>
     </>
