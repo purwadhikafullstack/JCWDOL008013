@@ -94,8 +94,8 @@ const Landing = () => {
 
     const onSubmitBtn = () => {
         if (selectedDates.length == 2 && selectedCity != "") {
-            let startDate = new Date(selectedDates[0].setHours(7, 0, 0, 0));
-            let endDate = new Date(selectedDates[1].setHours(7, 0, 0, 0));
+            let startDate = new Date(selectedDates[0].setHours(0, 0, 0, 0));
+            let endDate = new Date(selectedDates[1].setHours(0, 0, 0, 0));
             let orderdata = { startDate, endDate, cityId: selectedCity }
             let formed = JSON.stringify(orderdata)
             localStorage.setItem('order_form', formed)

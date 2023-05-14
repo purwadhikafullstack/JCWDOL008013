@@ -445,11 +445,11 @@ module.exports = {
           startDate.setDate(startDate.getDate()-1)
           let idRoom = req.query.idRoom 
           let data = []
-          let getBasePrice = await RoomsModel.findOne({attributes:['basePrice']},{where:{id:idRoom}})
+          let getBasePrice = await RoomsModel.findOne({attributes:['basePrice'],where:{id_room:idRoom}})
           let basePrice = +getBasePrice.basePrice || 0
           let total = 0
           for(var d = startDate; d<endDate; d.setDate(d.getDate()+1)){
-              let querydate= d.toISOString().slice(0, 19).replace("T", " ")
+              let querydate= d.toLocaleString().slice(0, 19).replace("T", " ")
               
               let special = await SpecialPricesModel.findOne(
                 {where:{[Op.and]:[
@@ -461,7 +461,7 @@ module.exports = {
                   ]}
                 ]},order:[["id_special_price","desc"]]}
               )
-                // console.log(special!= null,d)
+              console.log(special!= null,d)
               if(special){
                   if(special.nominal != null){
                       let price = +special.nominal
@@ -500,6 +500,7 @@ module.exports = {
     try{
       let startDate = new Date(req.query.startDate).toISOString().slice(0, 19).replace("T", " ") 
       let endDate = new Date(req.query.endDate).toISOString().slice(0, 19).replace("T", " ") 
+      console.log(new Date(req.query.startDate).toLocaleString('sv'),endDate)
       let id_city = req.query.cityId
       
 
@@ -897,7 +898,7 @@ module.exports = {
                         {[Op.and]:[{start_date:{[Op.lte]:startDate},end_date:{[Op.gte]:endDate}}]}
                       ]
                     }}
-                ]
+                ],order:[[{model:SpecialPricesModel, as:"sprice"},"id_special_price","desc"]]
               });
             let minprice = null
             
