@@ -91,8 +91,8 @@ import {
       const requestData = {
         id_property: bookingData.id_property,
         id_room: bookingData.id_room,
-        checkin_date: bookingData.checkin_date,
-        checkout_date: bookingData.checkout_date,
+        checkin_date: bookingData.checkin_date.split("T")[0],
+        checkout_date: bookingData.checkout_date.split("T")[0],
         total: bookingData.total,
         // id_user: propertyData.id_user // Replace with the actual user ID
       };
@@ -114,10 +114,11 @@ import {
   
     //on Botton cancel
     const onCancelBtn = () => {
+      let prw_order = JSON.parse(localStorage.getItem('prw_order'));
       localStorage.removeItem('prw_order')
-      navigate("/detail");
+      navigate(`/detailproperty/${prw_order.id_property}`);
     };
-  
+
     return (
       <Box py="10">
         <Heading as="h2" textAlign="center" mb="6">
@@ -235,7 +236,7 @@ import {
         >
           <Flex width={isMobile ? "50%" : "20%"} flexDirection="column">
             <Button
-              colorScheme="teal"
+              colorScheme="blue"
               mx="auto"
               width="100%"
               mb="4"
@@ -243,7 +244,7 @@ import {
             >
               Confirm to Order
             </Button>
-            <Button colorScheme="teal" variant="outline" mx="auto" width="100%" onClick={onCancelBtn}>
+            <Button colorScheme="blue" variant="outline" mx="auto" width="100%" onClick={onCancelBtn}>
               Cancel
             </Button>
           </Flex>

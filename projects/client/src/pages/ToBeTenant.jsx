@@ -67,11 +67,32 @@ const navigate = useNavigate()
   };
 
   return (
-    <Box maxW="300px" mx="auto" mt="10">
-      <Heading size="md" mb="5">
+    <Box ms={[0, null, 60]} px={8} borderTopWidth={[0, null, '4px']} borderColor='blue.400'>
+    <Box maxW="400px" mx="auto" mt="20">
+      <Heading size="md" mb="10" textAlign="center">
         Upgrade to Tenant
       </Heading>
-      <FormControl mb="5" isInvalid={!!error}>
+      <Box
+        py={{
+          base: "0",
+          sm: "8",
+        }}
+        px={8}
+        bg={{
+          base: "transparent",
+          sm: "bg-surface",
+        }}
+        borderRadius={{
+          base: "0px",
+          sm: "8px",
+        }}
+        border={{
+          base: "0px",
+          md: "1px"
+        }}
+        borderColor={['', null, 'blue.400']}
+      >
+      <FormControl mb="2" isInvalid={!!error}>
         <FormLabel htmlFor="cardNumber">Card Number</FormLabel>
         <Input
           id="cardNumber"
@@ -93,9 +114,11 @@ const navigate = useNavigate()
         />
         <FormErrorMessage>{error}</FormErrorMessage>
       </FormControl>
-      <Button colorScheme="blue" onClick={handleUpgradeClick}>
+      <Button colorScheme="blue" w="full" onClick={handleUpgradeClick}>
         Upgrade to Tenant
       </Button>
+      </Box>
+    </Box>
     </Box>
   );
 };

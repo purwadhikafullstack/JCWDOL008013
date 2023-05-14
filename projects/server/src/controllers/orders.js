@@ -747,14 +747,14 @@ module.exports = {
     // console.log(invoice_number); // generate the invoice number
 
     dbConf.query(
-      `INSERT INTO orders (id_property, id_room, checkin_date, checkout_date, total, createdBy, no_invoice, order_status, createdAt) 
+      `INSERT INTO orders (id_property, id_room, checkin_date, checkout_date, total, createdBy, no_invoice, order_status, createdAt, updatedAt) 
       VALUES (${dbConf.escape(id_property)}, ${dbConf.escape(
         id_room
       )}, ${dbConf.escape(checkin_date)}, 
               ${dbConf.escape(checkout_date)}, ${dbConf.escape(
         total
       )}, ${dbConf.escape(req.decript.id_user)},
-              ${dbConf.escape(invoice_number)}, "UNPAID", NOW());
+              ${dbConf.escape(invoice_number)}, "UNPAID", NOW(), NOW());
       `,
       (err, results) => {
         if (err) {
@@ -790,10 +790,10 @@ module.exports = {
             message: "tidak bisa ambil data createdAt",
           });
         }
-        const createdAt = new Date(results[0].createdAt);
+        let createdAt = new Date(results[0].createdAt);
+        createdAt.setHours(createdAt.getHours() + 7)
         const diffTime = Math.abs(currentTime - createdAt);
         const diffHours = Math.floor(diffTime / (1000 * 60 * 60));
-        // console.log("diffHours:", diffHours);
         if (diffHours >= 2) {
           // If more than 2 hours have passed, cancel the order
           dbConf.query(
@@ -843,29 +843,18 @@ module.exports = {
     );
   },
   cancelOrder: async (req, res) => {
-    try {
-      // console.log(req.body.id_order);
-      const cancel = await dbConf.query(
-        `update orders set order_status="CANCELED" where id_order =${dbConf.escape(
-          req.body.id_order
-        )};`,
+    dbConf.query(`update orders set order_status="CANCELED" where id_order =${dbConf.escape(req.body.id_order)};`,
         (err, result) => {
           if (err) {
             console.log(err);
             return res.status(500).send(err);
           }
-          return res
-            .status(200)
-            .send({
-              success: true,
-              message: "Your Order Succesfully be Canceled",
-            });
+          return res.status(200).send({
+            success: true,
+            message: "Your Order Succesfully be Canceled",
+          });
         }
       );
-    } catch (err) {
-      console.log(err);
-      res.status(500).send({ success: false, message: "Server error" });
-    }
   },
   getPriceCalendarBydate:async(req,res)=>{
     try{

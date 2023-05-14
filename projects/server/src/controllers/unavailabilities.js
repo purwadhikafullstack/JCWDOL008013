@@ -2,6 +2,7 @@ const UnavailabilitiesModel = require("../model/unavailabilities");
 const { dbSequelize } = require("../config/db");
 const SpecialPricesModel = require("../model/specialprices");
 const { Op } = require("sequelize");
+const OrdersModel = require("../model/orders");
 
 module.exports = {
   getUnavailabilitiesData: async (req, res) => {
@@ -83,6 +84,39 @@ module.exports = {
           new Date(end_date) <= val.end_date
       );
 
+      // Check orders dates
+      // First check if the date you want to select exceeds the existing date
+      let ordersDataCheck = await OrdersModel.findAll({
+        where: {
+          id_room,
+          [Op.or]: [
+            {
+              checkin_date: {
+                [Op.between]: [start_date, end_date],
+              },
+            },
+            {
+              checkout_date: {
+                [Op.between]: [start_date, end_date],
+              },
+            },
+          ],
+        },
+      });
+      // Second check if the date you want to select is between the existing dates
+      let ordersData = await OrdersModel.findAll({
+        where: {
+          id_room,
+        },
+      });
+      let ordersDataCheck2 = ordersData.find(
+        (val) =>
+          val.checkin_date <= new Date(start_date) &&
+          new Date(start_date) <= val.checkout_date &&
+          val.checkin_date <= new Date(end_date) &&
+          new Date(end_date) <= val.checkout_date
+      )
+
       if (unavailableDataCheck.length > 0 || unavailableDataCheck2) {
         return res.status(200).send({
           success: false,
@@ -93,6 +127,11 @@ module.exports = {
           success: false,
           message: "The dates has been assigned with special price",
         });
+      } else if (ordersDataCheck.length > 0 || ordersDataCheck2) {
+        return res.status(200).send({
+          success: false,
+          message: "The room is already booked on the date you selected"
+        })
       } else {
         let create = await UnavailabilitiesModel.create({
           id_room,

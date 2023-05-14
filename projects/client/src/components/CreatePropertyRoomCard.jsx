@@ -1,13 +1,11 @@
-import { Button, Card, CardBody, FormLabel } from "@chakra-ui/react"
+import { Box, Button, Card, CardBody, FormLabel } from "@chakra-ui/react"
 
 const CreatePropertyRoomCard = (props) => {
     return (
-        <Card>
-            <CardBody>
-                <FormLabel>{props.data.title}</FormLabel>
-                <Button w='full' onClick={props.data.onOpen}>Create</Button>
-            </CardBody>
-        </Card>
+        <Box border='1px' borderColor='blue.400' borderRadius={8} p={4}>
+            <FormLabel>{props.data.title}</FormLabel>
+            <Button colorScheme='blue' w='full' onClick={props.data.onOpen}>Create</Button>
+        </Box>
     )
 }
 

@@ -9,7 +9,7 @@ import {
   Stack,
 } from "@chakra-ui/react";
 import axios from "axios";
-import  API_URL  from "../helper";
+import API_URL from "../helper";
 import { useNavigate } from "react-router-dom";
 
 const ResetPassword = () => {
@@ -32,27 +32,48 @@ const ResetPassword = () => {
   };
 
   return (
-    <Box maxW="300px" mx="auto" mt="10">
-      <Heading size="md" mb="5">
+    <Box maxW="400px" mx="auto" mt="10">
+      <Heading size="md" mb="5" textAlign='center'>
         Reset Password
       </Heading>
-      <Stack spacing="6">
-        <Stack spacing="5">
-          <FormControl>
-            <FormLabel htmlFor="email">Email</FormLabel>
-            <Input
-              id="email"
-              type="email"
-              onChange={(element) => setInputEmail(element.target.value)}
-            />
-          </FormControl>
+      <Box
+        py={{
+          base: "0",
+          sm: "8",
+        }}
+        px={8}
+        bg={{
+          base: "transparent",
+          sm: "bg-surface",
+        }}
+        borderRadius={{
+          base: "0px",
+          sm: "8px",
+        }}
+        border={{
+          base: "0px",
+          md: "1px"
+        }}
+        borderColor={['', null, 'blue.400']}
+      >
+        <Stack spacing="6">
+          <Stack spacing="5">
+            <FormControl>
+              <FormLabel htmlFor="email">Email</FormLabel>
+              <Input
+                id="email"
+                type="email"
+                onChange={(element) => setInputEmail(element.target.value)}
+              />
+            </FormControl>
+          </Stack>
+          <Stack spacing="5">
+            <Button colorScheme="blue" variant="solid" onClick={onBtnReset}>
+              Reset Password
+            </Button>
+          </Stack>
         </Stack>
-        <Stack spacing="5">
-          <Button colorScheme="teal" variant="solid" onClick={onBtnReset}>
-            Reset Password
-          </Button>
-        </Stack>
-      </Stack>
+      </Box>
     </Box>
   );
 };

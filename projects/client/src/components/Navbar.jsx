@@ -15,7 +15,16 @@ import {
     useColorModeValue,
     Stack,
     ButtonGroup,
-    Spinner
+    Spinner,
+    Icon,
+    Text,
+    Drawer,
+    DrawerBody,
+    DrawerFooter,
+    DrawerHeader,
+    DrawerOverlay,
+    DrawerContent,
+    DrawerCloseButton
 } from "@chakra-ui/react";
 import { useSelector, useDispatch } from "react-redux";
 
@@ -29,11 +38,17 @@ import { useNavigate } from "react-router-dom"
 
 import API_URL from '../helper';
 
+import { MdHotel } from "react-icons/md"
+
+import { FaSignOutAlt } from "react-icons/fa"
+
 const Links = [
     { title: "Dashboard", url: "/" },
     { title: "Projects", url: "/projects" },
-    { title: "Order List", url: "/admin/order",tenant:1},
-    { title: "Order Report", url: "/admin/report",tenant:1},
+    { title: "Order List", url: "/admin/order", tenant: 1 },
+    { title: "Order Report", url: "/admin/report", tenant: 1 },
+    { title: "Order List", url: "/admin/order", tenant: 1 },
+    { title: "Order Report", url: "/admin/report", tenant: 1 },
 ];
 
 const NavLink = ({ children, url }) => (
@@ -46,6 +61,7 @@ const NavLink = ({ children, url }) => (
             bg: useColorModeValue("gray.200", "gray.700"),
         }}
         href={url}
+        fontWeight='semibold'
     >
         {children}
     </Link>
@@ -67,36 +83,59 @@ const Navbar = (props) => {
 
     return (
         <>
-            <Box bg={useColorModeValue("gray.100", "gray.900")} px={4}>
+            <Box borderTop='4px' borderColor='blue.400' px={4}>
                 <Flex h={16} alignItems={"center"} justifyContent={"space-between"}>
                     <IconButton
                         size={"md"}
-                        icon={isOpen ? <CloseIcon /> : <HamburgerIcon />}
+                        icon={<HamburgerIcon />}
                         aria-label={"Open Menu"}
                         display={{ md: "none" }}
-                        onClick={isOpen ? onClose : onOpen}
+                        onClick={onOpen}
                     />
-                    <HStack spacing={8} alignItems={"center"}>
-                        <Box as="a" href="/" sx={{ textDecoration: "none" }}>
-                            Logo
-                        </Box>
-
-                        <HStack
-                            as={"nav"}
-                            spacing={4}
-                            display={{ base: "none", md: "flex" }}
-                        >
-                            {Links.map((link) => (
-                                link.tenant? isTenant ?
-                                <NavLink key={link.title} url={link.url}>
-                                    {link.title}
-                                </NavLink>
-                                :""
-                                :<NavLink key={link.title} url={link.url}>
-                                    {link.title}
-                                </NavLink>
-                            ))}
-                        </HStack>
+                    <Box display={{ md: "none" }} justifySelf='center'>
+                        <Flex gap={2} onClick={() => navigate("/")} cursor="pointer">
+                            <Icon as={MdHotel} boxSize={6} color='blue.400' />
+                            <Text fontWeight='bold'>StayComfy</Text>
+                        </Flex>
+                    </Box>
+                    <HStack
+                        as={"nav"}
+                        spacing={4}
+                        display={{ base: "none", md: "flex" }}
+                    >
+                        <NavLink url='/'>
+                            <Flex gap={2}>
+                                <Icon as={MdHotel} boxSize={6} color='blue.400' />
+                                <Text fontWeight='bold'>StayComfy</Text>
+                            </Flex>
+                        </NavLink>
+                        {!username ?
+                            <></>
+                            : isTenant ?
+                                <>
+                                    <NavLink url='/mybooking'>
+                                        My Booking
+                                    </NavLink>
+                                    <NavLink url='/profile'>
+                                        Profile
+                                    </NavLink>
+                                    <NavLink url='/admin/property'>
+                                        Manage Property
+                                    </NavLink>
+                                    <NavLink url='/admin/order'>
+                                        Order List
+                                    </NavLink>
+                                    <NavLink url='/admin/report'>
+                                        Report
+                                    </NavLink>
+                                </>
+                                :
+                                <>
+                                    <NavLink url='/mybooking'>
+                                        My Booking
+                                    </NavLink>
+                                </>
+                        }
                     </HStack>
 
                     <Flex alignItems={"center"}>
@@ -115,19 +154,33 @@ const Navbar = (props) => {
                                             src={picture}
                                         />
                                     </MenuButton>
-                                    <MenuList>
-                                        <MenuItem onClick={() => navigate("/mybooking")}>My Dashboard</MenuItem>
+                                    <MenuList zIndex={100}>
+                                        <MenuItem onClick={() => navigate("/mybooking")}>My Booking</MenuItem>
+                                        <MenuItem onClick={() => navigate("/profile")}>Profile</MenuItem>
+                                        {isTenant ?
+                                            <>
+                                                <MenuDivider />
+                                                <MenuItem onClick={() => navigate("/admin/property")}>Manage Property</MenuItem>
+                                                <MenuItem onClick={() => navigate("/admin/order")}>Order List</MenuItem>
+                                                <MenuItem onClick={() => navigate("/admin/report")}>Report</MenuItem>
+                                            </>
+                                            :
+                                            <>
+                                            </>
+                                        }
                                         <MenuDivider />
-                                        <MenuItem onClick={() => dispatch(logoutAction())}>Sign Out <AiOutlineLogout /></MenuItem>
+                                        <MenuItem onClick={() => {
+                                            dispatch(logoutAction())
+                                            navigate("/")
+                                        }}>Sign Out <Icon as={AiOutlineLogout} ms={1} mt={0.5} /></MenuItem>
                                     </MenuList>
                                 </Menu>
                             ) : (
                                 <ButtonGroup>
                                     <Button
                                         variant={"solid"}
-                                        colorScheme={"teal"}
+                                        colorScheme="blue"
                                         size={"sm"}
-                                        mr={4}
                                         as="a"
                                         href={"/login"}
                                     >
@@ -135,10 +188,9 @@ const Navbar = (props) => {
                                     </Button>
 
                                     <Button
-                                        variant={"outline"}
-                                        colorScheme={"teal"}
+                                        variant="outline"
+                                        colorScheme="blue"
                                         size={"sm"}
-                                        mr={4}
                                         as="a"
                                         href={"/register"}
                                     >
@@ -150,15 +202,65 @@ const Navbar = (props) => {
                     </Flex>
                 </Flex>
 
-                {isOpen ? (
-                    <Box pb={4} display={{ md: "none" }}>
-                        <Stack as={"nav"} spacing={4}>
-                            {Links.map((link) => (
-                                <NavLink key={link}>{link}</NavLink>
-                            ))}
-                        </Stack>
-                    </Box>
-                ) : null}
+                <Drawer
+                    isOpen={isOpen}
+                    placement='left'
+                    onClose={onClose}
+                >
+                    <DrawerOverlay />
+                    <DrawerContent>
+                        <DrawerCloseButton />
+                        <DrawerHeader>
+                            <Flex gap={2} onClick={() => navigate("/")} cursor="pointer">
+                                <Icon as={MdHotel} boxSize={6} color='blue.400' mt={1} />
+                                <Text fontWeight='bold'>StayComfy</Text>
+                            </Flex>
+                        </DrawerHeader>
+
+                        <DrawerBody>
+                            {!username ?
+                                <></>
+                                : isTenant ?
+                                    <Stack>
+                                        <NavLink url='/mybooking'>
+                                            My Booking
+                                        </NavLink>
+                                        <NavLink url='/profile'>
+                                            Profile
+                                        </NavLink>
+                                        <NavLink url='/admin/property'>
+                                            Manage Property
+                                        </NavLink>
+                                        <NavLink url='/admin/order'>
+                                            Order List
+                                        </NavLink>
+                                        <NavLink url='/admin/report'>
+                                            Report
+                                        </NavLink>
+                                    </Stack>
+                                    :
+                                    <Stack>
+                                        <NavLink url='/mybooking'>
+                                            My Booking
+                                        </NavLink>
+                                        <NavLink url='/profile'>
+                                            Profile
+                                        </NavLink>
+                                    </Stack>
+                            }
+                        </DrawerBody>
+                        <DrawerFooter>
+                            <IconButton
+                                w='full'
+                                icon={<FaSignOutAlt />}
+                                onClick={() => {
+                                    dispatch(logoutAction());
+                                    window.location.href = "/";
+                                }}
+                            />
+                        </DrawerFooter>
+                    </DrawerContent>
+                </Drawer>
             </Box>
         </>
     );

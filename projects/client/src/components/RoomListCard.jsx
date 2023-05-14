@@ -9,21 +9,19 @@ const RoomListCard = (props) => {
                 let roomPicture = API_URL + value.picture;
                 return (
                     <Link href={'/admin/room/detail' + search + '&room=' + value.id_room} _hover={{ textDecoration: 'none' }} key={value.id_room}>
-                        <Card mb={4} _hover={{ bg: 'gray.100' }}>
-                            <Flex>
-                                <Image src={roomPicture} maxW={[150, null, 200]} roundedLeft={5} />
-                                <CardBody alignSelf='center'>
-                                    <Flex justifyContent='space-between'>
-                                        <Box>
-                                            <Text fontSize={['md', null, 'xl']} fontWeight='bold' mb={2}>{value.name}</Text>
-                                            <Text display={['none', null, 'block']} bg='green.500' w='max-content' px={4} mb={2} rounded={20} color='white'>Room</Text>
-                                            <Text color='blue.500' fontWeight='bold'>Rp {value.basePrice.toLocaleString('id')}</Text>
-                                            <Text color='gray.500'>/ room / night(s)</Text>
-                                        </Box>
-                                    </Flex>
-                                </CardBody>
+                        <Box mb={4} _hover={{ bg: 'gray.100' }} border='1px' borderColor='blue.400' borderRadius={8} p={2}>
+                            <Flex gap={[4, 8]}>
+                                <Image src={roomPicture} w={[100, 150, 200]} h={150} borderRadius={8} objectFit='cover' />
+                                <Flex justifyContent='space-between' alignItems='center'>
+                                    <Box>
+                                        <Text fontSize={['md', null, 'xl']} fontWeight='bold' mb={2}>{value.name}</Text>
+                                        <Text bg='green.500' w='max-content' px={4} mb={2} rounded={20} color='white'>Room</Text>
+                                        <Text color='blue.500' fontWeight='bold'>Rp {value.basePrice.toLocaleString('id')}</Text>
+                                        <Text color='gray.500'>/ room / night(s)</Text>
+                                    </Box>
+                                </Flex>
                             </Flex>
-                        </Card>
+                        </Box>
                     </Link>
                 )
             })}

@@ -76,7 +76,7 @@ const Verification = () => {
         </Stack>
       </Stack>
 
-      <Stack spacing="8">
+      <Stack spacing="8" mt={8}>
         <Box
           py={{
             base: "0",
@@ -90,19 +90,20 @@ const Verification = () => {
             base: "transparent",
             sm: "bg-surface",
           }}
-          boxShadow={{
-            base: "none",
-            sm: "md",
-          }}
           borderRadius={{
             base: "none",
             sm: "xl",
           }}
+          border={{
+            base: "0px",
+            md: "1px"
+          }}
+          borderColor={['', null, 'blue.400']}
         >
           <Stack spacing="6">
             <Stack spacing="5">
               <HStack spacing="1" justify="center">
-                <Text color="muted">By Fill The OTP Code</Text>
+                <Text color="muted" fontWeight='bold'>OTP Code</Text>
               </HStack>
               <FormControl>
 
@@ -118,7 +119,7 @@ const Verification = () => {
 
             <Stack spacing="6">
               <Button
-                colorScheme="teal"
+                colorScheme="blue"
                 variant="solid"
                 onClick={onBtnVerified}
               >

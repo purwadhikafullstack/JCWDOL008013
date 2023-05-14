@@ -18,7 +18,7 @@ const Success = () => {
   const isMobile = useBreakpointValue({ base: true, md: false });
   return (
     <Flex flexDirection="column" alignItems="center">
-      <Breadcrumb mb={8} separator=">" color="gray.400" fontWeight="medium">
+      <Breadcrumb mb={8} separator="/" color="gray.400" fontWeight="medium">
         <BreadcrumbItem>
           <BreadcrumbLink href="/confirmation">Order Details</BreadcrumbLink>
         </BreadcrumbItem>
@@ -28,7 +28,7 @@ const Success = () => {
         </BreadcrumbItem>
 
         <BreadcrumbItem isCurrentPage>
-          <BreadcrumbLink color="teal.500">Success</BreadcrumbLink>
+          <BreadcrumbLink color="blue.400">Success</BreadcrumbLink>
         </BreadcrumbItem>
       </Breadcrumb>
 
@@ -43,10 +43,9 @@ const Success = () => {
             width="100%"
             height="auto"
             borderRadius="md"
-            boxShadow="md"
           />
         </Center>
-        <Flex alignItems="center">
+        <Flex justifyContent="center" alignItems="center">
         <Text mb={4}>
           Your order has been received. Please wait for tenant confirmation.
         </Text>
@@ -55,7 +54,7 @@ const Success = () => {
 
       
 
-      <Button colorScheme="teal" onClick={() => (window.location.href = "/")}>
+      <Button mb={8} colorScheme="blue" onClick={() => (window.location.href = "/")}>
         Back to Home
       </Button>
     </Flex>
