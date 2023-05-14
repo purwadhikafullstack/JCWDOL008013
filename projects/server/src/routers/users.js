@@ -21,4 +21,5 @@ route.patch('/changepass',readToken,usersController.changePassword)
 route.patch('/tobetenant', readToken, uploader('/idCard','IDCARD').single('cardPicture'), usersController.tobeTenant)
 route.get('/resetpass', usersController.resetpassword)
 route.get('/profiledata', readToken, usersController.profileData)
+route.post('/reverify', usersController.resendVerify)
 module.exports = route;

@@ -12,6 +12,7 @@ import {
     InputGroup,
     InputRightElement,
     IconButton,
+    useToast,
 } from "@chakra-ui/react";
 import { HiEye, HiEyeOff } from "react-icons/hi";
 import { FcGoogle } from "react-icons/fc";
@@ -27,6 +28,7 @@ const Register = () => {
     const [phone, setPhone] = useState("");
     const [inputType, setInputType] = useState("password");
     const navigate = useNavigate()
+    const toast = useToast()
 
     const onBtnRegis = () => {
         Axios.post(API_URL + `/users/regis`, {
@@ -37,12 +39,25 @@ const Register = () => {
             // role: "user",
         })
             .then((res) => {
-                alert(res.data.message);
-                navigate('/login')
+                toast({
+                    title: 'Success',
+                    description: res.data.message,
+                    status: 'success',
+                    duration: 9000,
+                    position: 'top',
+                    isClosable: true,
+                    onCloseComplete: () => navigate('/login'),
+                })
             })
             .catch((err) => {
-                alert(err.response.data.message);
-                window.location.reload()
+                toast({
+                    title: 'Failed',
+                    description: err.response.data.message,
+                    status: 'error',
+                    duration: 9000,
+                    position: 'top',
+                    isClosable: true,
+                  });        
             });
     };
 
@@ -61,7 +76,7 @@ const Register = () => {
                 md: "24",
             }}
             px={{
-                base: "0",
+                base: "4",
                 sm: "8",
             }}
         >
@@ -103,14 +118,15 @@ const Register = () => {
                         base: "transparent",
                         sm: "bg-surface",
                     }}
-                    boxShadow={{
-                        base: "none",
-                        sm: "md",
-                    }}
                     borderRadius={{
                         base: "none",
                         sm: "xl",
                     }}
+                    border={{
+                        base: "0px",
+                        md: "1px"
+                    }}
+                    borderColor={['', null, 'blue.400']}
                 >
                     <Stack spacing="6">
                         <Stack spacing="5">
@@ -150,18 +166,16 @@ const Register = () => {
                                         <IconButton
                                             onClick={onClickReveal}
                                             icon={inputType === "password" ? <HiEye /> : <HiEyeOff />}
+                                            size="sm"
                                         />
                                     </InputRightElement>
                                 </InputGroup>
                             </FormControl>
                         </Stack>
                         <HStack justify="space-between"></HStack>
-                        <Stack spacing="6">
-                            <Button colorScheme="teal" variant="solid" onClick={onBtnRegis}>
-                                Create account
-                            </Button>
-                            <Button leftIcon={<FcGoogle />}>Sign Up with Google</Button>
-                        </Stack>
+                        <Button colorScheme="blue" variant="solid" onClick={onBtnRegis}>
+                            Create account
+                        </Button>
                     </Stack>
                 </Box>
             </Stack>

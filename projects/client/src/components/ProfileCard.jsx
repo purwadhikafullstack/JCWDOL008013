@@ -1,11 +1,11 @@
 import { Avatar, Box, Button, Flex, Icon, Stack, Text } from "@chakra-ui/react"
 import { HiOutlineMail } from 'react-icons/hi';
 import { BsGenderAmbiguous } from 'react-icons/bs';
-import { MdDateRange } from 'react-icons/md';
+import { MdDateRange, MdVerified } from 'react-icons/md';
 
 const ProfileCard = (props) => {
     return (
-        <Box w={500} p={8} border={[0, null, '1px']} borderColor={['', null, 'blue.400']} borderRadius={8}>
+        <Box w={500} p={[0, null, 8]} border={[0, null, '1px']} borderColor={['', null, 'blue.400']} borderRadius={8}>
             <Flex justifyContent='center'>
                 <Avatar size='2xl' src={props.data.picture} />
             </Flex>
@@ -22,6 +22,10 @@ const ProfileCard = (props) => {
                 <Flex justifyContent='space-between'>
                     <Text fontSize='lg' fontWeight='semibold' color='gray.500'><Icon as={MdDateRange} boxSize={6} mt={-0.5} me={1} />Birthdate:</Text>
                     <Text fontSize='lg'>{props.data.birthdate}</Text>
+                </Flex>
+                <Flex justifyContent='space-between'>
+                    <Text fontSize='lg' fontWeight='semibold' color='gray.500'><Icon as={MdVerified} boxSize={6} mt={-0.5} me={1} />Status:</Text>
+                    <Text fontSize='lg'>{props.data.isVerified ? 'Verified' : 'Unverified'}</Text>
                 </Flex>
             </Stack>
             <Button mt={8} colorScheme='blue' w='full' onClick={props.data.onOpen}>Edit</Button>

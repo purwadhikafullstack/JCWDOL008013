@@ -13,6 +13,7 @@ const Profile = (props) => {
     const [birthdate, setBirthdate] = useState('');
     const [gender, setGender] = useState('');
     const [picture, setPicture] = useState('');
+    const [isVerified, setIsVerified] = useState('');
 
     // Pop up notification
     const toast = useToast();
@@ -30,6 +31,7 @@ const Profile = (props) => {
                 setBirthdate(res.data.birthdate);
                 setGender(res.data.gender);
                 setPicture(API_URL + res.data.picture);
+                setIsVerified(res.data.isVerified);
             }
         } catch (error) {
             console.log(error);
@@ -62,9 +64,9 @@ const Profile = (props) => {
 
     return (
         <Box ms={[0, null, 60]} px={8} borderTopWidth={[0, null, '4px']} borderColor='blue.400'>
-            <Flex justifyContent='center' mt={[8, null, 32]}>
+            <Flex justifyContent='center' mt={[8, null, 24]}>
                 <ProfileCard data={{
-                    picture, username, email, gender, birthdate, onOpen
+                    picture, username, email, gender, birthdate, isVerified, onOpen
                 }} />
                 <ProfileEditModal data={{
                     isOpen, onClose, initialValues: { username, email, gender, birthdate }, validationSchema: profileValidation, onSubmit: (values, actions) => {
