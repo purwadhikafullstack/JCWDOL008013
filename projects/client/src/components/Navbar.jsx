@@ -250,14 +250,18 @@ const Navbar = (props) => {
                             }
                         </DrawerBody>
                         <DrawerFooter>
-                            <IconButton
-                                w='full'
-                                icon={<FaSignOutAlt />}
-                                onClick={() => {
-                                    dispatch(logoutAction());
-                                    window.location.href = "/";
-                                }}
-                            />
+                            {!username ?
+                                <></>
+                                :
+                                <IconButton
+                                    w='full'
+                                    icon={<FaSignOutAlt />}
+                                    onClick={() => {
+                                        dispatch(logoutAction());
+                                        window.location.href = "/";
+                                    }}
+                                />
+                            }
                         </DrawerFooter>
                     </DrawerContent>
                 </Drawer>
