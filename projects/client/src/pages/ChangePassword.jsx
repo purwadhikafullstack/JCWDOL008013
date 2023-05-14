@@ -80,6 +80,7 @@ import {
     };
   
     return (
+      <Box ms={[0, null, 60]} px={8} borderTopWidth={[0, null, '4px']} borderColor='blue.400'>
       <Container
         maxW="md"
         py={{
@@ -104,6 +105,7 @@ import {
                 base: "lg",
                 md: "md",
               }}
+              mb={8}
             >
               Change Your Password
             </Heading>
@@ -124,14 +126,15 @@ import {
               base: "transparent",
               sm: "bg-surface",
             }}
-            boxShadow={{
-              base: "none",
-              sm: "md",
-            }}
             borderRadius={{
               base: "none",
               sm: "xl",
             }}
+            border={{
+              base: "0px",
+              md: "1px"
+            }}
+            borderColor={['', null, 'blue.400']}
           >
             <Stack spacing="6">
               <Stack spacing="5">
@@ -189,7 +192,7 @@ import {
   
               <Stack spacing="6">
                 <Button
-                  colorScheme="teal"
+                  colorScheme="blue"
                   variant="solid"
                   onClick={onBtnChangePass}
                 >
@@ -200,6 +203,7 @@ import {
           </Box>
         </Stack>
       </Container>
+      </Box>
     );
   };
   
