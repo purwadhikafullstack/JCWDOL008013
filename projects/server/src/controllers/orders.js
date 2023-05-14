@@ -726,8 +726,10 @@ module.exports = {
   },
   getRoomData: (req, res) => {
     const roomId = req.query.roomId;
+    const checkin_date = req.query.checkin_date;
+    const checkout_date = req.query.checkout_date;
     dbConf.query(
-      `SELECT name as type FROM rooms WHERE id_room = ${dbConf.escape(
+      `SELECT name as type, basePrice as price FROM rooms WHERE id_room = ${dbConf.escape(
         roomId
       )};`,
       (err, results) => {
@@ -735,8 +737,62 @@ module.exports = {
           return res.status(500).send("Error getting room data from database");
         }
         const roomData = results[0];
+        dbConf.query(`SELECT * FROM unavailabilities WHERE id_room = ${dbConf.escape(
+          roomId
+        )} AND (start_date BETWEEN ${dbConf.escape(
+          checkin_date
+        )} AND ${dbConf.escape(
+          checkout_date
+        )} OR end_date BETWEEN ${dbConf.escape(
+          checkin_date
+        )} AND ${dbConf.escape(
+          checkout_date
+        )} OR (start_date <= ${dbConf.escape(
+          checkin_date
+        )} AND end_date >= ${dbConf.escape(
+          checkin_date
+        )} AND start_date <= ${dbConf.escape(
+          checkout_date
+        )} AND end_date >= ${dbConf.escape(
+          checkout_date
+        )}));`,
+        (err, results) => {
+          if (err) {
+            return res.status(500).send("Error getting room unavailable data from database");
+          }
+          const roomUnavailable = results
+          dbConf.query(`SELECT * FROM special_prices WHERE id_room = ${dbConf.escape(
+            roomId
+          )} AND (start_date BETWEEN ${dbConf.escape(
+            checkin_date
+          )} AND ${dbConf.escape(
+            checkout_date
+          )} OR end_date BETWEEN ${dbConf.escape(
+            checkin_date
+          )} AND ${dbConf.escape(
+            checkout_date
+          )} OR (start_date <= ${dbConf.escape(
+            checkin_date
+          )} AND end_date >= ${dbConf.escape(
+            checkin_date
+          )} AND start_date <= ${dbConf.escape(
+            checkout_date
+          )} AND end_date >= ${dbConf.escape(
+            checkout_date
+          )}));`,
+          (err, results) => {
+            if (err) {
+              return res.status(500).send("Error getting room special price data from database");
+            }
+            const roomSpecialPrice = results
+            return res.status(200).send({
+              roomData,
+              roomUnavailable,
+              roomSpecialPrice,
+            });
+          })
+        })
         // console.log(roomData)
-        return res.status(200).send(roomData);
       }
     );
   },

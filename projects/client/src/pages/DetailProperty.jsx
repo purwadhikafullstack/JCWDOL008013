@@ -279,11 +279,12 @@ function DetailProperty() {
                         let orderdata = {
                             id_property:room.id_property,
                             id_room:room.id_room,
-                            price: price[price.findIndex(x=>x.id==room.id_room)].data,
+                            price: room.basePrice,
                             cityId:selectedCity.value,
-                            startDate:selectedDates[0],
-                            endDate:selectedDates[1],
+                            startDate:selectedDates[0].toISOString().split("T")[0],
+                            endDate:selectedDates[1].toISOString().split("T")[0],
                         }
+                        console.log(orderdata);
                         return (
                         <Box key={room.id} flex={1} borderWidth="1px" borderRadius="lg" >
                             <Flex>
@@ -296,7 +297,8 @@ function DetailProperty() {
                                         {room.name}
                                         </Text>
                                         <Text fontSize="lg" color="gray.600">
-                                        { price[price.findIndex(x=>x.id==room.id_room)].data.toLocaleString('id',{ style: 'currency', currency: 'IDR' })} per night
+                                        {/* { price[price.findIndex(x=>x.id==room.id_room)].data.toLocaleString('id',{ style: 'currency', currency: 'IDR' })} per night */}
+                                        { room.basePrice.toLocaleString('id',{ style: 'currency', currency: 'IDR' })} per night
                                         </Text>
                                     </Box>
                                     <Text mt="2" fontSize="md" color="gray.600">
