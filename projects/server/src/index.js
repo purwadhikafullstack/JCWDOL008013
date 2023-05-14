@@ -12,7 +12,7 @@ app.use(bearerToken());
 // app.use(express.static("src/public"));
 // app.use("/src/public", express.static(__dirname + "/src/public"));
 // app.use('/api', express.static(path.join(__dirname, 'src/public')));
-app.use(express.static(__dirname + "/src/public"));
+app.use(express.static(__dirname + "/public"));
 app.use(
   cors({
     origin: [
