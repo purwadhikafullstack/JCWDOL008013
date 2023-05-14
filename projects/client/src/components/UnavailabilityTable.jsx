@@ -36,8 +36,8 @@ const UnavailabilityTable = (props) => {
                                     <Td>{value.end}</Td>
                                     <Td isNumeric>
                                         <ButtonGroup>
-                                            <Button onClick={() => props.data.edit(value.id)}>Edit</Button>
-                                            <Button onClick={() => props.data.delete(value.id)}>Delete</Button>
+                                            {/* <Button onClick={() => props.data.edit(value.id)}>Edit</Button> */}
+                                            <Button colorScheme='red' variant='outline' onClick={() => props.data.delete(value.id)}>Delete</Button>
                                         </ButtonGroup>
                                     </Td>
                                 </Tr>
