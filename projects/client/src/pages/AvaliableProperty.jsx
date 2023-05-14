@@ -27,7 +27,7 @@ function AvaliableProperty(props) {
 
     const [perpage,setPerPage]= useState(10)
     const [total, setTotalItem] = useState(0)
-
+    const [firstload, setFirstLoad] = useState(false)
     const today = new Date()
 
     const { id_user } = useSelector((state) => {
@@ -53,6 +53,12 @@ function AvaliableProperty(props) {
         .then((res) => {
             setData(res.data.data.data)
             setTotalItem(res.data.data.total)
+            let startDate = new Date(selectedDates[0].setHours(0, 0, 0, 0));
+            let endDate = new Date(selectedDates[1].setHours(0, 0, 0, 0));
+            let orderdata = { startDate, endDate, cityId: selectedCity }
+            let formed = JSON.stringify(orderdata)
+            localStorage.setItem('order_form', formed)
+            dispatch(activeOrder(formed))
         })
         .catch((err) => {
             console.log(err)
@@ -108,11 +114,14 @@ function AvaliableProperty(props) {
     useEffect(()=>{
         loadCity()
         checksavedorder()
+        
     },[])
 
     useEffect(()=>{
-        if(selectedDates.length == 2 && selectedCity != null)
-                loadListPropertyAvailable()
+        if(selectedDates.length == 2 && selectedCity != null && firstload == false){
+            setFirstLoad(true)
+            loadListPropertyAvailable()
+        }
     },[selectedCity,selectedDates,page])
 
     useEffect(()=>{
@@ -131,9 +140,9 @@ function AvaliableProperty(props) {
         // console.log("submit",selectedDates,selectedCity,selectedDates.length == 2,selectedCity != null)
         
         if(selectedDates.length == 2 && selectedCity != null){
-            let orderdata = {startDate:selectedDates[0],endDate:selectedDates[1],cityId:selectedCity}
-            let formed = JSON.stringify(orderdata)
-            dispatch(activeOrder(formed))
+            // let orderdata = {startDate:selectedDates[0],endDate:selectedDates[1],cityId:selectedCity}
+            // let formed = JSON.stringify(orderdata)
+            // dispatch(activeOrder(formed))
 
             loadListPropertyAvailable()
         }else{
@@ -196,7 +205,7 @@ function AvaliableProperty(props) {
                     <style>
                         @import "https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css";
                     </style>
-                    {data != null ?data.map(property => (
+                    {data != null && data.length != 0 ?data.map(property => (
                     <Flex key={property.id_property} flex={1} flexDirection={"row"} boxShadow='outline' p='6' rounded='md' bg='white' >
                         <Box p={6}>
                             <Image src={API_URL + property.picture} alt={property.name}  height={200}/>
@@ -218,7 +227,7 @@ function AvaliableProperty(props) {
                             
                         </Box>
                     </Flex>
-                    )):<Heading p={10}>No Data to Show</Heading>}
+                    )):<Heading p={10}>No Available Booking</Heading>}
                     {data != null && total > perpage ?<Center p={5}>
                         <ReactPaginate
                             onPageChange={handlePageClick}

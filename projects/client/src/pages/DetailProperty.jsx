@@ -31,7 +31,7 @@ function DetailProperty() {
 
     const [other,setOther] = useState({})
     const [formdate,setformdate] = useState("")
-
+    const [firstload, setFirstLoad] = useState(false)
     const { id_user } = useSelector((state) => {
         return {
             id_user: state.userReducer.id_user || null,
@@ -78,8 +78,13 @@ function DetailProperty() {
             for(let r of res.data.data){
                 findprice(r.id_room)
             }
-            console.log(price,data)
             setData(res.data.data)
+            let startDate = new Date(selectedDates[0].setHours(0, 0, 0, 0));
+            let endDate = new Date(selectedDates[1].setHours(0, 0, 0, 0));
+            let orderdata = { startDate, endDate, cityId: selectedCity }
+            let formed = JSON.stringify(orderdata)
+            localStorage.setItem('order_form', formed)
+            dispatch(activeOrder(formed))
         })
         .catch((err) => {
             console.log(err)
@@ -128,7 +133,6 @@ function DetailProperty() {
                 arr.push(new Date(presistentData.startDate))
                 arr.push(new Date(presistentData.endDate))
                 setSelectedDates((x)=>x=arr)
-                // loadRoomAvaliable()
             }else{
                 dispatch(resetOrder)
             }
@@ -182,7 +186,6 @@ function DetailProperty() {
             month: monthOfYear,
             year: year
         })
-        
     },[])
 
     useEffect(()=>{
@@ -198,8 +201,10 @@ function DetailProperty() {
     },[formdate])
     
     useEffect(()=>{
-        if(selectedDates.length == 2 && selectedCity != null)
+        if(selectedDates.length == 2 && selectedCity != null && firstload == false){
+            setFirstLoad(true)
             loadRoomAvaliable()
+        }
     },[selectedCity,selectedDates])
 
     const onOrderBtn = (data)=>{
@@ -225,7 +230,7 @@ function DetailProperty() {
         <Box p={10}>
             <Box p={5} >
                 <Flex border='2px' borderColor='gray.200'  boxShadow='xl' >
-                    <FormControl isRequired p={5}>
+                    {/* <FormControl isRequired p={5}>
                         <Select
                             name="colors"
                             options={groupedOptions}
@@ -233,7 +238,7 @@ function DetailProperty() {
                             onChange={setSelectedCity}
                             value={selectedCity}
                         />
-                    </FormControl>
+                    </FormControl> */}
                     <FormControl isRequired p={5}>
                         <RangeDatepicker
                             selectedDates={selectedDates}
@@ -284,6 +289,7 @@ function DetailProperty() {
                             startDate:selectedDates[0],
                             endDate:selectedDates[1],
                         }
+                        console.log(price)
                         return (
                         <Box key={room.id} flex={1} borderWidth="1px" borderRadius="lg" >
                             <Flex>
@@ -296,7 +302,7 @@ function DetailProperty() {
                                         {room.name}
                                         </Text>
                                         <Text fontSize="lg" color="gray.600">
-                                        { price[price.findIndex(x=>x.id==room.id_room)].data.toLocaleString('id',{ style: 'currency', currency: 'IDR' })} per night
+                                        Total Price { price[price.findIndex(x=>x.id==room.id_room)].data.toLocaleString('id',{ style: 'currency', currency: 'IDR' })} 
                                         </Text>
                                     </Box>
                                     <Text mt="2" fontSize="md" color="gray.600">
@@ -306,7 +312,7 @@ function DetailProperty() {
                                 </Box>
                             </Flex>
                         </Box>
-                    )}):<Text>No Room Data</Text>}
+                    )}):<Text>No Available Booking</Text>}
                 </Flex>
                 <br/><br/>
                 <Heading as="h2" size="lg" mb="4">
