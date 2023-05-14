@@ -83,7 +83,7 @@ const LandingProperty = (props) => {
                     }
                     return (
                         <GridItem key={val.id_property} cursor='pointer' onClick={() => onSubmitBtn({ id_city: val.city.id_city, name: val.city.name, id_property: val.id_property })}>
-                            <Image borderRadius={8} src={API_URL + val.picture} w='full' h={[150, null, 200]} objectFit='cover' />
+                            <Image borderRadius={8} src={"https://jcwdol00803.purwadhikabootcamp.com" + val.picture} w='full' h={[150, null, 200]} objectFit='cover' />
                             <Text mt={2} fontWeight='bold'>{val.name}</Text>
                             <Text color='gray.500'>{val.city.name}, {val.city.province}</Text>
                             <Text fontSize='sm'>Starting from {Object.keys(price).length === 0 ? '-' : price.basePrice.toLocaleString('id', { style: 'currency', currency: 'IDR' })}</Text>
