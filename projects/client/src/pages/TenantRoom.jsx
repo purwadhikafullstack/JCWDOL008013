@@ -142,7 +142,7 @@ const TenantRoom = (props) => {
                 position: 'top',
                 duration: 9000,
                 isClosable: true,
-                onCloseComplete: () => navigate('/tenant/property'),
+                onCloseComplete: () => navigate('/admin/property'),
             })
         } catch (error) {
             console.log(error);

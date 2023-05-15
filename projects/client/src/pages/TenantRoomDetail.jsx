@@ -131,7 +131,7 @@ const TenantRoomDetail = (props) => {
                 duration: 9000,
                 isClosable: true,
                 onCloseComplete: () => {
-                    navigate(`/tenant/room${search.split('&')[0]}`)
+                    navigate(`/admin/room${search.split('&')[0]}`)
                 }
             });
         } catch (error) {
