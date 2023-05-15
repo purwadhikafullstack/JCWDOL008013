@@ -150,8 +150,8 @@ const Sidebar = () => {
                   w="full"
                   icon={<FaSignOutAlt />}
                   onClick={() => {
+                    navigate("/");
                     dispatch(logoutAction());
-                    window.location.href = "/";
                   }}
                 />
               </Box>
@@ -199,8 +199,8 @@ const Sidebar = () => {
                   w="full"
                   icon={<FaSignOutAlt />}
                   onClick={() => {
+                    navigate("/");
                     dispatch(logoutAction());
-                    window.location.href = "/";
                   }}
                 />
               </DrawerFooter>
