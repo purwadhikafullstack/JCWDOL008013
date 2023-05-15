@@ -99,14 +99,23 @@ function OrderList() {
             cell: (info) => info.getValue() || "-",
             header: "Pembeli"
         }),
-        columnHelper.accessor("order_status", {
-            cell: (info) => info.getValue() || "-",
-            header: "Status Order"
+        columnHelper.accessor("createdAt", {
+            cell: (info) => {
+                if(info.getValue() == "") {
+                    return "-"
+                }else {
+                    const pad = (n)=> {return n < 10 ? "0"+n : n;}
+                    let dateobj = new Date(info.getValue())
+                    return pad(dateobj.getDate())+"/"+pad(dateobj.getMonth()+1)+"/"+dateobj.getFullYear();
+                }
+            },
+            header: "Tanggal Order"
         }),
         columnHelper.display({
             cell: (props) => {
                 return props.row.original.order_status == "PAID" ? <Button onClick={()=>detailOrder(props.row.original.id_order,"process")}>Process Order</Button>:
-                props.row.original.order_status == "UNPAID"? <Button onClick={()=>detailOrder(props.row.original.id_order,"reject")}>Reject Order</Button> : "-"
+                props.row.original.order_status == "UNPAID"? <Button onClick={()=>detailOrder(props.row.original.id_order,"reject")}>Reject Order</Button> : 
+                props.row.original.order_status == "CONFIRMED"? <Button onClick={()=>sendOrderMail(props.row.original.id_order)}>Send Mail</Button> : "-"
             },
             header: "Action"
         })
@@ -114,6 +123,28 @@ function OrderList() {
 
     const detailOrder = (id,action) =>{
         navigate("/admin/order/detail/"+id+"/"+action)
+    }
+
+    const sendOrderMail = (id_order) =>{
+        console.log(id_order)
+        let getLocalStorage = localStorage.getItem("prw_login")
+        Axios.get(API_URL + `/orders/sendOrderMail`,{params:{
+            id_order
+        },
+            headers: {
+                Authorization: `Bearer ${getLocalStorage}`
+            }
+        })
+        .then((res) => {
+            alert(res.data.message)
+        })
+        .catch((err) => {
+            console.log(err)
+            if (!err.response.data.success) {
+                alert(err.response.data.message);
+            }
+            console.log("check error", err)
+        });
     }
 
     // Invoke when user click to request another page.

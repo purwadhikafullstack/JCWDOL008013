@@ -179,7 +179,7 @@ function ReportList() {
         </style>
         <Flex direction={"column"}>
         <Box p={5}>
-            <Heading size={"xl"}>List Order</Heading>
+            <Heading size={"xl"}>List Sales</Heading>
             <form onSubmit={formik.handleSubmit}>
                 <Flex direction={"row"} gap={5} p={5}>
                     <Select name='ordercolumn' id='ordercolumn' onChange={formik.handleChange} value={formik.values.ordercolumn} placeholder='Kolom'>

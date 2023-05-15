@@ -11,6 +11,7 @@ import { Select } from "chakra-react-select";
 import { activeOrder, resetOrder } from '../actions/orderUserAction';
 import CalendarTable from '../components/CalendarTable'
 import leftPad from 'left-pad';
+import TestimonialList from '../components/TestimonialList';
 
 function DetailProperty() {
     const dispatch = useDispatch();
@@ -32,6 +33,7 @@ function DetailProperty() {
     const [other,setOther] = useState({})
     const [formdate,setformdate] = useState("")
     const [firstload, setFirstLoad] = useState(false)
+    const [review, setReview] = useState(null)
     const { id_user } = useSelector((state) => {
         return {
             id_user: state.userReducer.id_user || null,
@@ -175,6 +177,7 @@ function DetailProperty() {
     useEffect(()=>{
         loadCity()
         checksavedorder()
+        getListReview()
         const today = new Date();
 
         const dateOfMonth = today.getDate();
@@ -208,8 +211,6 @@ function DetailProperty() {
     },[selectedCity,selectedDates])
 
     const onOrderBtn = (data)=>{
-        console.log(data)
-        // TODO: mas rajib di sini kirim data ordernya 
         let od = {
             id_property: data.id_property,
             id_room: data.id_room,
@@ -223,6 +224,27 @@ function DetailProperty() {
 
     const onSubmitBtn = (data)=>{
         loadRoomAvaliable()
+    }
+
+    const getListReview = ()=>{
+        let id_property = id
+        let getLocalStorage = localStorage.getItem("prw_login")
+        Axios.get(API_URL + `/orders/getListReview`,{params:{
+            id_property
+        },headers: {
+            Authorization: `Bearer ${getLocalStorage}`
+        }})
+        .then((res) => {
+            let review = res.data.data
+            setReview(review)
+        })
+        .catch((err) => {
+            console.log(err)
+            if (!err.response.data.success) {
+                alert(err.response.data.message);
+            }
+            console.log("check error", err)
+        });
     }
 
 
@@ -289,7 +311,6 @@ function DetailProperty() {
                             startDate:selectedDates[0],
                             endDate:selectedDates[1],
                         }
-                        console.log(price)
                         return (
                         <Box key={room.id} flex={1} borderWidth="1px" borderRadius="lg" >
                             <Flex>
@@ -315,8 +336,10 @@ function DetailProperty() {
                     )}):<Text>No Available Booking</Text>}
                 </Flex>
                 <br/><br/>
+                {review!=null ? <TestimonialList review={review}/> : <></>}
+                <br/><br/>
                 <Heading as="h2" size="lg" mb="4">
-                    Price Calendar This Month
+                    Lowest Price This Month
                 </Heading>
                 <Stack border='2px' borderColor='gray.200'  boxShadow='sm' padding={5}>
                 <label htmlFor="month">Month</label>
