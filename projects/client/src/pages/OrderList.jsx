@@ -80,10 +80,6 @@ function OrderList() {
         loadOrders()
     },[status,ordercolumn,orderpos,filterText,page])
 
-    useEffect(()=>{
-        console.log(isTenant,id_user)
-    },[])
-
     const columnHelper = createColumnHelper();
 
     const columns = [

@@ -50,8 +50,6 @@ import {
   
     const onBtnChangePass = async () => {
       const token = localStorage.getItem("prw_login");
-      // console.log(token)
-      // console.log({oldPass,newPass,confPass})
       try {
         await axios
           .patch(
@@ -68,7 +66,6 @@ import {
             }
           )
           .then((res) => {
-            // console.log(res.data);
             alert(res.data.message);
             dispatch(logoutAction())
             navigate("/login");

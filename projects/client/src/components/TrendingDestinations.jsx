@@ -28,15 +28,10 @@ const TrendingDestinations = (props) => {
             }
         })
             .then((res) => {
-                console.log(res.data);
                 navigate("/search");
             })
             .catch((err) => {
-                console.log(err)
-                if (!err.response.data.success) {
-                    alert(err.response.data.message);
-                }
-                console.log("check error", err);
+                console.log(err);
             });
     };
 

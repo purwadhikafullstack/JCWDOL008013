@@ -20,7 +20,6 @@ module.exports ={
             }).run(req)
 
             const validation = validationResult(req)
-            console.log(validation)
             
             if(validation.isEmpty()){
                 next()
@@ -50,13 +49,12 @@ module.exports ={
       ],
     checkCardNumber : (req, res, next) => {
         // const cardNumber = req.body.cardNumber;
-        // console.log('body',req)
         if (!cardNumber || typeof cardNumber !== "number" || cardNumber.toString().length !== 16) {
           return res.status(400).send({
             success: false,
             message: "Invalid Id Number",
           });
-        } console.log('cardNumber validator',cardNumber)
+        }
         next();
       },
     checkEditProfile: async (req, res, next) => {
@@ -67,7 +65,6 @@ module.exports ={
         await check("birthdate").notEmpty().run(req);
 
         const validation = validationResult(req);
-        console.log(validation);
 
         if (validation.isEmpty()) {
           next();

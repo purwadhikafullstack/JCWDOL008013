@@ -139,12 +139,6 @@ const TenantRoomDetail = (props) => {
         }
     }
 
-    // console.log(unavailableDates[0]);
-    // console.log(unavailableDates[0].toISOString());
-    // console.log(new Date(unavailableDates[0].getTime() - (unavailableDates[0].getTimezoneOffset() * 60000)).toISOString());
-    // console.log(unavailableDates[1]);
-    // console.log(new Date(unavailableDates[1].getTime() - (unavailableDates[1].getTimezoneOffset() * 60000)).toISOString());
-
     // Set room unavailability
     const unavailability = async () => {
         try {

@@ -86,7 +86,6 @@ import {
             "Content-Type":`multipart/form-data`,
           },
         };
-        // console.log(token)
         const response = await axios.post(
           `${API_URL}/orders/paymentproof`,
           { paymentProof, orderId },

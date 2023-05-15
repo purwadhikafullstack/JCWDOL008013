@@ -51,7 +51,6 @@ import {
         password:inputPass
       })
         .then((res) => {
-          // console.log(`res login data ${res.data}`);
           dispatch(loginAction(res.data)); // menjalankan fungsi action
           localStorage.setItem('prw_login', res.data.token);
           navigate("/", { replace: true });

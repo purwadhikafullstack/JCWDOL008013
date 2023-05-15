@@ -124,10 +124,6 @@ function AvaliableProperty(props) {
         }
     },[selectedCity,selectedDates,page])
 
-    useEffect(()=>{
-        console.log(Math.ceil(total/perpage),total,perpage)
-    },[total])
-
     const checkRoomBtn = (id)=>{
         navigate("/detailproperty/"+id)
     }
@@ -137,7 +133,6 @@ function AvaliableProperty(props) {
     };
 
     const onSubmitBtn = ()=>{
-        // console.log("submit",selectedDates,selectedCity,selectedDates.length == 2,selectedCity != null)
         
         if(selectedDates.length == 2 && selectedCity != null){
             // let orderdata = {startDate:selectedDates[0],endDate:selectedDates[1],cityId:selectedCity}

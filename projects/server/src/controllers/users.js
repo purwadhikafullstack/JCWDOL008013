@@ -20,7 +20,6 @@ module.exports = {
     let { username, email, phone, password } = req.body;
     //0. hashing password
     const newPass = hashPassword(password);
-    // console.log(newPass);
     // 1. GET data untuk memeriksa, apakah email dan/atau username, sudah pernah digunakan
     dbConf.query(
       `select * from users where email=${dbConf.escape(
@@ -44,7 +43,6 @@ module.exports = {
         // 3. jika tidak ada yang sama maka registrasi berlanjut
         else {
           const otp = createOTP(6);
-          // console.log(`otp : ${otp}`)
           const now = new Date();
           const year = now.getFullYear();
           const month = now.getMonth() + 1;
@@ -67,7 +65,6 @@ module.exports = {
                 return res.status(500).send(errInsert);
               }
 
-              // console.log(resultInsert);
 
               //jika saat insert ke db lancar, maka kirim email verifikasi yang didalamnya ada token
 
@@ -136,13 +133,10 @@ module.exports = {
           });
         }
 
-        console.log(results);
-
         const check = bcrypt.compareSync(
           req.body.password,
           results[0].password
         );
-        // console.log(results[0]);
         delete results[0].password;
         if (check) {
           let token = createToken({ ...results[0] }); //karna mutable/imutabel
@@ -157,7 +151,6 @@ module.exports = {
     );
   },
   keepLogin: (req, res) => {
-    // console.log(`req : ${JSON.stringify(req.decript)}`);
     dbConf.query(
       `Select id_user, username, email, password, isVerified, isTenant, picture 
         from users where id_user=${dbConf.escape(
@@ -165,10 +158,8 @@ module.exports = {
         )} or username=${dbConf.escape(req.body.name)};`,
       (err, results) => {
         if (err) {
-          // console.log(`error keeplogin : ${err}`);
           return res.status(500).send(err);
         }
-        // console.log(results)
         let token = createToken({ ...results[0] }); //karna mutable/imutabel
         return res.status(200).send({ ...results[0], token });
       }
@@ -176,8 +167,6 @@ module.exports = {
   },
   editProfile: async (req, res) => {
     try {
-      console.log("cek decript", req.decript);
-      console.log("cek body", req.body);
       let update = await UsersModel.update(
         {
           username: req.body.username,
@@ -220,8 +209,6 @@ module.exports = {
     }
   },
   verifyAccount: (req, res) => {
-    // console.log(req.decript);
-    // console.log(req.body);
     // cek apakah otpnya benar
     // ambil data dari db dulu
     dbConf.query(
@@ -232,7 +219,6 @@ module.exports = {
           console.log(errGet);
           return res.status(500).send(errGet);
         }
-        // console.log(`results :`,resultGetData[0]);
         if (resultGetData[0].retryOtp == parseInt(req.body.otp)) {
           dbConf.query(
             `UPDATE users SET isVerified = true WHERE id_user = ${dbConf.escape(
@@ -262,9 +248,6 @@ module.exports = {
     );
   },
   changePassword: (req, res) => {
-    console.log(req.decript);
-    console.log(req.body);
-
     // Check if id_user is valid
     dbConf.query(
       `select id_user, username, password from users where id_user=${dbConf.escape(
@@ -275,7 +258,6 @@ module.exports = {
           console.log(errGet);
           return res.status(500).send(errGet);
         }
-        console.log(resultGetData[0]);
 
         //check if new pass is different from old pass
         const check = bcrypt.compareSync(
@@ -315,11 +297,8 @@ module.exports = {
     );
   },
   tobeTenant: (req, res) => {
-    // console.log('Card Number:', req.body.cardNumber);
-    // console.log('Card Picture:', req.file);
 
     // get user ID from token payload
-    // console.log('id_user',req.decript.id_user)
     // yang disimpan ke database : /idCard/filename
 
     dbConf.query(
@@ -343,7 +322,6 @@ module.exports = {
     );
   },
   resetpassword: (req, res) => {
-    // console.log(`resetpassword : ${req.query.email}`)
     //cek apakah ada data email tersebut di Db
     dbConf.query(
       `SELECT id_user FROM users where email =${dbConf.escape(
@@ -354,7 +332,6 @@ module.exports = {
           return res.status(500).send(err);
         }
 
-        console.log(results);
         if (results.length < 1) {
           return res.status(400).send({
             success: false,
@@ -364,7 +341,6 @@ module.exports = {
         const newPass = generatePassword(10);
         const hashedNewPassword = hashPassword(newPass);
 
-        // console.log(results[0].id_user)
         //update password to DB
         dbConf.query(
           `update users set password = ${dbConf.escape(
@@ -378,7 +354,6 @@ module.exports = {
                 message: errUpdate,
               });
             }
-            // console.log(results);
 
             //jika update password di DB ok, maka kirim email
             transport.sendMail(

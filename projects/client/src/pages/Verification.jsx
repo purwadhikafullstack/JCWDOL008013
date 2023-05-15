@@ -17,7 +17,6 @@ import { useNavigate } from "react-router-dom";
 
 const Verification = () => {
   const location = useLocation();
-  // console.log("from verify page : ", location);
   const navigate = useNavigate()
   const [inputOtp, setInputOtp] = useState("");
 
@@ -35,7 +34,6 @@ const Verification = () => {
           },
         }
       ).then((res)=>{
-        console.log(res.data)
         alert(res.data.message)
         navigate('/login')
       });

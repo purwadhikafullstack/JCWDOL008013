@@ -54,7 +54,6 @@ const MyBooking = () => {
 
   // handle start date filter
   const handleStartDateChange = (e) => {
-    console.log(e.target.value)
     setStartDate(e.target.value);
     setMinEndDate(addDays(e.target.value, 1)); // Add one day to startDate
   };
@@ -84,7 +83,6 @@ const MyBooking = () => {
 
   // GET ORDERS DATA
   const getOrder = () => {
-    console.log(dateFil)
     let getLocalStorage = localStorage.getItem("prw_login")
     if (getLocalStorage) {
       axios.get(API_URL + `/orders/all?page=${page}&sort=${sort}&status=${statusFil}&datefil=${dateFil}&startdate=${startDate}&enddate=${endDate}&search=${search}`, {
@@ -93,7 +91,6 @@ const MyBooking = () => {
         }
       })
         .then((res) => {
-          // console.log(res.data.rows)
           setOrderData(res.data.rows)
           setTotalPage(res.data.totalPage)
         })
@@ -118,7 +115,6 @@ const MyBooking = () => {
       const confirmed = window.confirm("Are you sure you want to cancel this order?");
       if (confirmed) {
         let response = await axios.patch(API_URL + "/orders/cancel", { id_order });
-        // console.log(`res data :`,response);
         alert(response.data.message);
         window.location.reload()
       }

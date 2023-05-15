@@ -208,7 +208,6 @@ function DetailProperty() {
     },[selectedCity,selectedDates])
 
     const onOrderBtn = (data)=>{
-        console.log(data)
         // TODO: mas rajib di sini kirim data ordernya 
         let od = {
             id_property: data.id_property,
@@ -289,7 +288,6 @@ function DetailProperty() {
                             startDate:selectedDates[0],
                             endDate:selectedDates[1],
                         }
-                        console.log(price)
                         return (
                         <Box key={room.id} flex={1} borderWidth="1px" borderRadius="lg" >
                             <Flex>
