@@ -2,49 +2,52 @@ const multer = require("multer");
 const fs = require("fs");
 
 module.exports = {
-  uploader: (directory, filePrefix) => {
-    let defaultDir = "./src/public";
+  uploader: (directory) => {
+    let defaultDirectory = "./src/public";
 
-    const storageUploader = multer.diskStorage({
+    const storage = multer.diskStorage({
       destination: (req, file, cb) => {
-        const pathDir = directory ? defaultDir + directory : defaultDir;
-
-        if (fs.existsSync(pathDir)) {
-          console.log(`Directory ${pathDir} exist`);
-          cb(null, pathDir);
+        const pathDirectory = directory
+          ? defaultDirectory + directory
+          : defaultDirectory;
+        if (fs.existsSync(pathDirectory)) {
+          cb(null, pathDirectory);
         } else {
-          fs.mkdir(pathDir, { recursive: true }, (err) => {
+          fs.mkdir(pathDirectory, { recursive: true }, (err) => {
             if (err) {
-              console.log(`Error make directory`, err);
+              console.log(err);
             }
-
-            cb(err, pathDir);
+            cb(err, pathDirectory);
           });
         }
       },
       filename: (req, file, cb) => {
-        let ext = file.originalname.split(".");
-        console.log(ext);
-
-        let newName = filePrefix + Date.now() + "." + ext[ext.length - 1];
-        console.log(newName);
-        cb(null, newName);
+        cb(
+          null,
+          Date.now() +
+            "." +
+            file.originalname.split(".")[
+              file.originalname.split(".").length - 1
+            ]
+        );
       },
     });
 
+    const fileFilter = (req, file, cb) => {
+      const extFilter = /\.(jpg|jpeg|png|gif)/;
+      let check = file.originalname.toLocaleLowerCase().match(extFilter);
+      if (check) {
+        cb(null, true);
+      } else {
+        cb(new Error(`Your file ext is denied`, false));
+      }
+    };
+
     return multer({
-      storage: storageUploader,
-      fileFilter: (req, file, cb) => {
-        const extFilter = /\.(jpg|png|gif)/;
-        let check = file.originalname.toLowerCase().match(extFilter);
-        if (!file.size > 1048576) {
-          cb(new Error("Your file size too large", false));
-        }
-        if (check) {
-          cb(null, true);
-        } else {
-          cb(new Error("Your file ext denied", false));
-        }
+      storage: storage,
+      fileFilter: fileFilter,
+      limits: {
+        fileSize: 1048576,
       },
     });
   },

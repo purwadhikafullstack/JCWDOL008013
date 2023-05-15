@@ -16,14 +16,12 @@ module.exports = {
   },
   addProperty: async (req, res) => {
     try {
-      let { name, address, id_city, description, rules } = JSON.parse(
-        req.body.data
-      );
+      let { name, address, id_city, description, rules } = req.body;
       let create = await PropertiesModel.create({
         name,
         address,
         id_city,
-        picture: `/imgProperty/${req.files[0].filename}`,
+        picture: `/imgProperty/${req.file.filename}`,
         description,
         rules,
         createdBy: req.decript.id_user,
@@ -105,14 +103,13 @@ module.exports = {
   },
   editProperty: async (req, res) => {
     try {
-      let { id_property, name, address, id_city, description, rules, room } =
-        JSON.parse(req.body.data);
+      let { id_property, name, address, id_city, description, rules, room } = req.body;
       let update = await PropertiesModel.update(
         {
           name,
           address,
           id_city,
-          picture: `/imgProperty/${req.files[0].filename}`,
+          picture: `/imgProperty/${req.file.filename}`,
           description,
           rules,
           room,

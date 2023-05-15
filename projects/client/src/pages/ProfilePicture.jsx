@@ -26,9 +26,7 @@ const ProfilePicture = (props) => {
     const editButton = async (value) => {
         try {
             let getLocalStorage = localStorage.getItem('prw_login');
-            const formData = new FormData();
-            formData.append('images', value.picture);
-            let res = await Axios.patch(API_URL + '/users/profilepicture', formData, { headers: { Authorization: `Bearer ${getLocalStorage}` } });
+            let res = await Axios.post(API_URL + '/users/profilepicture', { profileImg: value.picture }, { headers: { Authorization: `Bearer ${getLocalStorage}`, "Content-Type": "multipart/form-data", } });
             toast({
                 title: `${res.data.message}`,
                 description: "You've successfully changed your profile picture",

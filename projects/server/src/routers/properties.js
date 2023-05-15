@@ -5,10 +5,10 @@ const { readToken } = require("../config/encript");
 const { uploader } = require("../config/uploader");
 
 route.get("/", propertiesController.getPropertiesData);
-route.post("/addproperty", readToken, uploader("/imgProperty", "IMGPROPERTY").array("images", 1), propertiesController.addProperty);
+route.post("/addproperty", readToken, uploader("/imgProperty").single("propertyImg"), propertiesController.addProperty);
 route.get("/getproperty", readToken, propertiesController.getProperty);
 route.get("/getpropertydetail", readToken, propertiesController.getPropertyDetail);
-route.patch("/editproperty", uploader("/imgProperty", "IMGPROPERTY").array("images", 1), propertiesController.editProperty);
+route.post("/editproperty", uploader("/imgProperty").single("propertyImg"), propertiesController.editProperty);
 route.patch("/deleteproperty", propertiesController.deleteProperty);
 route.get("/landingproperty", propertiesController.getLandingProperty);
 

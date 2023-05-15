@@ -101,10 +101,7 @@ const TenantRoomDetail = (props) => {
     // Edit room
     const editRoom = async (value) => {
         try {
-            const formData = new FormData();
-            formData.append('images', value.picture);
-            formData.append('data', JSON.stringify({ id_room: search.split('=')[2], name: value.name, price: value.price, description: value.description }));
-            let res = await Axios.patch(API_URL + '/rooms/editroom', formData);
+            let res = await Axios.post(API_URL + '/rooms/editroom', { id_room: search.split('=')[2], name: value.name, price: value.price, description: value.description, roomImg: value.picture }, { headers: { "Content-Type": "multipart/form-data", } });
             toast({
                 title: `${res.data.message}`,
                 description: "You've successfully edited your room",

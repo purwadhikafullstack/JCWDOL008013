@@ -201,11 +201,9 @@ module.exports = {
   },
   profilePicture: async (req, res) => {
     try {
-      console.log("cek file", req.files);
-      console.log("cek decript", req.decript);
       let update = await UsersModel.update(
         {
-          picture: `/imgProfile/${req.files[0].filename}`,
+          picture: `/imgProfile/${req.file.filename}`,
         },
         {
           where: {

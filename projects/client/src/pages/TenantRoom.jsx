@@ -116,10 +116,7 @@ const TenantRoom = (props) => {
     // Edit property
     const editProperty = async (value) => {
         try {
-            const formData = new FormData();
-            formData.append('images', value.picture);
-            formData.append('data', JSON.stringify({ id_property: search.split('=')[1], name: value.name, address: value.address, id_city: value.city, description: value.description, rules: value.rules }));
-            let res = await Axios.patch(API_URL + '/properties/editproperty', formData);
+            let res = await Axios.post(API_URL + '/properties/editproperty', { id_property: search.split('=')[1], name: value.name, address: value.address, id_city: value.city, description: value.description, rules: value.rules, propertyImg: value.picture }, { headers: { "Content-Type": "multipart/form-data", }});
             toast({
                 title: `${res.data.message}`,
                 description: "You've successfully edited your property",
@@ -155,17 +152,13 @@ const TenantRoom = (props) => {
     // Create new room
     const newRoom = async (value) => {
         try {
-            const formData = new FormData();
-            formData.append('images', value.picture);
-            formData.append('data', JSON.stringify(
-                {
-                    id_property: search.split('=')[1],
-                    name: value.name,
-                    price: value.price,
-                    description: value.description,
-                }
-            ));
-            let res = await Axios.post(API_URL + '/rooms/addroom', formData);
+            let res = await Axios.post(API_URL + '/rooms/addroom', {
+                id_property: search.split('=')[1],
+                name: value.name,
+                price: value.price,
+                description: value.description,
+                roomImg: value.picture,
+            }, { headers: { "Content-Type": "multipart/form-data", } });
             toast({
                 title: `${res.data.message}`,
                 description: "You've successfully created new room",

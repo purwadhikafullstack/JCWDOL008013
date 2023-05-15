@@ -13,13 +13,13 @@ module.exports = {
   },
   addRoom: async (req, res) => {
     try {
-      let { id_property, name, price, description } = JSON.parse(req.body.data);
+      let { id_property, name, price, description } = req.body;
       let create = await RoomsModel.create({
         id_property,
         name,
         basePrice: price,
         description,
-        picture: `/imgRoom/${req.files[0].filename}`,
+        picture: `/imgRoom/${req.file.filename}`,
       });
       res.status(200).send({
         success: true,
@@ -61,13 +61,13 @@ module.exports = {
   },
   editRoom: async (req, res) => {
     try {
-      let { id_room, name, price, description } = JSON.parse(req.body.data);
+      let { id_room, name, price, description } = req.body;
       let update = await RoomsModel.update(
         {
           name,
           basePrice: price,
           description,
-          picture: `/imgRoom/${req.files[0].filename}`,
+          picture: `/imgRoom/${req.file.filename}`,
         },
         {
           where: {

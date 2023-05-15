@@ -10,15 +10,15 @@ route.post("/regis",checkUser, usersController.regis);
 route.post("/login", usersController.login);
 route.post("/keep", readToken, usersController.keepLogin);
 route.patch("/profile", checkEditProfile, readToken, usersController.editProfile);
-route.patch(
+route.post(
   "/profilepicture",
   readToken,
-  uploader("/imgProfile", "IMGPROFILE").array("images", 1),
+  uploader("/imgProfile").single("profileImg"),
   usersController.profilePicture
 );
 route.patch('/verify', readToken,usersController.verifyAccount)
 route.patch('/changepass',readToken,usersController.changePassword)
-route.patch('/tobetenant', readToken, uploader('/idCard','IDCARD').single('cardPicture'), usersController.tobeTenant)
+route.post('/tobetenant', readToken, uploader('/idCard').single('cardPicture'), usersController.tobeTenant)
 route.get('/resetpass', usersController.resetpassword)
 route.get('/profiledata', readToken, usersController.profileData)
 route.post('/reverify', usersController.resendVerify)
