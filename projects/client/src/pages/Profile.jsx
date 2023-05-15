@@ -70,8 +70,9 @@ const Profile = (props) => {
                 }} />
                 <ProfileEditModal data={{
                     isOpen, onClose, initialValues: { username, email, gender, birthdate }, validationSchema: profileValidation, onSubmit: (values, actions) => {
-                        onClose();
                         editButton(values);
+                        actions.setSubmitting(false);
+                        onClose();
                     }
                 }} />
             </Flex>

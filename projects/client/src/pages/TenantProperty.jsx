@@ -126,6 +126,7 @@ const TenantProperty = (props) => {
                     <PropertyModal data={{
                         title: 'Create new property', groupedOptions, isOpen, onClose, initialValues: { name: '', address: '', city: '', picture: '', description: '', rules: '' }, validationSchema: propertyValidation, onSubmit: (values, actions) => {
                             newProperty(values);
+                            actions.setSubmitting(false);
                             onClose();
                         }
                     }} />

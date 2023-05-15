@@ -206,6 +206,7 @@ const TenantRoom = (props) => {
                 <PropertyModal data={{
                     title: 'Edit your property', groupedOptions, isOpen: isEditOpen, onClose: onEditClose, initialValues: { name, address, city: '', picture: '', description, rules }, validationSchema: propertyValidation, onSubmit: (values, actions) => {
                         editProperty(values);
+                        actions.setSubmitting(false);
                         onEditClose();
                     }
                 }} />
@@ -227,8 +228,9 @@ const TenantRoom = (props) => {
                     <CreatePropertyRoomCard data={{ title: 'Create new room:', onOpen: onCreateOpen }} />
                     <RoomModal data={{
                         title: 'Create new room', isOpen: isCreateOpen, onClose: onCreateClose, initialValues: { name: '', price: '', description: '', picture: '' }, validationSchema: roomValidation, onSubmit: (values, actions) => {
-                            onCreateClose();
                             newRoom(values);
+                            actions.setSubmitting(false);
+                            onCreateClose();
                         }
                     }} />
                 </GridItem>

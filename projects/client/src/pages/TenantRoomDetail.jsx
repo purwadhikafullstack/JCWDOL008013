@@ -365,8 +365,9 @@ const TenantRoomDetail = (props) => {
                 }} />
                 <RoomModal data={{
                     title: 'Edit your room', isOpen: isEditOpen, onClose: onEditClose, initialValues: { name, price, description, picture: '' }, validationSchema: roomValidation, onSubmit: (values, actions) => {
-                        onEditClose();
                         editRoom(values);
+                        actions.setSubmitting(false);
+                        onEditClose();
                     }
                 }} />
                 <DeleteAlert data={{
