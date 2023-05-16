@@ -79,7 +79,7 @@ module.exports = {
                   to: email,
                   subject: "Verification Email Account StayComfy",
                   html: `<div>
-                <a href="http://localhost:3000/verification?t=${token}"><h3>Verify Your Account in this link</h3></a>
+                <a href="https://jcwdol00803.purwadhikabootcamp.com/verification?t=${token}"><h3>Verify Your Account in this link</h3></a>
                 <br><br><br>
                 <h4> With Your OTP Code : </h4>
                 <h4>${otp}</h4>
