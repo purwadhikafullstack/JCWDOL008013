@@ -10,21 +10,6 @@ class CalendarTable extends Component {
         super(props)
     
         window.moment = moment;
-        // const today = new Date();
-
-        // const dateOfMonth = today.getDate();
-        // const monthOfYear = today.getMonth() + 1; // 0 based
-        // const year        = today.getFullYear();
-        // const other = {
-        //     day: dateOfMonth,
-        //     month: monthOfYear,
-        //     year: year
-        // }
-        // const formattedDate = [
-        //     leftPad(other.year, 4, 0),
-        //     leftPad(other.month, 2, 0),
-        //     leftPad(other.day, 2, 0)
-        // ].join("-")
 
         this.state = {
             date: this.props.date,price : []
@@ -34,15 +19,23 @@ class CalendarTable extends Component {
     }
     
     componentWillReceiveProps(newProps){
-    this.setState({
-        date: newProps.date,
-        price: newProps.data
-    });
+        this.setState({
+            date: newProps.date,
+            price: newProps.data
+        });
     }
     
     render() {
         this.calendar.setCurrentDate(this.state.date);
         const weeks = this.calendar.getWeeksTable(true);
+        weeks[0][0] = "Minggu"
+        weeks[0][1] = "Senin"
+        weeks[0][2] = "Selasa"
+        weeks[0][3] = "Rabu"
+        weeks[0][4] = "Kamis"
+        weeks[0][5] = "Jumat"
+        weeks[0][6] = "Sabtu"
+
         return <div className="calendar">
             {weeks.map( (days, i) => {
             return <div className="week" key={i}>

@@ -155,7 +155,9 @@ module.exports = {
           filterQuery = {
             [Op.or]:{
                 no_invoice: { [Op.like]: '%' + filter + '%' },
-                total: { [Op.eq]: +filter },
+                total: { [Op.eq]: !isNaN(filter)?+filter:"" },
+                "$property.name$" : {[Op.like]: '%' + filter + '%'  },
+                "$user.username$" : {[Op.like]: '%' + filter + '%'  }
             }
           }
       }
@@ -289,6 +291,7 @@ module.exports = {
     try {
       let message = ""
       let data = null
+      propertyData = null
       if(req.path === "/post"){
           // let data = await OrdersModel.upsert()
           message = "Order Created";
@@ -313,8 +316,8 @@ module.exports = {
               if(propertyData){
                   let tanggal =  new Date(propertyData.checkout_date)
                   tanggal.setDate(tanggal.getDate()-2)
-                  tanggal.setHours(9,0,0)
-                  // let tanggal = new Date("2023-04-08 19:06:00")
+                  // let tanggal = new Date()
+                  tanggal.setHours(0,0,0)
                   // console.log(tanggal.toDateString(),tanggal.toTimeString())
                   const job = schedule.scheduleJob(tanggal, function(){
                       transport.sendMail(
@@ -934,6 +937,104 @@ module.exports = {
             logs:error
         });
     }
-  }
+  },
+  sendOrderMail: async(req,res)=>{
+    try {
+        const {id_order} = req.query
+        propertyData = await OrdersModel.findOne({
+          where:{id_order:id_order},
+          include:[
+            {model: PropertiesModel},
+            {model: RoomsModel},
+            {model: UsersModel},
+
+          ]
+        })
+        if(propertyData){
+          let tanggal = new Date()
+          // tanggal.setHours(0,0,0)
+          tanggal.setMinutes ( tanggal.getMinutes() + 2 );
+
+          console.log(tanggal.toDateString(),tanggal.toTimeString())
+          const job = schedule.scheduleJob(tanggal, function(){
+              transport.sendMail(
+                {
+                  from: "StayComfy",
+                  to: propertyData.user.email,
+                  subject: "Reminder Rules of Property Ordered on StayComfy",
+                  html: `<div>
+                    <p>Dear ${propertyData.user.username},</p>
+                    <p>We are thrilled to have you as our guest at our property. To ensure a pleasant and comfortable stay for everyone, we kindly ask you to abide by the following rules:</p>
+                    ${propertyData.property.rules}
+                    </br>
+                    <p>We hope that these guidelines will help you have a pleasant stay at our property. Should you have any questions or concerns, please feel free to reach out to us.</p>
+                    <p>Thank you for choosing our property as your accommodation.</p>
+                    <p>Best regards,</p>
+                    <p>Stay Comfy</p>
+                </div>`,
+                },
+                (err, info) => {
+                  if (err) {
+                    console.log(`error : ${err}`);
+                  }
+                  if(info) {
+                    // console.log(info);
+                  }
+                }
+              );
+          })
+        }
+        return res.status(200).send({
+          success: true,
+          message: "Email Terkirim",
+        })
+    } catch (error) {
+        console.log(error)
+        return res.status(500).send({
+            success: false,
+            message: "Something Gone Wrong",
+            logs:error
+        });
+    }
+  },
+  getListReview: async(req,res)=>{
+    try {
+        const {id_property} = req.query
+        propertyData = await OrdersModel.findAll({
+          where:{[Op.and]:[
+            {id_property:id_property},
+            {order_status:"CONFIRMED"},
+          ]},
+          include:[
+            {model: PropertiesModel},
+            {model: RoomsModel},
+            {model: UsersModel},
+          ],
+          limit:4,
+          order:[['id_order','desc']]
+        })
+        if(propertyData){
+            return res.status(200).send({
+              success: true,
+              data:propertyData,
+              message: "Sukses Ambil Review",
+            })
+        }else{
+          return res.status(200).send({
+            success: true,
+            data:null,
+            message: "Review Kosong",
+          })
+        }
+        
+    } catch (error) {
+        console.log(error)
+        return res.status(500).send({
+            success: false,
+            message: "Something Gone Wrong",
+            logs:error
+        });
+    }
+  },
   
 };
