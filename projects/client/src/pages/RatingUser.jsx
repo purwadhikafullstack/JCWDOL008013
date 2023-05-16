@@ -55,6 +55,13 @@ function RatingUser() {
         .then((res) => {
             alert(res.data.message)
             loadOrder()
+            if(res.data.rating != null){
+                setRating(res.data.rating)
+            }
+            if(res.data.comment != null){
+                setComment(res.data.comment)
+            }
+            
         })
         .catch((err) => {
             console.log(err)
@@ -113,7 +120,7 @@ function RatingUser() {
                 <Box p={10}>
                     {data?.rating === null?<>
                         <Text>Rating</Text>
-                        <Slider aria-label='slider-ex-4' min={1} max={5} step={1} onChange={(val)=>setRating(val)}>
+                        <Slider aria-label='slider-ex-4' min={1} max={5} step={1} onChange={(val)=>setRating(val)} value={rating}>
                             <SliderTrack bg='red.100'>
                                 <SliderFilledTrack bg='tomato' />
                             </SliderTrack>
@@ -124,7 +131,18 @@ function RatingUser() {
                         <Text>Comment</Text>
                         <Textarea placeholder='Here is a sample placeholder' onChange={(e)=>setComment(e.target.value)} />
                         <Button mt={10} mb={2} width="full" colorScheme='teal' onClick={submitBtn}>Save</Button>
-                    </>:<></>}
+                    </>:<>
+                        <Slider aria-label='slider-ex-4' min={1} max={5} step={1} value={rating} disabled>
+                            <SliderTrack bg='red.100'>
+                                <SliderFilledTrack bg='tomato' />
+                            </SliderTrack>
+                            <SliderThumb boxSize={6}>
+                                <Box color='tomato' as={MdStars} />
+                            </SliderThumb>
+                        </Slider>
+                        <Text>Comment</Text>
+                        <Textarea placeholder='Here is a sample placeholder' value={comment} disabled/>
+                    </>}
                     <Button mt={10} mb={2} width="full" colorScheme='teal' onClick={(e)=>navigate("/")}>Back</Button>
                 </Box>
                 

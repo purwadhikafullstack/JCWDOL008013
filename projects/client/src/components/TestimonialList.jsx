@@ -9,6 +9,7 @@ import {
   Avatar,
   useColorModeValue,
 } from '@chakra-ui/react';
+import { FaBeer, FaStar } from 'react-icons/fa';
 
 const Testimonial = (props) => {
   return <Box>{props.children}</Box>;
@@ -70,18 +71,22 @@ export default function TestimonialList(props) {
         </Stack>
         <Stack
           direction={{ base: 'column', md: 'row' }}
-          spacing={{ base: 10, md: 4, lg: 10 }}>
+          spacing={{ base: 10, md: 4, lg: 10 }} gap={10} 
+          >
           {props.review.map((data,index)=>(
             <Testimonial key={index}>
               <TestimonialContent>
-                <TestimonialHeading>{data.heading}</TestimonialHeading>
+                <TestimonialHeading>{data.user.username}</TestimonialHeading>
                 <TestimonialText>
-                  {data.description}
+                  {data.comment}
                 </TestimonialText>
+                <Stack direction={'row'}>{Array.apply(0, Array(data.rating != null?+data.rating: 0)).map(function (x, i) {
+                    return <FaStar color="gold" key={i}/>;
+                  })}</Stack>
               </TestimonialContent>
               <TestimonialAvatar
-                src={data.pic}
-                name={data.name}
+                src={data.user.picture}
+                name={data.user.username}
               />
             </Testimonial>
           ))}
