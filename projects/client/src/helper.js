@@ -1,3 +1,3 @@
-const API_URL = "https://jcwdol00803.purwadhikabootcamp.com/api";
+const API_URL = "http://localhost:8000/api";
 
 export default API_URL;
