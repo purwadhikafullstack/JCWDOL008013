@@ -65,7 +65,6 @@ module.exports = {
                 return res.status(500).send(errInsert);
               }
 
-
               //jika saat insert ke db lancar, maka kirim email verifikasi yang didalamnya ada token
 
               let token = createToken({
@@ -167,23 +166,36 @@ module.exports = {
   },
   editProfile: async (req, res) => {
     try {
-      let update = await UsersModel.update(
-        {
-          username: req.body.username,
+      let data = await UsersModel.findAll({
+        where: {
           email: req.body.email,
-          birthdate: req.body.birthdate,
-          gender: req.body.gender,
         },
-        {
-          where: {
-            id_user: req.decript.id_user,
-          },
-        }
-      );
-      return res.status(200).send({
-        success: true,
-        message: "Edit Success",
+        raw: true,
       });
+      if (data.length > 0) {
+        return res.status(200).send({
+          success: false,
+          message: "Email already exist",
+        });
+      } else {
+        let update = await UsersModel.update(
+          {
+            username: req.body.username,
+            email: req.body.email,
+            birthdate: req.body.birthdate,
+            gender: req.body.gender,
+          },
+          {
+            where: {
+              id_user: req.decript.id_user,
+            },
+          }
+        );
+        return res.status(200).send({
+          success: true,
+          message: "Edit Success",
+        });
+      }
     } catch (error) {
       console.log(error);
     }
@@ -297,7 +309,6 @@ module.exports = {
     );
   },
   tobeTenant: (req, res) => {
-
     // get user ID from token payload
     // yang disimpan ke database : /idCard/filename
 
@@ -452,7 +463,7 @@ module.exports = {
             to: data[0].email,
             subject: "Verification Email Account StayComfy",
             html: `<div>
-            <a href="http://localhost:3000/verification?t=${token}"><h3>Verify Your Account in this link</h3></a>
+            <a href="https://jcwdol00803.purwadhikabootcamp.com/verification?t=${token}"><h3>Verify Your Account in this link</h3></a>
             <br><br><br>
             <h4> With Your OTP Code : </h4>
             <h4>${otp}</h4>
@@ -487,7 +498,7 @@ module.exports = {
           to: data[0].email,
           subject: "Verification Email Account StayComfy",
           html: `<div>
-          <a href="http://localhost:3000/verification?t=${token}"><h3>Verify Your Account in this link</h3></a>
+          <a href="https://jcwdol00803.purwadhikabootcamp.com/verification?t=${token}"><h3>Verify Your Account in this link</h3></a>
           <br><br><br>
           <h4> With Your OTP Code : </h4>
           <h4>${otp}</h4>
