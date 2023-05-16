@@ -29,7 +29,7 @@ route.get("/totalprice", ordersController.getPrice);
 route.get("/getPriceCalendarBydate", ordersController.getPriceCalendarBydate);
 route.get("/getPropertyCalendarBydate",readToken, ordersController.getPropertyCalendarBydate);
 route.get("/sendOrderMail",readToken, ordersController.sendOrderMail);
-route.get("/getListReview",readToken, ordersController.getListReview);
+route.get("/getListReview", ordersController.getListReview);
 
 
 module.exports = route
