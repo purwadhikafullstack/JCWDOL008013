@@ -105,6 +105,8 @@ module.exports = {
           "order_status",
           "checkin_date",
           "checkout_date",
+          "rating",
+          "comment"
         ],
         include: [
           {
@@ -133,7 +135,7 @@ module.exports = {
   getOrdersData: async (req, res) => {
     try {
       let offset = 0, limit = 10, filter , status ,filterQuery = {}, orderQuery = [],statusQuery = {};
-      
+      let id_tenant = req.decript.id_user
       if(req.query.limit && req.query.offset){
           limit = req.query.limit
           offset = (req.query.offset-1)* req.query.limit
@@ -165,7 +167,7 @@ module.exports = {
       const { count, rows } = await OrdersModel.findAndCountAll({
           offset: +offset, 
           limit: +limit,
-          where: {[Op.and]:[statusQuery,filterQuery]},
+          where: {[Op.and]:[statusQuery,filterQuery,{'$property.createdBy$' : {[Op.eq]: id_tenant}}]},
           order: orderQuery,
           include:[
             {model: PropertiesModel},
