@@ -47,11 +47,9 @@ function OrderList() {
             setTotalItem(res.data.total)
         })
         .catch((err) => {
-            console.log(err)
             if (!err.response.data.success) {
                 alert(err.response.data.message);
             }
-            console.log("check error", err)
         });
     }
 
@@ -79,10 +77,6 @@ function OrderList() {
     useEffect(()=>{
         loadOrders()
     },[status,ordercolumn,orderpos,filterText,page])
-
-    useEffect(()=>{
-        console.log(isTenant,id_user)
-    },[])
 
     const columnHelper = createColumnHelper();
 
@@ -126,7 +120,6 @@ function OrderList() {
     }
 
     const sendOrderMail = (id_order) =>{
-        console.log(id_order)
         let getLocalStorage = localStorage.getItem("prw_login")
         Axios.get(API_URL + `/orders/sendOrderMail`,{params:{
             id_order
@@ -139,11 +132,9 @@ function OrderList() {
             alert(res.data.message)
         })
         .catch((err) => {
-            console.log(err)
             if (!err.response.data.success) {
                 alert(err.response.data.message);
             }
-            console.log("check error", err)
         });
     }
 

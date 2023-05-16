@@ -79,21 +79,17 @@ function ReportList() {
             setTotalAmount(res.data.totalamount)
         })
         .catch((err) => {
-            console.log(err)
             if (!err.response.data.success) {
                 alert(err.response.data.message);
             }
-            console.log("check error", err)
         });
     }
 
     const checkcalendar = async()=>{
-        console.log("runne")
         let getLocalStorage = localStorage.getItem("prw_login")
         let date = new Date(formdate), y = date.getFullYear(), m = date.getMonth();
 
         if(!isNaN(y) && !isNaN(m)){
-            console.log("wow")
             let firstDay = new Date(y, m, 1).toISOString().substring(0,10);
             let lastDay = new Date(y, m + 1, 0).toISOString().substring(0,10);
 
@@ -107,11 +103,9 @@ function ReportList() {
                 setpropCal(res.data.data)
             })
             .catch((err) => {
-                console.log(err)
                 if (!err.response.data.success) {
                     alert(err.response.data.message);
                 }
-                console.log("check error", err)
             });
         }
         
