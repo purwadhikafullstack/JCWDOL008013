@@ -123,6 +123,10 @@ const MyBooking = () => {
     }
   };
 
+  const onReviewBtn = async(id_order)=>{
+      navigate("/rating/"+id_order)
+  }
+
   return (
     <Box ms={[0, null, 60]} borderTopWidth={[0, null, '4px']} borderColor='blue.400'>
       <Box maxW={isMobile ? "90%" : "60%"} mx="auto" mt="5">
@@ -335,6 +339,16 @@ const MyBooking = () => {
                           onClick={() => onCancelBtn(item.id_order)}
                         >
                           Cancel Order
+                        </Button>
+                      )}
+                      {item.order_status === "CONFIRMED" && (
+                        <Button
+                          colorScheme="green"
+                          size="xs"
+                          mt={2}
+                          onClick={() => onReviewBtn(item.id_order)}
+                        >
+                          {item.comment==null && item.rating==null?"Beri review":"Lihat review"}
                         </Button>
                       )}
                     </Stack>

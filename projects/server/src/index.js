@@ -26,7 +26,7 @@ app.use(express.json());
 // Check sequelize connection
 const { checkSequelize, dbSequelize } = require("./config/db");
 checkSequelize();
-dbSequelize.sync({ alter: true });
+// dbSequelize.sync({ alter: true });
 
 const { dbConf } = require("./config/db");
 //testing mysql connection

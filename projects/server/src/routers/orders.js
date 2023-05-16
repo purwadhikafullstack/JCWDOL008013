@@ -5,7 +5,7 @@ const { ordersController } = require("../controllers");
 const {uploader} = require('../config/uploader')
 
 route.get("/all", readToken,ordersController.getOrdersDataAll);
-route.get("/", ordersController.getOrdersData);
+route.get("/",readToken, ordersController.getOrdersData);
 
 route.get('/property',readToken, ordersController.getPropertyData)
 route.get('/room',readToken, ordersController.getRoomData)
@@ -18,7 +18,7 @@ route.get("/detail",readToken, ordersController.getDetail);
 route.get("/report",readToken, ordersController.getReportData);
 
 //order
-route.post("/", ordersController.createUpdateOrders);
+// route.post("/",readToken, ordersController.createUpdateOrders);
 route.post("/review",readToken, ordersController.createUpdateOrders);
 route.post("/reject",readToken, ordersController.createUpdateOrders);
 route.post("/confirm",readToken, ordersController.createUpdateOrders);

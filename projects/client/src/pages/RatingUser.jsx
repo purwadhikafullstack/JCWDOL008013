@@ -73,7 +73,7 @@ function RatingUser() {
     }
 
     return ( <Box bg="gray.50" p={10}>
-            <Container bg="white" textAlign="center" py={12}>
+            <Container bg="white" textAlign="center" py={12} maxW='container.md'>
                 <Heading mb={10}>Rate Order</Heading>
                 <VStack>
                     {data != null?<><Card mb={6} key={1}>
@@ -143,7 +143,7 @@ function RatingUser() {
                         <Text>Comment</Text>
                         <Textarea placeholder='Here is a sample placeholder' value={comment} disabled/>
                     </>}
-                    <Button mt={10} mb={2} width="full" colorScheme='teal' onClick={(e)=>navigate("/")}>Back</Button>
+                    <Button mt={10} mb={2} width="full" colorScheme='teal' onClick={(e)=>navigate("/mybooking")}>Back</Button>
                 </Box>
                 
                 
