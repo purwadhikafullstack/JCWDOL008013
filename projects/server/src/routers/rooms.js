@@ -4,9 +4,9 @@ const { roomsController } = require("../controllers");
 const { uploader } = require("../config/uploader");
 
 route.get("/", roomsController.getRoomsData);
-route.post("/addroom", uploader("/imgRoom", "IMGROOM").array("images", 1), roomsController.addRoom)
+route.post("/addroom", uploader("/imgRoom").single("roomImg"), roomsController.addRoom)
 route.get("/getroom", roomsController.getRoom)
-route.patch("/editroom", uploader("/imgRoom", "IMGROOM").array("images", 1), roomsController.editRoom)
+route.post("/editroom", uploader("/imgRoom").single("roomImg"), roomsController.editRoom)
 route.patch("/deleteroom", roomsController.deleteRoom)
 route.get("/detail", roomsController.getDetail)
 

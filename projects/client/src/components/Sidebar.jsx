@@ -69,7 +69,6 @@ const Sidebar = () => {
       username: state.userReducer.username,
     };
   });
-  //   console.log(isTenant)
   const items = menuItems[isTenant];
 
   const handleOpen = () => setIsOpen(true);
@@ -151,8 +150,8 @@ const Sidebar = () => {
                   w="full"
                   icon={<FaSignOutAlt />}
                   onClick={() => {
+                    navigate("/");
                     dispatch(logoutAction());
-                    window.location.href = "/";
                   }}
                 />
               </Box>
@@ -200,8 +199,8 @@ const Sidebar = () => {
                   w="full"
                   icon={<FaSignOutAlt />}
                   onClick={() => {
+                    navigate("/");
                     dispatch(logoutAction());
-                    window.location.href = "/";
                   }}
                 />
               </DrawerFooter>

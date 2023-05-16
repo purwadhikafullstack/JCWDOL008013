@@ -11,7 +11,6 @@ module.exports = {
     return hashPass;
   },
   createToken: (payload, expired = "24h") => {
-    console.log(payload);
     let token = jwt.sign(payload, process.env.KEY, {
       expiresIn: expired,
     });
@@ -27,7 +26,6 @@ module.exports = {
         });
       }
 
-      console.log(decript);
       req.decript = decript;
       next();
     });

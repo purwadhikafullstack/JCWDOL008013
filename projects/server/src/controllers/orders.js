@@ -14,10 +14,6 @@ const SpecialPricesModel = require("../model/specialprices");
 module.exports = {
   getOrdersDataAll: async (req, res) => {
     try {
-      // console.log(`datefil `, req.query.datefil);
-      // console.log(`start `, req.query.startdate);
-      // console.log(`end `, req.query.enddate);
-      // console.log(`serach `, req.query.search);
       const page = parseInt(req.query.page) || 0;
       const limit = 5;
       const offset = limit * page;
@@ -341,7 +337,7 @@ module.exports = {
                               console.log(`error : ${err}`);
                             }
                             if(info) {
-                              // console.log(info);
+                              
                             }
                           }
                       );
@@ -464,7 +460,6 @@ module.exports = {
                   ]}
                 ]},order:[["id_special_price","desc"]]}
               )
-              console.log(special!= null,d)
               if(special){
                   if(special.nominal != null){
                       let price = +special.nominal
@@ -502,8 +497,7 @@ module.exports = {
   getAvailableProperty: async(req,res)=>{
     try{
       let startDate = new Date(req.query.startDate).toISOString().slice(0, 19).replace("T", " ") 
-      let endDate = new Date(req.query.endDate).toISOString().slice(0, 19).replace("T", " ") 
-      console.log(new Date(req.query.startDate).toLocaleString('sv'),endDate)
+      let endDate = new Date(req.query.endDate).toISOString().slice(0, 19).replace("T", " ")
       let id_city = req.query.cityId
       
 
@@ -692,7 +686,6 @@ module.exports = {
   },
   getPropertyData: (req, res) => {
     const propertyId = req.query.propertyId;
-    // console.log(propertyId)
     dbConf.query(
       `SELECT name, address, id_city, picture FROM properties WHERE id_property = ${dbConf.escape(
         propertyId
@@ -704,10 +697,8 @@ module.exports = {
             .send("Error getting property data from database");
         }
         const propertyData = results[0];
-        // console.log(propertyData)
         // Get city data for the property
         const cityId = propertyData.id_city;
-        // console.log(cityId)
         dbConf.query(
           `SELECT name as city, province FROM cities WHERE id_city = ${dbConf.escape(
             cityId
@@ -739,7 +730,6 @@ module.exports = {
           return res.status(500).send("Error getting room data from database");
         }
         const roomData = results[0];
-        // console.log(roomData)
         return res.status(200).send(roomData);
       }
     );
@@ -748,7 +738,6 @@ module.exports = {
     const { id_property, id_room, checkin_date, checkout_date, total } =
       req.body;
     const invoice_number = generateInvoiceNumber(4);
-    // console.log(invoice_number); // generate the invoice number
 
     dbConf.query(
       `INSERT INTO orders (id_property, id_room, checkin_date, checkout_date, total, createdBy, no_invoice, order_status, createdAt, updatedAt) 
@@ -772,14 +761,11 @@ module.exports = {
           invoice_number: invoice_number,
         };
 
-        // console.log(orderData);
         return res.send(orderData);
       }
     );
   },
   paymentProof: (req, res) => {
-    // console.log("orderId :", req.body.orderId);
-    // console.log("paymentPoof :", req.file);
     const currentTime = new Date();
 
     // bandingkan sudah  2 jam atau belum
@@ -812,7 +798,6 @@ module.exports = {
                   message: "tidak bisa update order_status menjadi batal",
                 });
               }
-              // console.log(results);
               return res.status(200).send({
                 success: false,
                 message:
@@ -908,7 +893,6 @@ module.exports = {
             for(let a of availableRooms){
               let calcprice
               if(a.sprice.length != 0){
-                // console.log(d , new Date(new Date(a.sprice[0].start_date).setHours(0,0,0,0)) )
                 if(d >= new Date(a.sprice[0].start_date) && d <= new Date(a.sprice[0].end_date)){
                   calcprice =a.sprice[0].nominal != null?a.sprice[0].nominal:a.basePrice+((a.sprice[0].percent/100)*a.basePrice) 
                 }else{

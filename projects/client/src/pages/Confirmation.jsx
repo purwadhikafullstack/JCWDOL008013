@@ -53,7 +53,6 @@ import {
       const token = localStorage.getItem('prw_login');
   
       // Get property data from API
-      // console.log(bookingData.id_property)
       axios.get(API_URL+`/orders/property?propertyId=${bookingData.id_property}`, {
         headers: {
           Authorization: `Bearer ${token}`,
@@ -68,14 +67,12 @@ import {
         });
   
       // Get room data from API
-      // console.log(bookingData.id_room)
       axios.get(API_URL+`/orders/room?roomId=${bookingData.id_room}`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
       })
         .then(response => {
-          // console.log(response)
           setRoomData(response.data);
         })
         .catch(error => {
@@ -86,7 +83,6 @@ import {
   // when button confirm is clicked
     const onConfirmBtn = () => {
       const token = localStorage.getItem('prw_login');
-      // console.log(token)
       // const bookingData = JSON.parse(localStorage.getItem('prw_order'));
       const requestData = {
         id_property: bookingData.id_property,

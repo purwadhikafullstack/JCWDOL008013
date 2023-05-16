@@ -311,7 +311,6 @@ function DetailProperty() {
                             startDate:selectedDates[0],
                             endDate:selectedDates[1],
                         }
-                        console.log(price)
                         return (
                         <Box key={room.id} flex={1} borderWidth="1px" borderRadius="lg" >
                             <Flex>

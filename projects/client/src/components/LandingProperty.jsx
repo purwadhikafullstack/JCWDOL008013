@@ -48,16 +48,11 @@ const LandingProperty = (props) => {
             }
         })
             .then((res) => {
-                console.log(res.data);
                 navigate(`/detailproperty/${value.id_property}`);
                 window.scrollTo(0, 0);
             })
             .catch((err) => {
                 console.log(err)
-                if (!err.response.data.success) {
-                    alert(err.response.data.message);
-                }
-                console.log("check error", err)
             });
     }
 

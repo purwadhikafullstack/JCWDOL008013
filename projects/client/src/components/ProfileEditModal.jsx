@@ -71,7 +71,7 @@ const ProfileEditModal = (props) => {
                                 </VStack>
                             </ModalBody>
                             <ModalFooter>
-                                <Button width="full" type='submit' isLoading={props.isSubmitting}>Save</Button>
+                                <Button colorScheme="blue" width="full" type='submit' isLoading={props.isSubmitting}>Save</Button>
                             </ModalFooter>
                         </Form>
                     )}

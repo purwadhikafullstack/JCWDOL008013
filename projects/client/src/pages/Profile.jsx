@@ -43,15 +43,27 @@ const Profile = (props) => {
             let getLocalStorage = localStorage.getItem("prw_login");
             if (getLocalStorage) {
                 let res = await Axios.patch(API_URL + "/users/profile", value, { headers: { Authorization: `Bearer ${getLocalStorage}` } });
-                toast({
-                    title: `${res.data.message}`,
-                    description: "You've successfully edited your profile",
-                    status: 'success',
-                    position: 'top',
-                    duration: 9000,
-                    isClosable: true,
-                    onCloseComplete: () => profileData()
-                })
+                if (res.data.success) {
+                    toast({
+                        title: `${res.data.message}`,
+                        description: "You've successfully edited your profile",
+                        status: 'success',
+                        position: 'top',
+                        duration: 9000,
+                        isClosable: true,
+                        onCloseComplete: () => profileData()
+                    })
+                } else {
+                    toast({
+                        title: `${res.data.message}`,
+                        description: "Edit profile failed",
+                        status: 'error',
+                        position: 'top',
+                        duration: 9000,
+                        isClosable: true,
+                        onCloseComplete: () => profileData()
+                    })
+                }
             }
         } catch (error) {
             console.log(error);
@@ -70,8 +82,9 @@ const Profile = (props) => {
                 }} />
                 <ProfileEditModal data={{
                     isOpen, onClose, initialValues: { username, email, gender, birthdate }, validationSchema: profileValidation, onSubmit: (values, actions) => {
-                        onClose();
                         editButton(values);
+                        actions.setSubmitting(false);
+                        onClose();
                     }
                 }} />
             </Flex>

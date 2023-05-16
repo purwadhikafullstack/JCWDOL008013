@@ -18,10 +18,8 @@ const ResetPassword = () => {
   const navigate = useNavigate();
 
   const onBtnReset = () => {
-    console.log(inputEmail)
     axios.get(API_URL + "/users/resetpass?email=" + inputEmail)
       .then((res) => {
-        console.log(res.data);
         alert(res.data.message);
         navigate("/login");
       })

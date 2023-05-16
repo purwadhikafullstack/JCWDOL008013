@@ -126,6 +126,7 @@ function App() {
             <>
               <Route path="/login" element={<Login />} />
               <Route path="/register" element={<Register />} />
+              <Route path="/resetpass" element={<ResetPassword />} />
             </>
           )}
           <Route path="/verification" element={<Verification />} />
@@ -138,7 +139,6 @@ function App() {
           ) : (
             <>
               <Route path="/tobetenant" element={<ToBeTenant />} />
-              <Route path="/resetpass" element={<ResetPassword />} />
               <Route path="/confirmation" element={<Confirmation />} />
               <Route path="/payment" element={<Payment />} />
               <Route path="/success" element={<Success />} />

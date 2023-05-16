@@ -88,10 +88,7 @@ const TenantProperty = (props) => {
         try {
             let getLocalStorage = localStorage.getItem('prw_login')
             if (getLocalStorage) {
-                const formData = new FormData();
-                formData.append('images', value.picture);
-                formData.append('data', JSON.stringify({ name: value.name, address: value.address, id_city: value.city, description: value.description, rules: value.rules }));
-                let res = await Axios.post(API_URL + '/properties/addproperty', formData, { headers: { Authorization: `Bearer ${getLocalStorage}` } });
+                let res = await Axios.post(API_URL + '/properties/addproperty', { name: value.name, address: value.address, id_city: value.city, description: value.description, rules: value.rules, propertyImg: value.picture }, { headers: { Authorization: `Bearer ${getLocalStorage}`, "Content-Type": "multipart/form-data", } });
                 toast({
                     title: `${res.data.message}`,
                     description: "You've successfully added new property",
@@ -115,8 +112,6 @@ const TenantProperty = (props) => {
         getProperty();
     }, [page, sort, order, keyword]);
 
-    console.log(propertyData);
-
     return (
         <Box ms={[0, null, 60]} p={[2, 8]} borderTopWidth={[0, null, '4px']} borderColor='blue.400'>
             <Grid mb={4} justifyContent='center' templateColumns={['repeat(1, 1fr)', null, null, 'repeat(5, 1fr)']}>
@@ -131,6 +126,7 @@ const TenantProperty = (props) => {
                     <PropertyModal data={{
                         title: 'Create new property', groupedOptions, isOpen, onClose, initialValues: { name: '', address: '', city: '', picture: '', description: '', rules: '' }, validationSchema: propertyValidation, onSubmit: (values, actions) => {
                             newProperty(values);
+                            actions.setSubmitting(false);
                             onClose();
                         }
                     }} />

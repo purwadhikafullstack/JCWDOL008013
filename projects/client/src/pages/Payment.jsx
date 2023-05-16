@@ -78,9 +78,6 @@ import {
         });
         return;
       }
-      const formData = new FormData();
-      formData.append("paymentProof", paymentProof);
-      formData.append("orderId",orderId)
   
       try {
         const config = {
@@ -89,10 +86,9 @@ import {
             "Content-Type":`multipart/form-data`,
           },
         };
-        // console.log(token)
-        const response = await axios.patch(
+        const response = await axios.post(
           `${API_URL}/orders/paymentproof`,
-          formData,
+          { paymentProof, orderId },
           config
         );
   

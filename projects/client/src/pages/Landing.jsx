@@ -109,7 +109,6 @@ const Landing = () => {
                 }
             })
                 .then((res) => {
-                    console.log(res.data)
                     navigate("/search");
                 })
                 .catch((err) => {

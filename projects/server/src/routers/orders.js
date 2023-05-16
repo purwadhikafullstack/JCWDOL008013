@@ -10,7 +10,7 @@ route.get("/", ordersController.getOrdersData);
 route.get('/property',readToken, ordersController.getPropertyData)
 route.get('/room',readToken, ordersController.getRoomData)
 route.post('/create',readToken, ordersController.createOrder)
-route.patch('/paymentproof',uploader('/paymentProof','PAYMENT').single('paymentProof'), ordersController.paymentProof)
+route.post('/paymentproof',uploader('/paymentProof').single('paymentProof'), ordersController.paymentProof)
 route.patch('/cancel', ordersController.cancelOrder)
 
 route.get("/detail",readToken, ordersController.getDetail);

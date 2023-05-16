@@ -116,10 +116,7 @@ const TenantRoom = (props) => {
     // Edit property
     const editProperty = async (value) => {
         try {
-            const formData = new FormData();
-            formData.append('images', value.picture);
-            formData.append('data', JSON.stringify({ id_property: search.split('=')[1], name: value.name, address: value.address, id_city: value.city, description: value.description, rules: value.rules }));
-            let res = await Axios.patch(API_URL + '/properties/editproperty', formData);
+            let res = await Axios.post(API_URL + '/properties/editproperty', { id_property: search.split('=')[1], name: value.name, address: value.address, id_city: value.city, description: value.description, rules: value.rules, propertyImg: value.picture }, { headers: { "Content-Type": "multipart/form-data", }});
             toast({
                 title: `${res.data.message}`,
                 description: "You've successfully edited your property",
@@ -145,7 +142,7 @@ const TenantRoom = (props) => {
                 position: 'top',
                 duration: 9000,
                 isClosable: true,
-                onCloseComplete: () => navigate('/tenant/property'),
+                onCloseComplete: () => navigate('/admin/property'),
             })
         } catch (error) {
             console.log(error);
@@ -155,17 +152,13 @@ const TenantRoom = (props) => {
     // Create new room
     const newRoom = async (value) => {
         try {
-            const formData = new FormData();
-            formData.append('images', value.picture);
-            formData.append('data', JSON.stringify(
-                {
-                    id_property: search.split('=')[1],
-                    name: value.name,
-                    price: value.price,
-                    description: value.description,
-                }
-            ));
-            let res = await Axios.post(API_URL + '/rooms/addroom', formData);
+            let res = await Axios.post(API_URL + '/rooms/addroom', {
+                id_property: search.split('=')[1],
+                name: value.name,
+                price: value.price,
+                description: value.description,
+                roomImg: value.picture,
+            }, { headers: { "Content-Type": "multipart/form-data", } });
             toast({
                 title: `${res.data.message}`,
                 description: "You've successfully created new room",
@@ -213,6 +206,7 @@ const TenantRoom = (props) => {
                 <PropertyModal data={{
                     title: 'Edit your property', groupedOptions, isOpen: isEditOpen, onClose: onEditClose, initialValues: { name, address, city: '', picture: '', description, rules }, validationSchema: propertyValidation, onSubmit: (values, actions) => {
                         editProperty(values);
+                        actions.setSubmitting(false);
                         onEditClose();
                     }
                 }} />
@@ -234,8 +228,9 @@ const TenantRoom = (props) => {
                     <CreatePropertyRoomCard data={{ title: 'Create new room:', onOpen: onCreateOpen }} />
                     <RoomModal data={{
                         title: 'Create new room', isOpen: isCreateOpen, onClose: onCreateClose, initialValues: { name: '', price: '', description: '', picture: '' }, validationSchema: roomValidation, onSubmit: (values, actions) => {
-                            onCreateClose();
                             newRoom(values);
+                            actions.setSubmitting(false);
+                            onCreateClose();
                         }
                     }} />
                 </GridItem>

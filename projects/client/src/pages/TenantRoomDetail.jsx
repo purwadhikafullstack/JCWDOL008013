@@ -101,10 +101,7 @@ const TenantRoomDetail = (props) => {
     // Edit room
     const editRoom = async (value) => {
         try {
-            const formData = new FormData();
-            formData.append('images', value.picture);
-            formData.append('data', JSON.stringify({ id_room: search.split('=')[2], name: value.name, price: value.price, description: value.description }));
-            let res = await Axios.patch(API_URL + '/rooms/editroom', formData);
+            let res = await Axios.post(API_URL + '/rooms/editroom', { id_room: search.split('=')[2], name: value.name, price: value.price, description: value.description, roomImg: value.picture }, { headers: { "Content-Type": "multipart/form-data", } });
             toast({
                 title: `${res.data.message}`,
                 description: "You've successfully edited your room",
@@ -134,19 +131,13 @@ const TenantRoomDetail = (props) => {
                 duration: 9000,
                 isClosable: true,
                 onCloseComplete: () => {
-                    navigate(`/tenant/room${search.split('&')[0]}`)
+                    navigate(`/admin/room${search.split('&')[0]}`)
                 }
             });
         } catch (error) {
             console.log(error);
         }
     }
-
-    // console.log(unavailableDates[0]);
-    // console.log(unavailableDates[0].toISOString());
-    // console.log(new Date(unavailableDates[0].getTime() - (unavailableDates[0].getTimezoneOffset() * 60000)).toISOString());
-    // console.log(unavailableDates[1]);
-    // console.log(new Date(unavailableDates[1].getTime() - (unavailableDates[1].getTimezoneOffset() * 60000)).toISOString());
 
     // Set room unavailability
     const unavailability = async () => {
@@ -374,8 +365,9 @@ const TenantRoomDetail = (props) => {
                 }} />
                 <RoomModal data={{
                     title: 'Edit your room', isOpen: isEditOpen, onClose: onEditClose, initialValues: { name, price, description, picture: '' }, validationSchema: roomValidation, onSubmit: (values, actions) => {
-                        onEditClose();
                         editRoom(values);
+                        actions.setSubmitting(false);
+                        onEditClose();
                     }
                 }} />
                 <DeleteAlert data={{

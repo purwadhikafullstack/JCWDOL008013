@@ -36,10 +36,6 @@ const navigate = useNavigate()
   };
 
   const handleUpgradeClick = async () => {
-    const formData = new FormData();
-    formData.append("cardPicture", cardPicture);
-    formData.append("cardNumber",cardNumber)
-
     try {
       const config = {
         headers: {
@@ -47,15 +43,11 @@ const navigate = useNavigate()
           "Content-Type":`multipart/form-data`,
         },
       };
-      //   console.log(cardNumber)
-      //   console.log(cardPicture)
-      console.log(token);
-      const response = await axios.patch(
+      const response = await axios.post(
         API_URL + `/users/tobetenant`,
-        formData,
+        { cardPicture, cardNumber },
         config
       );
-      console.log(`res data :`,response);
       alert(response.data.message)
       setError(null);
       dispatch(logoutAction())
