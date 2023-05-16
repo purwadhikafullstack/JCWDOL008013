@@ -1022,5 +1022,56 @@ module.exports = {
         });
     }
   },
-  
+  getPropertyCalendarBydate:async(req,res)=>{
+    try{
+        let startDate = new Date(req.query.startDate)
+        startDate.setDate(startDate.getDate()+1)
+        let endDate = new Date(req.query.endDate)
+        endDate.setDate(endDate.getDate()+1)
+        let id_tenant = req.decript.id_user
+        let data = []
+
+        for(var d = startDate; d<= endDate; d.setDate(d.getDate()+1)){
+            let querydate= d.toISOString().slice(0, 19).replace("T", " ")
+            const { rows } = await PropertiesModel.findAndCountAll({
+              attributes:["id_property","name"],
+              include:[
+                { model: RoomsModel, as: "listrooms",required: false,attributes:["id_room","name"]},
+              ],
+              where: {
+                status: 1, 
+                createdBy:id_tenant,
+                id_property: {
+                    [Op.notIn]: Sequelize.literal(
+                      `(
+                        SELECT orders.id_property
+                        FROM orders
+                        JOIN properties ON orders.id_property=properties.id_property
+                        WHERE orders.order_status = "CONFIRMED"
+                        AND (
+                              (orders.checkin_date BETWEEN '${querydate}' AND '${querydate}')
+                              OR (orders.checkout_date BETWEEN '${querydate}' AND '${querydate}')
+                              OR (orders.checkin_date <= '${querydate}'  AND orders.checkout_date >= '${querydate}') 
+                        )  
+                      )`
+                    )
+                }
+              },
+            });
+            data.push(rows)
+        } 
+          
+        return res.status(200).send({
+            data,
+            success: true,
+        })
+    }catch(error){
+        console.log(error)
+        return res.status(500).send({
+            success: false,
+            message: "Something Gone Wrong",
+            logs:error
+        });
+    }
+  },
 };

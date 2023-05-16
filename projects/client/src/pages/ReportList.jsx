@@ -3,13 +3,15 @@ import Axios from 'axios';
 import API_URL from '../helper';
 import { DataTable } from '../components/Datatable';
 import { createColumnHelper } from "@tanstack/react-table";
-import { Box, Button, Center, Container, Flex, Heading, Input, Select, Spacer, Text } from '@chakra-ui/react';
+import { Box, Button, Center, Container, Flex, Heading, Input, Select, Spacer, Stack, Text } from '@chakra-ui/react';
 import { useFormik } from "formik";
 import ReactPaginate from 'react-paginate';
 import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import {RangeDatepicker} from 'chakra-dayzed-datepicker'
 import { Select as CustomSelect } from "chakra-react-select";
+import CalendarPropTable from '../components/CalendarPropTable';
+import leftPad from 'left-pad';
 
 
 function ReportList() {
@@ -38,6 +40,13 @@ function ReportList() {
     const [startdate, setStartdate] = useState([]);
     const [enddate, setEnddate] = useState([]);
 
+    const [propCal , setpropCal] = useState([])
+    const [formdate,setformdate] = useState("")
+    const [other,setOther] = useState({})
+    const today = new Date()
+    const end = 2024;
+    const start = 2023;
+    const yearRange = Array.from({length: (end - start)}, (v, k) => k + start);
     const loadReport = ()=>{
         let getLocalStorage = localStorage.getItem("prw_login");
         Axios.get(API_URL + `/orders/report`,{
@@ -70,13 +79,64 @@ function ReportList() {
             setTotalAmount(res.data.totalamount)
         })
         .catch((err) => {
-            console.log(err)
             if (!err.response.data.success) {
                 alert(err.response.data.message);
             }
-            console.log("check error", err)
         });
     }
+
+    const checkcalendar = async()=>{
+        let getLocalStorage = localStorage.getItem("prw_login")
+        let date = new Date(formdate), y = date.getFullYear(), m = date.getMonth();
+
+        if(!isNaN(y) && !isNaN(m)){
+            let firstDay = new Date(y, m, 1).toISOString().substring(0,10);
+            let lastDay = new Date(y, m + 1, 0).toISOString().substring(0,10);
+
+            Axios.get(API_URL + `/orders/getPropertyCalendarBydate`,{params:{
+                startDate:firstDay,
+                endDate:lastDay
+            },headers: {
+                Authorization: `Bearer ${getLocalStorage}`
+            }})
+            .then((res) => {
+                setpropCal(res.data.data)
+            })
+            .catch((err) => {
+                if (!err.response.data.success) {
+                    alert(err.response.data.message);
+                }
+            });
+        }
+        
+    }
+
+    useEffect(()=>{
+        const today = new Date();
+
+        const dateOfMonth = today.getDate();
+        const monthOfYear = today.getMonth() + 1; // 0 based
+        const year        = today.getFullYear();
+        
+        setOther( {
+            day: dateOfMonth,
+            month: monthOfYear,
+            year: year
+        })
+    },[])
+
+    useEffect(()=>{
+        setformdate ( [
+            leftPad(other.year, 4, 0),
+            leftPad(other.month, 2, 0),
+            leftPad(other.day, 2, 0)
+        ].join("-"))
+    },[other])
+
+    useEffect(()=>{
+        checkcalendar()
+    },[formdate])
+
 
     const formik = useFormik({
         initialValues:{
@@ -255,6 +315,36 @@ function ReportList() {
             <Text>Total Transaksi : {totalamount?.toLocaleString('id',{ style: 'currency', currency: 'IDR' })}</Text>
         </Flex>
     </Flex>
+    <Stack>
+        <Heading as="h2" size="lg" mb="4">
+            Calendar Available Property 
+        </Heading>
+        <Stack border='2px' borderColor='gray.200'  boxShadow='sm' padding={5}>
+        <label htmlFor="month">Month</label>
+        <select className='form-control' name="month" value={other.month} onChange={(e) => setOther({...other,month: e.target.value})}>
+            <option value="1">01 - January</option>
+            <option value="2">02 - February</option>
+            <option value="3">03 - March</option>
+            <option value="4">04 - April</option>
+            <option value="5">05 - May</option>
+            <option value="6">06 - June</option>
+            <option value="7">07 - July</option>
+            <option value="8">08 - August</option>
+            <option value="9">09 - September</option>
+            <option value="10">10 - October</option>
+            <option value="11">11 - November</option>
+            <option value="12">12 - December</option>
+        </select>
+        <label htmlFor="year">Year</label>
+        <select className='form-control' name="year" value={other.year}  onChange={(e) => setOther({...other,year: e.target.value})}>
+            {yearRange.map( (year) => {
+                return <option key={year} value={year}>{year}</option>
+            })}
+        </select>
+        </Stack>
+        <br/>
+        {propCal!=[]?<CalendarPropTable data={propCal} date={formdate}/>:<></>}
+    </Stack>
     </Box>
 }
 
