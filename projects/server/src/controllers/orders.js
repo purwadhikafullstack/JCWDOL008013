@@ -73,7 +73,7 @@ module.exports = {
           [Op.between]: [checkinDate, today],
         };
       }
-  
+      console.log(req.query.search)
       if (req.query.search) {
         whereClause[Op.or] = [{
           no_invoice: {
@@ -81,12 +81,12 @@ module.exports = {
           },
         },
           {
-            "$Property.name$": {
+            "$property.name$": {
               [Op.like]: `%${req.query.search}%`,
             },
           },
           {
-            "$Property.City.name$": {
+            "$property.city.name$": {
               [Op.like]: `%${req.query.search}%`,
             },
           },

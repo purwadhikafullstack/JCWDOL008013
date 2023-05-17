@@ -37,24 +37,31 @@ const navigate = useNavigate()
 
   const handleUpgradeClick = async () => {
     try {
+      const formData = new FormData();
+      formData.append("cardPicture", cardPicture);
+      formData.append("cardNumber", cardNumber);
+  
       const config = {
         headers: {
           Authorization: `Bearer ${token}`,
-          "Content-Type":`multipart/form-data`,
+          "Content-Type": "multipart/form-data",
         },
       };
+  
       const response = await axios.post(
         API_URL + `/users/tobetenant`,
-        { cardPicture, cardNumber },
+        formData,
         config
       );
-      alert(response.data.message)
+  
+      alert(response.data.message);
       setError(null);
-      dispatch(logoutAction())
-      navigate('/login')
+      dispatch(logoutAction());
+      navigate('/login');
     } catch (error) {
       console.error(error);
-      setError(error.message);
+      setError(error.response.data.message);
+      // setError(error.message);
     }
   };
 
@@ -104,7 +111,7 @@ const navigate = useNavigate()
           accept="image/*"
           onChange={handleCardPictureChange}
         />
-        <FormErrorMessage>{error}</FormErrorMessage>
+        
       </FormControl>
       <Button colorScheme="blue" w="full" onClick={handleUpgradeClick}>
         Upgrade to Tenant

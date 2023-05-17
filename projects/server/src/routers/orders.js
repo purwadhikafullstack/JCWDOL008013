@@ -1,35 +1,33 @@
 const express = require("express");
-const { readToken } = require("../config/encript");
 const route = express.Router();
-const { ordersController } = require("../controllers");
-const {uploader} = require('../config/uploader')
+const { usersController } = require("../controllers");
+const {
+  checkUser,
+  checkChangePass,
+  checkCardNumber,
+  checkEditProfile,
+} = require("../config/validator");
+const { readToken } = require("../config/encript");
+const { uploader } = require("../config/uploader");
+const multer = require('multer');
+const upload = multer({ dest: './src/public/idCard' });
 
-route.get("/all", readToken,ordersController.getOrdersDataAll);
-route.get("/",readToken, ordersController.getOrdersData);
+route.get("/", usersController.getUsersData);
+route.post("/regis", checkUser, usersController.regis);
+route.post("/login", usersController.login);
+route.post("/keep", readToken, usersController.keepLogin);
+route.patch("/profile", checkEditProfile, readToken, usersController.editProfile);
+route.post(
+  "/profilepicture",
+  readToken,
+  uploader("/imgProfile").single("profileImg"),
+  usersController.profilePicture
+);
+route.patch("/verify", readToken, usersController.verifyAccount);
+route.patch("/changepass", readToken, checkChangePass, usersController.changePassword);
+route.post('/tobetenant', readToken, checkCardNumber, upload.single('cardPicture'), usersController.tobeTenant);
+route.get("/resetpass", usersController.resetpassword);
+route.get("/profiledata", readToken, usersController.profileData);
+route.post("/reverify", usersController.resendVerify);
 
-route.get('/property',readToken, ordersController.getPropertyData)
-route.get('/room',readToken, ordersController.getRoomData)
-route.post('/create',readToken, ordersController.createOrder)
-route.post('/paymentproof',uploader('/paymentProof').single('paymentProof'), ordersController.paymentProof)
-route.patch('/cancel', ordersController.cancelOrder)
-
-route.get("/detail",readToken, ordersController.getDetail);
-// report
-route.get("/report",readToken, ordersController.getReportData);
-
-//order
-// route.post("/",readToken, ordersController.createUpdateOrders);
-route.post("/review",readToken, ordersController.createUpdateOrders);
-route.post("/reject",readToken, ordersController.createUpdateOrders);
-route.post("/confirm",readToken, ordersController.createUpdateOrders);
-route.get("/availableroom", ordersController.getAvailableRoom);
-route.get("/availableproperty", ordersController.getAvailableProperty);
-
-route.get("/totalprice", ordersController.getPrice);
-route.get("/getPriceCalendarBydate", ordersController.getPriceCalendarBydate);
-route.get("/getPropertyCalendarBydate",readToken, ordersController.getPropertyCalendarBydate);
-route.get("/sendOrderMail",readToken, ordersController.sendOrderMail);
-route.get("/getListReview", ordersController.getListReview);
-
-
-module.exports = route
+module.exports = route;
