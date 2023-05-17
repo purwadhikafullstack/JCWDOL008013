@@ -5,6 +5,7 @@ const {checkUser, checkChangePass, checkCardNumber, checkEditProfile } = require
 const { readToken } = require("../config/encript");
 const { uploader } = require("../config/uploader");
 
+
 route.get("/", usersController.getUsersData);
 route.post("/regis",checkUser, usersController.regis);
 route.post("/login", usersController.login);
@@ -17,7 +18,7 @@ route.post(
   usersController.profilePicture
 );
 route.patch('/verify', readToken,usersController.verifyAccount)
-route.patch('/changepass',readToken,usersController.changePassword)
+route.patch('/changepass',readToken,checkChangePass,usersController.changePassword)
 route.post('/tobetenant', readToken, uploader('/idCard').single('cardPicture'), usersController.tobeTenant)
 route.get('/resetpass', usersController.resetpassword)
 route.get('/profiledata', readToken, usersController.profileData)

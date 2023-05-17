@@ -271,6 +271,7 @@ module.exports = {
           return res.status(500).send(errGet);
         }
 
+        
         //check if new pass is different from old pass
         const check = bcrypt.compareSync(
           req.body.oldPass,
@@ -279,7 +280,7 @@ module.exports = {
         if (!check) {
           return res.status(400).send({
             success: false,
-            message: "Your New Password is same as Old Password",
+            message: "Your Password is Incorect",
           });
         }
 
@@ -309,15 +310,21 @@ module.exports = {
     );
   },
   tobeTenant: (req, res) => {
-    // get user ID from token payload
-    // yang disimpan ke database : /idCard/filename
-
+    // Validate cardNumber
+    const cardNumber = req.body.cardNumber;
+    if (!cardNumber || isNaN(cardNumber) || cardNumber.length !== 16) {
+      return res.status(422).send({
+        success: false,
+        message:
+          "Invalid card number. Please enter a 16-digit numeric card number.",
+      });
+    }
+  
+    // Proceed with the database update
     dbConf.query(
-      `UPDATE users set cardNumber=${dbConf.escape(
-        req.body.cardNumber
-      )},cardPicture=${dbConf.escape(
+      `UPDATE users SET cardNumber=${req.body.cardNumber}, cardPicture=${dbConf.escape(
         `/idCard/${req.file.filename}`
-      )}, isTenant = true where id_user=${dbConf.escape(req.decript.id_user)};`,
+      )}, isTenant = true WHERE id_user=${req.decript.id_user}`,
       (err, results) => {
         if (err) {
           return res.status(500).send({
@@ -327,11 +334,13 @@ module.exports = {
         }
         return res.status(200).send({
           success: true,
-          message: "You have been a Tenant",
+          message: "You have become a Tenant",
         });
       }
     );
   },
+  
+  
   resetpassword: (req, res) => {
     //cek apakah ada data email tersebut di Db
     dbConf.query(
